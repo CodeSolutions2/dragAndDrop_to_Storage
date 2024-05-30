@@ -252,22 +252,18 @@ body{
 //    $(".wrapper").toggleClass("collapse");
 // });
   
-async while_with_a_flag() {
-  
-    // Way 0: make the loop depend on a flag
-    let arr = Array.from({ length: 200 }, (_, i) => i);
- 
-  
-var i = 0;
-var flag = "run";
-  var rand_stop_val = Math.random()*arr.length;
-while (flag == "run" && i < arr.length) {
-  if (arr[i] == rand_stop_val) {
-     flag = "stop";
-  }
-  i += 1;
-}
-  
+async function while_with_a_flag() {
+	// Way 0: make the loop depend on a flag
+	let arr = Array.from({ length: 200 }, (_, i) => i);
+	var i = 0;
+	var flag = "run";
+	var rand_stop_val = Math.random()*arr.length;
+	while (flag == "run" && i < arr.length) {
+		if (arr[i] == rand_stop_val) {
+			flag = "stop";
+		}
+		i += 1;
+	}
 }
 
 
