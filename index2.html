@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head></head>
+<body>
+
+
+<input id="location_name" type="text" value="" placeholder="location_name" rows="10" cols="100" style="display:none; text-align: left; width: 600px;">
+<button id="get_lat_long" onclick="get_lat_long()">get_lat_long</button>
+<button id="get_forecast_temperature_data" onclick="get_forecast_temperature_data()">get_forecast_temperature_data</button>
+
+  
+<script>
+	
+// -----------------------------------------------
+	
+window.addEventListener('beforeunload', function() {
+    window.location.href = window.location.href + '?nocache=' + new Date().getTime();
+});
+
+
+async function get_lat_long() {
+   var url = `https://nominatim.openstreetmap.org/search?format=json&q=${document.getElementById('location_name').innerHTML}`;
+	  
+		var headers = {"Content-Type": "application/json"}
+		var options = {method : 'GET', headers: headers};
+		
+		// ------------------------------------------
+		
+		await fetch(url, options)
+			.then(res => res.json())
+			.then(res => { 
+				let output = JSON.parse(JSON.stringify(res));
+				console.log('output: ', output);
+			})
+			.catch(error => { document.getElementById('error').innerHTML = error; });
+
+}
+  
+// -----------------------------------------------
+
+async function get_forecast_temperature_data() {
+  
+    // https://open-meteo.com/en/docs
+
+  var url = 'https://open-meteo.com/v1/forecast';
+	  
+		var headers = {"Content-Type": "application/json"}
+	
+		var data = {"latitude": location_latitude,
+			    "longitude": location_longitude, 
+			    "forecast_days": 1, 
+			    "forecast_hours": 5
+		};
+		
+		// --------------------
+		
+		var options = {method : 'POST', headers: headers, body : JSON.stringify(data)};
+		
+		// ------------------------------------------
+		
+		await fetch(url, options)
+			.then(res => res.json())
+			.then(res => { 
+				let output = JSON.parse(JSON.stringify(res));
+				console.log('output: ', output);
+			})
+			.catch(error => { document.getElementById('error').innerHTML = error; });
+
+  
+  
+}
+
+// -----------------------------------------------
+
+
+
+
+</script>
+
+  
+</body>
+</html>
