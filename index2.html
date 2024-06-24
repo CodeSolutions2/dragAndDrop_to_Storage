@@ -5,6 +5,9 @@
 
 
 <input id="location_name" type="text" value="" placeholder="location_name" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
+
+<button id="try_to_fix_cors_error" onclick="try_to_fix_cors_error()">try_to_fix_cors_error</button>
+	
 <button id="get_lat_long" onclick="get_lat_long()">get_lat_long</button>
 <button id="get_forecast_temperature_data" onclick="get_forecast_temperature_data()">get_forecast_temperature_data</button>
 
@@ -17,7 +20,44 @@ window.addEventListener('beforeunload', function() {
     window.location.href = window.location.href + '?nocache=' + new Date().getTime();
 });
 
+// -----------------------------------------------
 
+async function try_to_fix_cors_error() {
+
+	// Define a handler that contains a "Proxy trap" such that specific items in the target are only modified, and not all the items in the target 
+
+	// Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote resource at https://open-meteo.com/v1/forecast. (Reason: CORS header ‘Access-Control-Allow-Origin’ missing). Status code: 404.
+	const request_header = {
+		Accept: "image/avif,image/webp,*/*",
+		Accept-Encoding: "gzip, deflate, br",
+		Accept-Language: "en-US,en;q=0.5",
+		Connection: "keep-alive",
+		DNT: 1,
+		Host: "codesolutions2.github.io",
+		Referer: "https://codesolutions2.github.io/temp_repo_js_tests/index2.html",
+		Sec-Fetch-Dest: "image",
+		Sec-Fetch-Mode: "no-cors",
+		Sec-Fetch-Site: "same-origin",
+		Sec-GPC: 1,
+		User-Agent: "Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0"
+	};
+
+	// need to add 
+	const handler3 = {
+	  get(request_header, prop, receiver) {
+	    prop["Access-Control-Allow-Origin"] = '*';
+	    return Reflect.get(...arguments);
+	  },
+	};
+	
+	const proxy3 = new Proxy(request_header, handler3);
+	
+	console.log("proxy3: ", proxy3);
+
+}
+
+// -----------------------------------------------
+	
 async function get_lat_long() {
 
 	// https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${GCP_API_KEY}
@@ -26,9 +66,11 @@ async function get_lat_long() {
 	// https://nominatim.org/release-docs/latest/api/Search/
 	var url = `https://nominatim.openstreetmap.org/search?q=${document.getElementById('location_name').innerHTML}`;
 	var headers = {"Content-Type": "application/json"}
-	var options = {method : 'GET', headers: headers};
+	var options = {method : 'GET', headers: headers,  mode: 'cors'};
 		
 		// ------------------------------------------
+
+	
 		
 		await fetch(url, options)
 			.then(res => res.json())
