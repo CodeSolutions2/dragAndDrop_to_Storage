@@ -22,7 +22,7 @@ async function get_lat_long() {
 
 	// https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${GCP_API_KEY}
 	// OR
-	var url = `https://nominatim.openstreetmap.org/search?q=${document.getElementById('location_name').innerHTML}&format=json`;
+	var url = `https://nominatim.openstreetmap.org/search?q=${document.getElementById('location_name').innerHTML}`;
 	var headers = {"Content-Type": "application/json"}
 		var options = {method : 'GET', headers: headers};
 		
@@ -31,8 +31,8 @@ async function get_lat_long() {
 		await fetch(url)
 			.then(res => res.json())
 			.then(res => { 
-				let output = JSON.parse(JSON.stringify(res));
-				console.log('output: ', output);
+				//let output = JSON.parse(JSON.stringify(res));
+				console.log('res: ', res);
 			})
 			.catch(error => { document.getElementById('error').innerHTML = error; });
 
