@@ -19,14 +19,16 @@ window.addEventListener('beforeunload', function() {
 
 
 async function get_lat_long() {
-   var url = `https://nominatim.openstreetmap.org/search?format=json&q=${document.getElementById('location_name').innerHTML}`;
-	  
-		var headers = {"Content-Type": "application/json"}
+
+	// https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${GCP_API_KEY}
+	// OR
+	var url = `https://nominatim.openstreetmap.org/search?q=${document.getElementById('location_name').innerHTML}&format=json`;
+	var headers = {"Content-Type": "application/json"}
 		var options = {method : 'GET', headers: headers};
 		
 		// ------------------------------------------
 		
-		await fetch(url, options)
+		await fetch(url)
 			.then(res => res.json())
 			.then(res => { 
 				let output = JSON.parse(JSON.stringify(res));
