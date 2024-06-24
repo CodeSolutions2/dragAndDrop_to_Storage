@@ -22,13 +22,15 @@ async function get_lat_long() {
 
 	// https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${GCP_API_KEY}
 	// OR
+
+	// https://nominatim.org/release-docs/latest/api/Search/
 	var url = `https://nominatim.openstreetmap.org/search?q=${document.getElementById('location_name').innerHTML}`;
 	var headers = {"Content-Type": "application/json"}
-		var options = {method : 'GET', headers: headers};
+	var options = {method : 'GET', headers: headers};
 		
 		// ------------------------------------------
 		
-		await fetch(url)
+		await fetch(url, options)
 			.then(res => res.json())
 			.then(res => { 
 				//let output = JSON.parse(JSON.stringify(res));
@@ -41,15 +43,20 @@ async function get_lat_long() {
 // -----------------------------------------------
 
 async function get_forecast_temperature_data() {
-  
+
+	// https://nominatim.openstreetmap.org/search?q=Lyon&format=json
+	var location_latitude = "45.7578137";
+	var location_longitude = "4.8320114";
+
+	
     // https://open-meteo.com/en/docs
 
   var url = 'https://open-meteo.com/v1/forecast';
 	  
 		var headers = {"Content-Type": "application/json"}
 	
-		var data = {"latitude": location_latitude,
-			    "longitude": location_longitude, 
+		var data = {"latitude": Number(location_latitude),
+			    "longitude": Number(location_longitude), 
 			    "forecast_days": 1, 
 			    "forecast_hours": 5
 		};
