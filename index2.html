@@ -44,10 +44,7 @@ async function try_to_fix_cors_error() {
 
 	// need to add 
 	const handler3 = {
-	  get(request_header, prop, receiver) {
-	    prop["Access-Control-Allow-Origin"] = '*';
-	    return Reflect.get(...arguments);
-	  },
+	  prop["Access_Control_Allow_Origin"] = '*';
 	};
 	
 	const proxy3 = new Proxy(request_header, handler3);
