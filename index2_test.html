@@ -12,12 +12,29 @@
 <button id="get_forecast_temperature_data" onclick="get_forecast_temperature_data()">get_forecast_temperature_data</button>
 
 
+
+
+
 <!-- blog idea: https://www.jsdelivr.com/package/npm/express -->
-<script src="https://cdn.jsdelivr.net/npm/express@4.19.2/index.min.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/express@4.19.2/index.min.js"></script> -->
+<!-- OR -->
+<script type="module">
+import { express } from "https://cdn.jsdelivr.net/npm/express@4.19.2/index.min.js";
+module.express = express;
+</script>
+
+
 
 <!-- blog idea: https://www.jsdelivr.com/package/npm/request -->
-<script src="https://cdn.jsdelivr.net/npm/request@2.88.2/index.min.js"></script>
-  
+<!-- <script src="https://cdn.jsdelivr.net/npm/request@2.88.2/index.min.js"></script> -->
+<!-- OR -->
+<script type="module">
+import { request } from "https://cdn.jsdelivr.net/npm/request@2.88.2/index.min.js";
+module1.request = request;
+</script>
+
+
+	
 <script>
 	
 // -----------------------------------------------
@@ -65,32 +82,31 @@ async function try_to_fix_cors_error0() {
 // -----------------------------------------------
 
 async function try_to_fix_cors_error1() {
+	
+	// blog idea: add the header to the request manually with a proxy server around http://domainname.com
+	const module = {};
+	const app = module.express();
+	
+	app.use((req, res, next) => {
+		res.header('Access-Control-Allow-Origin', '*');
+		next();
+	});
 
-  // blog idea: add the header to the request manually with a proxy server around http://domainname.com
-  const express = require('express')
-  const app = express();
-  
-  app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', '*');
-    next();
-  });
-
-  const request = require('request');
-  app.get(`/search?q=${document.getElementById('location_name').innerHTML}`, function (req, res) {
-    var out = request({url: 'https://nominatim.openstreetmap.org'},
-      (error, response, body) => {
-        if (error || response.statusCode != 200) {
-          console.log('error', error);
-          return error;
-        } else {
-          console.log('body', body);
-          return body;
-        }
-    });
-    // res.json(JSON.parse(out));
-  });
-  
-  app.listen(3000, () => { console.log('listing on port 3000'); });
+	const module1 = {};
+	app.get(`/search?q=${document.getElementById('location_name').innerHTML}`, function (req, res) {
+		var out = module1.request({url: 'https://nominatim.openstreetmap.org'}, (error, response, body) => {
+			if (error || response.statusCode != 200) {
+				console.log('error', error);
+				return error;
+			} else {
+				console.log('body', body);
+				return body;
+			}
+		});
+		// res.json(JSON.parse(out));
+	});
+	
+	app.listen(3000, () => { console.log('listing on port 3000'); });
 
 }
   
