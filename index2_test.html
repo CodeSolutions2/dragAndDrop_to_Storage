@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head></head>
+<body>
+
+
+<input id="location_name" type="text" value="" placeholder="location_name" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
+
+<button id="try_to_fix_cors_error" onclick="try_to_fix_cors_error()">try_to_fix_cors_error</button>
+	
+<button id="get_lat_long" onclick="get_lat_long()">get_lat_long</button>
+<button id="get_forecast_temperature_data" onclick="get_forecast_temperature_data()">get_forecast_temperature_data</button>
+
+  
+<script>
+	
+// -----------------------------------------------
+	
+window.addEventListener('beforeunload', function() {
+    window.location.href = window.location.href + '?nocache=' + new Date().getTime();
+});
+
+// -----------------------------------------------
+
+async function try_to_fix_cors_error() {
+
+	// Define a handler that contains a "Proxy trap" such that specific items in the target are only modified, and not all the items in the target 
+
+	// Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote resource at https://open-meteo.com/v1/forecast. (Reason: CORS header ‘Access-Control-Allow-Origin’ missing). Status code: 404.
+	const request_header = {
+		Accept: "image/avif,image/webp,*/*",
+		Accept_Encoding: "gzip, deflate, br",
+		Accept_Language: "en-US,en;q=0.5",
+		Connection: "keep-alive",
+		DNT: 1,
+		Host: "codesolutions2.github.io",
+		Referer: "https://codesolutions2.github.io/temp_repo_js_tests/index2.html",
+		Sec_Fetch_Dest: "image",
+		Sec_Fetch_Mode: "no-cors",
+		Sec_Fetch_Site: "same-origin",
+		Sec_GPC: 1,
+		User_Agent: "Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0"
+	};
+
+	// need to add 
+	const handler3 = {
+		set: function(target, key, value) {
+		    target["Access_Control_Allow_Origin"] = '*';
+		    return true;
+		  }
+	};
+	
+	const proxy3 = new Proxy(request_header, handler3);
+	
+	console.log("proxy3: ", proxy3);
+
+}
+
+// -----------------------------------------------
+	
+async function get_lat_long() {
+
+	// https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${GCP_API_KEY}
+	// OR
+
+	// https://nominatim.org/release-docs/latest/api/Search/
+	var url = `https://nominatim.openstreetmap.org/search?q=${document.getElementById('location_name').innerHTML}`;
+	var headers = {"Content-Type": "application/json"}
+	var options = {method : 'GET', headers: headers,  mode: 'cors'};
+		
+		// ------------------------------------------
+
+	
+		
+		await fetch(url, options)
+			.then(res => res.json())
+			.then(res => { 
+				//let output = JSON.parse(JSON.stringify(res));
+				console.log('res: ', res);
+			})
+			.catch(error => { document.getElementById('error').innerHTML = error; });
+
+}
+  
+// -----------------------------------------------
+
+async function get_forecast_temperature_data() {
+
+	// https://nominatim.openstreetmap.org/search?q=Lyon&format=json
+	var location_latitude = "45.7578137";
+	var location_longitude = "4.8320114";
+
+	
+    // https://open-meteo.com/en/docs
+
+  var url = 'https://open-meteo.com/v1/forecast';
+	  
+		var headers = {"Content-Type": "application/json"}
+	
+		var data = {"latitude": Number(location_latitude),
+			    "longitude": Number(location_longitude), 
+			    "forecast_days": 1, 
+			    "forecast_hours": 5
+		};
+		
+		// --------------------
+		
+		var options = {method : 'POST', headers: headers, body : JSON.stringify(data)};
+		
+		// ------------------------------------------
+		
+		await fetch(url, options)
+			.then(res => res.json())
+			.then(res => { 
+				let output = JSON.parse(JSON.stringify(res));
+				console.log('output: ', output);
+			})
+			.catch(error => { document.getElementById('error').innerHTML = error; });
+
+  
+  
+}
+
+// -----------------------------------------------
+
+
+
+
+</script>
+
+  
+</body>
+</html>
