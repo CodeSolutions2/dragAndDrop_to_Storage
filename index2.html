@@ -8,7 +8,8 @@
 
 <button id="try_to_fix_cors_error0" onclick="try_to_fix_cors_error0()">try_to_fix_cors_error0</button>
 <button id="try_to_fix_cors_error_w_fetch" onclick="try_to_fix_cors_error_w_fetch()">try_to_fix_cors_error_w_fetch</button>
-  
+<button id="try_to_fix_cors_error_w_fetch1" onclick="try_to_fix_cors_error_w_fetch1()">try_to_fix_cors_error_w_fetch1</button>
+
 <button id="get_lat_long" onclick="get_lat_long()">get_lat_long</button>
 <button id="get_forecast_temperature_data" onclick="get_forecast_temperature_data()">get_forecast_temperature_data</button>
 
@@ -130,6 +131,30 @@ async function try_to_fix_cors_error_w_fetch() {
 
 }
   
+// -----------------------------------------------
+
+async function try_to_fix_cors_error_w_fetch1() {
+
+	const fetchProxy = new Proxy(fetch, {
+  apply: function(target, thisArg, args) {
+    const [url, options] = args;
+    if (options && options.headers) {
+      options.headers['Access-Control-Allow-Origin'] = '*';
+    } else {
+      args[1] = { headers: { 'Access-Control-Allow-Origin': '*' } };
+    }
+    return Reflect.apply(target, thisArg, args);
+  }
+});
+
+var url = `https://nominatim.openstreetmap.org/search?q=${document.getElementById('location_name').innerHTML}`;
+await fetchProxy(url)
+  .then(response => response.json())
+  .then(data => console.log('data: ', data))
+  .catch(error => console.error(error));
+
+}
+
 // -----------------------------------------------
 
 // async function try_to_fix_cors_error1() {
