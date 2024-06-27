@@ -85,6 +85,17 @@ async function try_to_fix_cors_error0() {
 		}
 	};
 
+	const handler3 = {
+	  get(target, prop, receiver) {
+	    if (prop === "options") {
+		    var options_existing = Object.entries(prop.options);
+		    options_existing.headers['Access-Control-Allow-Origin'] = '*';
+	      return options_existing;
+	    }
+	    return Reflect.get(...arguments);
+	  },
+	};
+	
 	var url = `https://nominatim.openstreetmap.org/search?q=${document.getElementById('location_name').innerHTML}`;
 	var headers = {"Content-Type": "application/json"};
 	var options = {method : 'GET', headers: headers,  mode: 'cors'};
@@ -101,6 +112,8 @@ async function try_to_fix_cors_error_w_fetch() {
 
 	// Define a handler that contains a "Proxy trap" such that specific items in the target are only modified, and not all the items in the target 
 
+	// This modifies the inputs of the fetch function, so it means that you are changing the client request variables. NOT the server response variables.
+	
 	const handler3 = {
 		apply: function(target, thisArg, args) {
 			const [url, options] = args;
@@ -114,20 +127,41 @@ async function try_to_fix_cors_error_w_fetch() {
 			} else {
 				args[1] = { headers: { 'Access-Control-Allow-Origin': '*' } };
 			}
-			// Verify that an additional header was added
-			console.log('url: ', url);
-			console.log('options AFTER: ', options);
+			
+			// The Reflect.apply method in JavaScript is used to call a target function with a specified this value and arguments. It allows you to invoke a function with a specific context and set of arguments.
+			// So it calls fetch with the modified client payload
 			return Reflect.apply(target, thisArg, args);
 		}
 	};
+
+	
 	
 	var url = `https://nominatim.openstreetmap.org/search?q=${document.getElementById('location_name').innerHTML}`;
 	var headers = {"Content-Type": "application/json"};
 	var options = {method : 'GET', headers: headers,  mode: 'cors'};
-  
-	const proxy3 = new Proxy(fetch(url, options), handler3);
+
 	
-	console.log("proxy3: ", proxy3);
+	await fetch(url, options)
+		.then(res => {
+			// Need to do proxy on the server output in the promise maybe
+			const handler3 = {
+				get(target, prop, receiver) {
+					if (prop === "options") {
+						var options_existing = Object.entries(prop.options);
+						options_existing.headers['Access-Control-Allow-Origin'] = '*';
+						return options_existing;
+					}
+					return Reflect.get(...arguments);
+				},
+			};
+			return new Proxy(res.json(), handler3);
+		})
+		.then(res => { 
+				//let output = JSON.parse(JSON.stringify(res));
+				console.log('res: ', res);
+			})
+			.catch(error => { document.getElementById('error').innerHTML = error; });
+	
 
 }
   
