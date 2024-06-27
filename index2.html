@@ -86,7 +86,9 @@ async function try_to_fix_cors_error0() {
 	};
 
 	const handler3 = {
-	  get(target, prop, receiver) {
+		get(target, prop, receiver) {
+			console.log('prop: ', prop);
+			console.log('prop has key options: ', prop === "options");
 	    if (prop === "options") {
 		    var options_existing = Object.entries(prop.options);
 		    options_existing.headers['Access-Control-Allow-Origin'] = '*';
