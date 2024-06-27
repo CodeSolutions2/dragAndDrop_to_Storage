@@ -162,7 +162,7 @@ async function try_to_fix_cors_error_w_fetch() {
 				//let output = JSON.parse(JSON.stringify(res));
 				console.log('res: ', res);
 			})
-			.catch(error => { document.getElementById('error').innerHTML = error; });
+			.catch(error => { console.log('error: ', error); });
 	
 
 }
