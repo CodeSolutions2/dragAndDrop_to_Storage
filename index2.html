@@ -46,14 +46,12 @@ window.addEventListener('beforeunload', function() {
 
 // -----------------------------------------------
 
+// This mimics what a fetch function would return after it contacted a server with an endpoint 
 function fakefetch_function(url, options) {
-
-  var headers = {"Content-Type": "application/json"};
-  var options = {method : 'GET', headers: headers,  mode: 'cors'};
-  
+	
   // The server should return arguments like 
   return {
-		Accept: "image/avif,image/webp,*/*",
+	  Accept: "image/avif,image/webp,*/*",
 		Accept_Encoding: "gzip, deflate, br",
 		Accept_Language: "en-US,en;q=0.5",
 		Connection: "keep-alive",
@@ -65,7 +63,7 @@ function fakefetch_function(url, options) {
 		Sec_Fetch_Site: "same-origin",
 		Sec_GPC: 1,
 		User_Agent: "Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0",
-    headers: headers
+    		headers: {server_assigned_val: 'something'}
 	};
 }
   
@@ -82,8 +80,11 @@ async function try_to_fix_cors_error0() {
 			return Reflect.apply(target, thisArg, args);
 		}
 	};
+
+	var headers = {"Content-Type": "application/json"};
+	var options = {method : 'GET', headers: headers,  mode: 'cors'};
 	
-	const proxy3 = new Proxy(request_header, handler3);
+	const proxy3 = new Proxy(fakefetch_function(url, options), handler3);
 	
 	console.log("proxy3: ", proxy3);
 
@@ -106,9 +107,8 @@ async function try_to_fix_cors_error_w_fetch() {
 			return Reflect.apply(target, thisArg, args);
 		}
 	};
-
-  
-  var url = `https://nominatim.openstreetmap.org/search?q=${document.getElementById('location_name').innerHTML}`;
+	
+	var url = `https://nominatim.openstreetmap.org/search?q=${document.getElementById('location_name').innerHTML}`;
 	var headers = {"Content-Type": "application/json"};
 	var options = {method : 'GET', headers: headers,  mode: 'cors'};
   
