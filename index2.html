@@ -81,6 +81,7 @@ async function try_to_fix_cors_error0() {
 		}
 	};
 
+	var url = `https://nominatim.openstreetmap.org/search?q=${document.getElementById('location_name').innerHTML}`;
 	var headers = {"Content-Type": "application/json"};
 	var options = {method : 'GET', headers: headers,  mode: 'cors'};
 	
