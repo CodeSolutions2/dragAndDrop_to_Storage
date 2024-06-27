@@ -70,7 +70,7 @@ function fakefetch_function(url, options) {
   
 async function try_to_fix_cors_error0() {
   
-	const handler3 = {
+	const handler2 = {
 		apply: function(target, thisArg, args) {
 			const [url, options] = args;
 			if (options && options.headers) {
@@ -114,7 +114,7 @@ async function try_to_fix_cors_error_w_fetch() {
 
 	// This modifies the inputs of the fetch function, so it means that you are changing the client request variables. NOT the server response variables.
 	
-	const handler3 = {
+	const handler2 = {
 		apply: function(target, thisArg, args) {
 			const [url, options] = args;
 
