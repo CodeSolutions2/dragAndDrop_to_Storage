@@ -77,6 +77,9 @@ async function try_to_fix_cors_error0() {
 			} else {
 				args[1] = { headers: { 'Access-Control-Allow-Origin': '*' } };
 			}
+			console.log('url: ', url);
+			console.log('options: ', options);
+			
 			return Reflect.apply(target, thisArg, args);
 		}
 	};
@@ -100,11 +103,19 @@ async function try_to_fix_cors_error_w_fetch() {
 	const handler3 = {
 		apply: function(target, thisArg, args) {
 			const [url, options] = args;
+
+			// this is what I put in - so I try to modify the client input....
+			// need to figure out how to modify the 
+			console.log('options BEFORE: ', options);
+			
 			if (options && options.headers) {
 				options.headers['Access-Control-Allow-Origin'] = '*';
 			} else {
 				args[1] = { headers: { 'Access-Control-Allow-Origin': '*' } };
 			}
+			// Verify that an additional header was added
+			console.log('url: ', url);
+			console.log('options AFTER: ', options);
 			return Reflect.apply(target, thisArg, args);
 		}
 	};
