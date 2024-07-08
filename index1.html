@@ -20,7 +20,7 @@
 
 
     function processEvent(event) {
-        var count = this.getAttribute("value");
+        var count = Number(this.getAttribute("value"));
         console.log("count: ", count);
         
         document.getElementById("btn").value = count + 1;
