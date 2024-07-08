@@ -4,17 +4,22 @@
     </head>
     
     <body>
+        <!-- Increment counter-->
         <!-- Way 0-->
         <!-- <button id="btn" type="button" onclick="count_up()"><div id="show_count"></div></button> -->
 
         <!-- Way 1-->
         <button id="btn" type="button"><div id="show_count"></div></button>
+
+
+        <!-- Clockwise rotating number grid-->
         
         
     </body>
 
   <style>
-    button#btn { width:96px; height:48px; font-size:24px; display: block; }
+     /* button#btn { width:96px; height:48px; font-size:24px; display: block; } */ 
+      button { width:96px; height:48px; font-size:24px; display: block; } 
   </style>
 
   <script>
@@ -27,16 +32,39 @@
 //         document.getElementById("show_count").innerHTML = count + 1;
 // }
 
-    // Way 1
-    document.getElementById("btn").addEventListener("click", processEvent, false);
-    document.getElementById("show_count").innerHTML = 0;
-    function processEvent(event) {
+// Way 1
+document.getElementById("btn").addEventListener("click", processEvent, false);
+document.getElementById("show_count").innerHTML = 0;
+function processEvent(event) {
         var count = Number(document.getElementById("show_count").innerHTML);
         console.log("count: ", count);
         document.getElementById("show_count").innerHTML = count + 1;
         // document.getElementById("btn").removeEventListener("click", processEvent);
-    }
+}
 
+
+window.onload = async (event) => { generate_button_grid(); };
+      
+function generate_button_grid() {
+
+    var grid_height = 3;
+    var grid_width = 3;
+
+    var count = 1;
+    for (let i=0; i < grid_height; i++) {
+        for (let j=0; j < grid_width; j++) {
+
+            // Create a dynamic var variable with name buttonElement1 to 9
+            this['buttonElement'+count] = document.createElement("button");
+            this['buttonElement'+count].id = "btn"+count;
+            
+            count += 1;
+
+            document.body.appendChild(this['buttonElement'+count]);
+        }
+        document.body.appendChild(document.createElement("br"));
+    }
+}
     
     
   </script>
