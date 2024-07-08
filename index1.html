@@ -4,7 +4,9 @@
     </head>
     
     <body>
-    	<button id="btn" type="button"><div id="show_count"></div></button>
+    	<!-- <button id="btn" type="button"><div id="show_count"></div></button> -->
+        <!-- OR -->
+        <button id="btn" type="button" onclick="count_up()"><div id="show_count"></div></button>
     </body>
 
   <style>
@@ -13,10 +15,18 @@
 
   <script>
     document.getElementById("show_count").innerHTML = 0;
-    document.getElementById("btn").addEventListener("click", processEvent, false);
+      
+    // document.getElementById("btn").addEventListener("click", processEvent, false);
 
-    function processEvent(event) {
-        var count = Number(this.getAttribute("value"));
+    // function processEvent(event) {
+    //    var count = Number(this.getAttribute("value"));
+    //     console.log("count: ", count);
+    //     document.getElementById("show_count").innerHTML = count + 1;
+    //     document.getElementById("btn").removeEventListener("click", processEvent);
+    // }
+
+    function count_up() {
+        var count = Number(document.getElementById("show_count").innerHTML);
         console.log("count: ", count);
         document.getElementById("show_count").innerHTML = count + 1;
     }
