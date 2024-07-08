@@ -67,7 +67,7 @@ function rotate_clockwise() {
     val_to_move = current_list_of_locs[grid_width*2];
     Vals_toKeep = (x) => x != val_to_move;
     current_list_of_locs = current_list_of_locs.filter(Vals_toKeep);
-    first_part = current_list_of_locs.slice(0,2);
+    first_part = current_list_of_locs.slice(0,3);
     first_part1 = first_part.concat([val_to_move]);
     second_part = current_list_of_locs.slice(3,tot_len);
     current_list_of_locs = first_part1.concat(second_part);
@@ -77,7 +77,7 @@ function rotate_clockwise() {
     val_to_move = current_list_of_locs[grid_width*2 - 1];
     Vals_toKeep = (x) => x != val_to_move;
     current_list_of_locs = current_list_of_locs.filter(Vals_toKeep);
-    first_part = current_list_of_locs.slice(0,3);
+    first_part = current_list_of_locs.slice(0,4);
     first_part1 = first_part.concat([val_to_move]);
     second_part = current_list_of_locs.slice(4,tot_len);
     current_list_of_locs = first_part1.concat(second_part);
