@@ -13,15 +13,17 @@
 
   <script>
 
-    var buttonElement = document.getElementById("btn")
+    var buttonElement = document.getElementById("btn");
     buttonElement.value = 0;
 
     buttonElement.addEventListener("click", processEvent, false);
 
 
     function processEvent(event) {
-      var count = this.getAttribute("value");
-      buttonElement.value = count + 1;
+        var count = this.getAttribute("value");
+        console.log("count: ", count);
+        
+        document.getElementById("btn").value = count + 1;
     }
     
   </script>
