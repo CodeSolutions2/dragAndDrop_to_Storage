@@ -13,7 +13,7 @@
 
 
         <!-- Clockwise rotating number grid-->
-        
+        <div id="btns" class="buttonContainer"></div>
         
     </body>
 
@@ -31,9 +31,9 @@
                 height: 48px;
                 font-size: 24px;
             }
-        </style>
+</style>
 
-  <script>
+<script>
     
 // Way 0
 // document.getElementById("show_count").innerHTML = 0;
@@ -61,9 +61,9 @@ function generate_button_grid() {
     var grid_height = 3;
     var grid_width = 3;
 
-    var btns_div = document.createElement("div");
-    btns_div.id = 'btns';
-    btns_div.class = 'buttonContainer';
+    // var btns_div = document.createElement("div");
+    // btns_div.id = 'btns';
+    // btns_div.class = 'buttonContainer';
     
     var count = 1;
     for (let i=0; i < grid_height; i++) {
