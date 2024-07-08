@@ -33,6 +33,11 @@
 
 <script>
 
+
+const NonEmptyVals_toKeep = (x) => x.length != 0;
+var org_current_list_of_locs = [];
+var current_list_of_locs = [];
+                
 function rotate_clockwise() {
 
     var grid_height = 3;
@@ -41,13 +46,13 @@ function rotate_clockwise() {
     // ---------------------------
     
     // do a series of 4 array manipulations - then plug array into buttons
-    var org_current_list_of_locs = document.getElementById('btns').innerText;
+    org_current_list_of_locs = document.getElementById('btns').innerText;
     console.log('org_current_list_of_locs: ', org_current_list_of_locs);
 
     org_current_list_of_locs = org_current_list_of_locs.split(" ").map(val => { return Number(val); });
     console.log('org_current_list_of_locs: ', org_current_list_of_locs);
 
-    const NonEmptyVals_toKeep = (x) => x.length != 0;
+    
     org_current_list_of_locs = org_current_list_of_locs.filter(NonEmptyVals_toKeep);
     
     // 1, 2, 3, 4, 5, 6, 7, 8, 9
@@ -63,7 +68,7 @@ function rotate_clockwise() {
     // Remove this value from the list
     var val_to_move = org_current_list_of_locs[grid_width];
     var Vals_toKeep = (x) => x != val_to_move;
-    var current_list_of_locs = org_current_list_of_locs.filter(Vals_toKeep);
+    current_list_of_locs = org_current_list_of_locs.filter(Vals_toKeep);
     current_list_of_locs = [val_to_move].concat(current_list_of_locs);
     console.log('0: ', current_list_of_locs);
      
@@ -96,7 +101,8 @@ function rotate_clockwise() {
 
     // Plug array into btns
     for (let i=0; i<current_list_of_locs.length; i++) {
-        console.log('btn num', `btn${org_current_list_of_locs.at(i)}`);
+        console.log('org btn:' , `btn${org_current_list_of_locs.at(i)}`);
+        console.log('current btn:' , `btn${current_list_of_locs.at(i)}`);
         document.getElementById(`btn${org_current_list_of_locs.at(i)}`).innerText = current_list_of_locs.at(i);
     }
     
