@@ -38,11 +38,31 @@ function rotate_clockwise() {
   // Pass the current value to the next element
   var num_of_btns = 9;
   for (let i=1; i<num_of_btns; i++) {
-    if (i == 1) {
-      document.getElementById('btn'+i).innerText = document.getElementById('btn'+num_of_btns).innerText;
-    } else {
-      document.getElementById('btn'+i).innerText = document.getElementById('btn'+(i+1)).innerText;
-    }
+    switch (i) {
+        case 1:
+            document.getElementById('btn'+i).innerText = document.getElementById('btn2').innerText;
+            break;
+        case 2:
+            document.getElementById('btn'+i).innerText = document.getElementById('btn3').innerText;
+            break;
+        case 3:
+            document.getElementById('btn'+i).innerText = document.getElementById('btn6').innerText;
+            break;
+        case 4:
+            document.getElementById('btn'+i).innerText = document.getElementById('btn1').innerText;
+            break;
+        case 6:
+            document.getElementById('btn'+i).innerText = document.getElementById('btn9').innerText;
+            break;
+        case 7:
+            document.getElementById('btn'+i).innerText = document.getElementById('btn4').innerText;
+            break;
+        case 8:
+            document.getElementById('btn'+i).innerText = document.getElementById('btn7').innerText;
+            break;
+        case 9:
+            document.getElementById('btn'+i).innerText = document.getElementById('btn8').innerText;
+            break;
   }
    
 }
