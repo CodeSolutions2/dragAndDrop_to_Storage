@@ -37,29 +37,33 @@ function rotate_clockwise() {
 
     var grid_height = 3;
     var grid_width = 3;
-    
-    // do a series of 4 array manipulations - then plug array into buttons
-
-    var current_list_of_locs = document.getElementById('btns').innerText;
-    console.log('current_list_of_locs: ', current_list_of_locs);
-
-    current_list_of_locs = current_list_of_locs.split(" ").map(val => { return Number(val); });
-    console.log('current_list_of_locs: ', current_list_of_locs);
-
-    const NonEmptyVals_toKeep = (x) => x.length != 0;
-    current_list_of_locs = current_list_of_locs.filter(NonEmptyVals_toKeep);
 
     // ---------------------------
     
-    var tot_len = current_list_of_locs.length;
+    // do a series of 4 array manipulations - then plug array into buttons
+    var org_current_list_of_locs = document.getElementById('btns').innerText;
+    console.log('org_current_list_of_locs: ', org_current_list_of_locs);
+
+    org_current_list_of_locs = org_current_list_of_locs.split(" ").map(val => { return Number(val); });
+    console.log('org_current_list_of_locs: ', org_current_list_of_locs);
+
+    const NonEmptyVals_toKeep = (x) => x.length != 0;
+    org_current_list_of_locs = org_current_list_of_locs.filter(NonEmptyVals_toKeep);
+    
+    // 1, 2, 3, 4, 5, 6, 7, 8, 9
+
+    // ---------------------------
+    
+    var tot_len = org_current_list_of_locs.length;
     console.log('tot_len: ', tot_len);
-      // 1, 2, 3, 4, 5, 6, 7, 8, 9
+
+    // ---------------------------
 
     // 0. move [3] to top of array
     // Remove this value from the list
-    var val_to_move = current_list_of_locs[grid_width];
+    var val_to_move = org_current_list_of_locs[grid_width];
     var Vals_toKeep = (x) => x != val_to_move;
-    current_list_of_locs = current_list_of_locs.filter(Vals_toKeep);
+    var current_list_of_locs = org_current_list_of_locs.filter(Vals_toKeep);
     current_list_of_locs = [val_to_move].concat(current_list_of_locs);
     console.log('0: ', current_list_of_locs);
      
@@ -91,9 +95,9 @@ function rotate_clockwise() {
     console.log('3: ', current_list_of_locs);
 
     // Plug array into btns
-    for (let i=1; i<current_list_of_locs.length; i++) {
-        console.log('btn num', `btn${i}`);
-        document.getElementById(`btn${i}`).innerText = current_list_of_locs.at(i);
+    for (let i=1; i<current_list_of_locs.length+1; i++) {
+        console.log('btn num', `btn${org_current_list_of_locs.at(i)}`);
+        document.getElementById(`btn${org_current_list_of_locs.at(i)}`).innerText = current_list_of_locs.at(i);
     }
     
 }
