@@ -109,7 +109,7 @@ function rotate_clockwise() {
     for (let i=1; i<current_list_of_locs.length+1; i++) {
     //     console.log('org btn:' , `btn${org_current_list_of_locs.at(i)}`);
      //    console.log('current btn:' , `btn${current_list_of_locs.at(i)}`);
-        document.getElementById(`btn${i}`).innerText = current_list_of_locs.at(i);
+        document.getElementById(`btn${i}`).innerText = current_list_of_locs.at(i-1);
     }
     
 }
