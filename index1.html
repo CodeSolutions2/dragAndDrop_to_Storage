@@ -8,8 +8,8 @@
         <!-- Way 0-->
         <!-- <button id="btn" type="button" onclick="count_up()"><div id="show_count"></div></button> -->
 
-        <!-- Way 1-->
-        <button id="btn" type="button"><div id="show_count"></div></button>
+        <!-- Way 1 -->
+        <!-- <button id="btn" type="button"><div id="show_count"></div></button> -->
 
 
         <!-- Clockwise rotating number grid-->
@@ -50,20 +50,29 @@ function generate_button_grid() {
     var grid_height = 3;
     var grid_width = 3;
 
+    var btns_div = document.createElement("div");
+    btns_div.id = 'btns';
+    btns_div.class = 'buttonContainer';
+    
     var count = 1;
     for (let i=0; i < grid_height; i++) {
         for (let j=0; j < grid_width; j++) {
 
             // Create a dynamic var variable with name buttonElement1 to 9
             let btn = document.createElement("button");
-            btn.id = "btn"+count;
+            btn.id = `btn${count}`;
+            btn.class = "buttonClass";
+            btn.innerText = count;
 
             count += 1;
 
-            document.body.appendChild(btn);
+            // document.body.appendChild(btn);
+            document.getElementById("btns").appendChild(btn);
         }
-        document.body.appendChild(document.createElement("br"));
+        document.getElementById("btns").appendChild(document.createElement("br"));
     }
+    document.body.appendChild(btns_div);
+    
 }
     
     
