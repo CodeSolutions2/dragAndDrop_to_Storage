@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="css/button.css" type="text/css">
+    </head>
+    
+    <body>
+    	
+    </body>
+
+  <style>
+    button#btn { width:96px, height:48px, font-size:24px }
+  </style>
+
+  <script>
+
+    var buttonElement = document.createElement("button");
+    buttonElement.id = 'btn';
+    buttonElement.value = 0;
+
+    buttonElement.addEventListener("click", processEvent, false);
+
+
+    function processEvent(event) {
+      var count = this.getAttribute("value");
+      buttonElement.value = count + 1;
+    }
+    
+  </script>
+  
+</html>
