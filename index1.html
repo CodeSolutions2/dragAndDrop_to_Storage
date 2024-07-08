@@ -57,10 +57,11 @@ function generate_button_grid() {
             // Create a dynamic var variable with name buttonElement1 to 9
             this['buttonElement'+count] = document.createElement("button");
             this['buttonElement'+count].id = "btn"+count;
-            
+
+            console.log("dynamic variable":, this['buttonElement'+count] );
             count += 1;
 
-            document.body.appendChild(this['buttonElement'+count]);
+            //document.body.appendChild(this['buttonElement'+count]);
         }
         document.body.appendChild(document.createElement("br"));
     }
