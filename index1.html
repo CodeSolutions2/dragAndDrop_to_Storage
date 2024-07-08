@@ -12,36 +12,28 @@
         <!-- <button id="btn" type="button"><div id="show_count"></div></button> -->
 
 
-        <!-- Clockwise rotating number grid-->
-        <div id="btns" class="buttonContainer"></div>
+        <button id="btn" onclick="( () => this.innerHTML++ )()" style="width: 96px; height: 48px; font-size: 24px;">0</button>
+
+
+        <!-- Clockwise rotating number grid -->
+        <!-- <div id="btns" class="buttonContainer"></div> -->
         
     </body>
 
 
-<style>
-     /* button#btn { width:96px; height:48px; font-size:24px; display: block; } */ 
-      button { width:96px; height:48px; font-size:24px; display: block; } 
-    
-            .buttonContainer {
-                width: 75%;
-            }
 
-            .buttonContainer > .buttonClass {
-                width: 30%;
-                height: 48px;
-                font-size: 24px;
-            }
-</style>
+<style>button#btn { width:96px; height:48px; font-size:24px; display: block; }</style>
+<!-- <style> -->
+<!--       button { width:96px; height:48px; font-size:24px; display: block; }  -->
+<!--             .buttonContainer { width: 75%; } -->
+<!--             .buttonContainer > .buttonClass { width: 30%; height: 48px; font-size: 24px; } -->
+<!-- </style> -->
 
 <script>
     
 // Way 0
-// document.getElementById("show_count").innerHTML = 0;
-// function count_up() {
-//         var count = Number(document.getElementById("show_count").innerHTML);
-//         console.log("count: ", count);
-//         document.getElementById("show_count").innerHTML = count + 1;
-// }
+document.getElementById("show_count").innerHTML = 0;
+function count_up() { document.getElementById("btn").innerText = Number(document.getElementById("btn").innerText) + 1; }
 
 // Way 1
 // document.getElementById("btn").addEventListener("click", processEvent, false);
@@ -54,8 +46,9 @@
 // }
 
 
-window.onload = async (event) => { generate_button_grid(); };
-      
+    
+
+// window.onload = async (event) => { generate_button_grid(); };
 function generate_button_grid() {
 
     var grid_height = 3;
