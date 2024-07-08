@@ -50,7 +50,7 @@ function rotate_clockwise() {
     // 0. move [3] to top of array
     // Remove this value from the list
     let val_to_move = current_list_of_locs[grid_width];
-    const Vals_toKeep = (x) => x != val_to_move;
+    let Vals_toKeep = (x) => x != val_to_move;
     current_list_of_locs = current_list_of_locs.split("").map(val => { return Number(val); });
     console.log('current_list_of_locs: ', current_list_of_locs);
     
