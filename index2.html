@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Page Title</title>
+        
+        <style>
+            .buttonContainer {
+                width: 75%;
+            }
+
+            .buttonContainer > .buttonClass {
+                width: 30%;
+                height: 48px;
+                font-size: 24px;
+            }
+        </style>
+    </head>
+    
+    <body>
+        <div id="btns" class="buttonContainer">
+            <button id="btn1" class="buttonClass">1</button>
+            <button id="btn2" class="buttonClass">2</button>
+            <button id="btn3" class="buttonClass">3</button>
+            <button id="btn4" class="buttonClass">4</button>
+            <button id="btn5" class="buttonClass" onclick="rotate_clockwise()>5</button>
+            <button id="btn6" class="buttonClass">6</button>
+            <button id="btn7" class="buttonClass">7</button>
+            <button id="btn8" class="buttonClass">8</button>
+            <button id="btn9" class="buttonClass">9</button>
+        </div>
+    </body>
+
+
+<script>
+
+function rotate_clockwise() {
+
+  // Pass the current value to the next element
+  var num_of_btns = 9;
+  for (let i=1; i<num_of_btns; i++) {
+    if (i == 1) {
+      document.getElementById('btn'+i).innerText = document.getElementById('btn'+num_of_btns).innerText;
+    } else {
+      document.getElementById('btn'+i).innerText = document.getElementById('btn'+(i+1)).innerText;
+    }
+  }
+   
+}
+  
+</script>
+  
+  
+</html>
