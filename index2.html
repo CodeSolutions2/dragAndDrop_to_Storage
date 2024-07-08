@@ -47,10 +47,10 @@ function rotate_clockwise() {
     
     // do a series of 4 array manipulations - then plug array into buttons
     org_current_list_of_locs = document.getElementById('btns').innerText;
-    console.log('org_current_list_of_locs: ', org_current_list_of_locs);
+    // console.log('org_current_list_of_locs: ', org_current_list_of_locs);
 
     org_current_list_of_locs = org_current_list_of_locs.split(" ").map(val => { return Number(val); });
-    console.log('org_current_list_of_locs: ', org_current_list_of_locs);
+    // console.log('org_current_list_of_locs: ', org_current_list_of_locs);
 
     
     org_current_list_of_locs = org_current_list_of_locs.filter(NonEmptyVals_toKeep);
@@ -60,7 +60,7 @@ function rotate_clockwise() {
     // ---------------------------
     
     var tot_len = org_current_list_of_locs.length;
-    console.log('tot_len: ', tot_len);
+    // console.log('tot_len: ', tot_len);
 
     // ---------------------------
 
@@ -70,7 +70,7 @@ function rotate_clockwise() {
     var Vals_toKeep = (x) => x != val_to_move;
     current_list_of_locs = org_current_list_of_locs.filter(Vals_toKeep);
     current_list_of_locs = [val_to_move].concat(current_list_of_locs);
-    console.log('0: ', current_list_of_locs);
+    // console.log('0: ', current_list_of_locs);
      
     // 1.  move [6] to [3] place of array
     val_to_move = current_list_of_locs[grid_width*2];
@@ -80,7 +80,7 @@ function rotate_clockwise() {
     first_part1 = first_part.concat([val_to_move]);
     second_part = current_list_of_locs.slice(3,tot_len);
     current_list_of_locs = first_part1.concat(second_part);
-    console.log('1: ', current_list_of_locs);
+    // console.log('1: ', current_list_of_locs);
 
     // 2.  move [5] back to [4] place of array
     val_to_move = current_list_of_locs[grid_width*2 - 1];
@@ -90,25 +90,16 @@ function rotate_clockwise() {
     first_part1 = first_part.concat([val_to_move]);
     second_part = current_list_of_locs.slice(4,tot_len);
     current_list_of_locs = first_part1.concat(second_part);
-    console.log('2: ', current_list_of_locs);
+    // console.log('2: ', current_list_of_locs);
 
     // 3. move [6] to the end
     val_to_move = current_list_of_locs[grid_width*2];
     Vals_toKeep = (x) => x != val_to_move;
     current_list_of_locs = current_list_of_locs.filter(Vals_toKeep);
     current_list_of_locs = current_list_of_locs.concat([val_to_move]);
-    console.log('3: ', current_list_of_locs);
-
-    // Plug array into btns
-    // for (let i=0; i<current_list_of_locs.length; i++) {
-    //     console.log('org btn:' , `btn${org_current_list_of_locs.at(i)}`);
-     //    console.log('current btn:' , `btn${current_list_of_locs.at(i)}`);
-    //     document.getElementById(`btn${org_current_list_of_locs.at(i)}`).innerText = current_list_of_locs.at(i);
-    // }
+    // console.log('3: ', current_list_of_locs);
 
     for (let i=1; i<current_list_of_locs.length+1; i++) {
-    //     console.log('org btn:' , `btn${org_current_list_of_locs.at(i)}`);
-     //    console.log('current btn:' , `btn${current_list_of_locs.at(i)}`);
         document.getElementById(`btn${i}`).innerText = current_list_of_locs.at(i-1);
     }
     
