@@ -4,7 +4,7 @@
     </head>
     
     <body>
-    	
+    	<button id="btn" type="button">0</button>
     </body>
 
   <style>
@@ -13,8 +13,7 @@
 
   <script>
 
-    var buttonElement = document.createElement("button");
-    buttonElement.id = 'btn';
+    var buttonElement = document.getElementById("btn")
     buttonElement.value = 0;
 
     buttonElement.addEventListener("click", processEvent, false);
