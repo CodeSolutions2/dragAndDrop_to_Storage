@@ -4,9 +4,13 @@
     </head>
     
     <body>
-    	<!-- <button id="btn" type="button"><div id="show_count"></div></button> -->
-        <!-- OR -->
-        <button id="btn" type="button" onclick="count_up()"><div id="show_count"></div></button>
+        <!-- Way 0-->
+        <!-- <button id="btn" type="button" onclick="count_up()"><div id="show_count"></div></button> -->
+
+        <!-- Way 1-->
+        <button id="btn" type="button"><div id="show_count"></div></button>
+        
+        
     </body>
 
   <style>
@@ -14,22 +18,25 @@
   </style>
 
   <script>
+    
+// Way 0
+// document.getElementById("show_count").innerHTML = 0;
+// function count_up() {
+//         var count = Number(document.getElementById("show_count").innerHTML);
+//         console.log("count: ", count);
+//         document.getElementById("show_count").innerHTML = count + 1;
+// }
+
+    // Way 1
+    document.getElementById("btn").addEventListener("click", processEvent, false);
     document.getElementById("show_count").innerHTML = 0;
-      
-    // document.getElementById("btn").addEventListener("click", processEvent, false);
-
-    // function processEvent(event) {
-    //    var count = Number(this.getAttribute("value"));
-    //     console.log("count: ", count);
-    //     document.getElementById("show_count").innerHTML = count + 1;
-    //     document.getElementById("btn").removeEventListener("click", processEvent);
-    // }
-
-    function count_up() {
-        var count = Number(document.getElementById("show_count").innerHTML);
-        console.log("count: ", count);
-        document.getElementById("show_count").innerHTML = count + 1;
+    function processEvent(event) {
+         console.log("count: ", count);
+        document.getElementById("show_count").innerHTML = Number(document.getElementById("show_count").innerHTML) + 1;
+        // document.getElementById("btn").removeEventListener("click", processEvent);
     }
+
+    
     
   </script>
   
