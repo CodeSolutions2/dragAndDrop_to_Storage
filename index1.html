@@ -5,7 +5,7 @@
     
     <body>
         <!-- Increment counter-->
-        <button id="btn" type="button"><div id="show_count"></div></button>
+        <button id="btn" type="button" onclick="count_up()">0</button>
 
 
         <!-- <button id="btn" onclick="( () => this.innerHTML++ )()" style="width: 96px; height: 48px; font-size: 24px;">0</button> -->
@@ -28,7 +28,6 @@
 <script>
     
 // Way 0
-document.getElementById("show_count").innerHTML = 0;
 function count_up() { document.getElementById("btn").innerText =+ Number(document.getElementById("btn").innerText); }
 
 // Way 1
