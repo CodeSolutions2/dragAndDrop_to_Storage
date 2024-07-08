@@ -95,7 +95,7 @@ function rotate_clockwise() {
     console.log('3: ', current_list_of_locs);
 
     // Plug array into btns
-    for (let i=1; i<current_list_of_locs.length+1; i++) {
+    for (let i=0; i<current_list_of_locs.length; i++) {
         console.log('btn num', `btn${org_current_list_of_locs.at(i)}`);
         document.getElementById(`btn${org_current_list_of_locs.at(i)}`).innerText = current_list_of_locs.at(i);
     }
