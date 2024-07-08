@@ -41,13 +41,19 @@ function rotate_clockwise() {
     // do a series of 4 array manipulations - then plug array into buttons
 
     var current_list_of_locs = document.getElementById('btns').innerText;
+    console.log('current_list_of_locs: ', current_list_of_locs);
+    
     var tot_len = current_list_of_locs.length;
+    console.log('tot_len: ', tot_len);
       // 1, 2, 3, 4, 5, 6, 7, 8, 9
 
     // 0. move [3] to top of array
     // Remove this value from the list
     let val_to_move = current_list_of_locs[grid_width];
     const Vals_toKeep = (x) => x != val_to_move;
+    current_list_of_locs = current_list_of_locs.split("").map(val => { return Number(val); });
+    console.log('current_list_of_locs: ', current_list_of_locs);
+    
     current_list_of_locs = current_list_of_locs.filter(Vals_toKeep);
     current_list_of_locs = [val_to_move].concat(current_list_of_locs);
     console.log('0: ', current_list_of_locs);
