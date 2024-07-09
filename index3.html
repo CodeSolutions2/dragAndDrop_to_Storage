@@ -165,6 +165,9 @@ async function bitwise_AND(bin_a_str, bin_b_str) {
 async function convert_binary_to_decimal(binary_str) {
     var bin_arr = binary_str.split("").map((val, ind) => { return Number(val); });
     console.log("bin_arr: ", bin_arr);
+
+    // Reverse the array
+    bin_arr = bin_arr.toReversed();
     
     var decimal_num = 0;
     for (let i=0; i<bin_arr.length; i++) {
