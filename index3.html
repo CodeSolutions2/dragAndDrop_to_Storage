@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head></head>
+<body>
+
+</body>
+
+
+  
+<script>
+
+window.onload = async (event) => { await run_class(); };
+  
+class Rectangle {
+    constructor(w, h) {
+        this.w = w;
+        this.h = h;
+    }
+}
+
+// Way 0: add a function to the class definition
+Rectangle.prototype.area = function(){ return this.w * this.h; }
+
+
+  
+async function run_class() {
+
+    // Create an instance of the class
+    const classObj = new Rectangle(3, 4);
+  
+    // Way 1: add a function to the class definition
+    // classObj.prototype.area = function(){ return this.w * this.h; }
+
+  // call the class
+  const output = classObj.area();
+  console.log('output: ', output);
+  
+
+}
+    
+</script>
+
+  
+</html>
