@@ -49,16 +49,18 @@ async function run_it() {
     }
     console.log('decimal_arr: ', decimal_arr);
     
-    // ---------------------------------
-    
-    var max_num = decimal_arr.sort().pop();
-    
-    var max_loop_num = 0;
-    while (max_num > k-1 && max_loop_num < decimal_arr.length) {
-        max_num = decimal_arr.pop();
-        max_loop_num += 1;
-    }
+    const is_less_than_k = (num) => num < k;
+    const max_num = Math.max(decimal_arr.filter(is_less_than_k));
     console.log('max_num: ', max_num);
+
+    // var max_num = decimal_arr.sort().pop();
+    // var max_loop_num = 0;
+    // while (max_num > k-1 && max_loop_num < decimal_arr.length) {
+        // keep taking a value from the end of the sorted array until it is satisfied
+    //     max_num = decimal_arr.pop();
+    //     max_loop_num += 1;
+    // }
+    
     return max_num;
 }
 
