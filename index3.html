@@ -14,10 +14,10 @@ window.onload = async (event) => { await run_it(); };
 
 async function run_it() {
     
-    var n = 9;
+    var n = 5;
     var k = 2;
     var S = Array.from({length: n}, (_,i) => i+1);
-    // console.log('S: ', S);
+    console.log('S: ', S);
 
     // Create a
     var lowest_val = S.sort().shift();
@@ -33,8 +33,8 @@ async function run_it() {
         let temp_b = Array.from({length: n-i}, (_,index) => index+(i+1));
         b = b.concat(temp_b);
     }
-    // console.log('a: ', a);
-    // console.log('b: ', b);
+    console.log('a: ', a);
+    console.log('b: ', b);
 
     // Find the max decimal number after bitwise AND operation on binary values
     var bin_a_str;
@@ -87,7 +87,7 @@ async function run_it() {
         bin_str = zeros.concat(temp).join("");
         binary_str_same_len.push(bin_str);
     }
-    // console.log('binary_str_same_len: ', binary_str_same_len);
+    console.log('binary_str_same_len: ', binary_str_same_len);
         
     // --------------------------------------------------
         
@@ -97,7 +97,7 @@ async function run_it() {
         decimal_num = await convert_binary_to_decimal(binary_str_same_len.at(i));
         decimal_arr.push(decimal_num);
     }
-    // console.log('decimal_arr: ', decimal_arr);
+    console.log('decimal_arr: ', decimal_arr);
     decimal_arr = decimal_arr.sort();
 
     // --------------------------------------------------
