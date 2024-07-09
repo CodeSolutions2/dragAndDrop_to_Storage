@@ -84,7 +84,8 @@ async function run_it() {
     for (let i=0; i<binary_str.length; i++) {
         let zeros = Array.from({length: max_val-binary_str.at(i).length}, (_,index) => 0);
         let temp = binary_str.at(i).split("").map((val, ind) => { return Number(val); });
-        binary_str_same_len.push( zeros.concat(temp).join(""); );
+        bin_str = zeros.concat(temp).join("");
+        binary_str_same_len.push(bin_str);
     }
     console.log('binary_str_same_len: ', binary_str_same_len);
         
