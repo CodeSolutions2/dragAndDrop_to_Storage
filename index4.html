@@ -13,60 +13,41 @@ window.onload = async (event) => { await run_it(); };
 
 
 async function run_it() {
-    
     var n = 9;
     var k = 2;
+    var max_num = await getMaxLessThanK2(n, k);
+    console.log('max_num:', max_num);
+}
 
-    // ---------------------------------
-    
-    // var S = Array.from({length: n}, (_,i) => i+1);
-    // console.log('S: ', S);
-    
-    // var a = [];
-    // var b = [];
-    // for (let i=S.sort().shift(); i < n; i++) {
-        // Create a
-    //     let temp = Array.from({length: n-i}, (_,index) => i);
-    //     a = a.concat(temp);
-
-        // Create b
-    //     let temp_b = Array.from({length: n-i}, (_,index) => index+(i+1));
-    //     b = b.concat(temp_b);
-    // }
-    // console.log('a: ', a);
-    // console.log('b: ', b);
-
-    // var decimal_arr = a.map((val, ind) => { return parseInt(val.toString(2), 2) & parseInt(b.at(ind).toString(2), 2); });
-
-    // OR
+async function getMaxLessThanK(n, k) {
     
     var decimal_arr = [];
     for (let i=1; i < n; i++) {
         let a = Array.from({length: n-i}, (_,index) => i);
         let b = Array.from({length: n-i}, (_,index) => index+(i+1));
-        let out = a.map((val, ind) => { return parseInt(val.toString(2), 2) & parseInt(b.at(ind).toString(2), 2); }).sort().pop();
-        decimal_arr.push(out);
+        let out = a.map((val, ind) => { return val & b.at(ind); }).sort().pop();
+        if (out < k) {
+            decimal_arr.push(out);
+        }
     }
-    console.log('decimal_arr: ', decimal_arr);
-    
-    const is_less_than_k = (num) => num < k;
-    var out1 = decimal_arr.filter(is_less_than_k);
-    console.log('out1: ', out1);
-    
-    const max_num = out1.sort().pop();
-    console.log('max_num: ', max_num);
-
-    // var max_num = decimal_arr.sort().pop();
-    // var max_loop_num = 0;
-    // while (max_num > k-1 && max_loop_num < decimal_arr.length) {
-        // keep taking a value from the end of the sorted array until it is satisfied
-    //     max_num = decimal_arr.pop();
-    //     max_loop_num += 1;
-    // }
-    
-    return max_num;
+    return decimal_arr.sort().pop();
 }
 
+async function getMaxLessThanK2(n, k) {
+    
+    var decimal_arr = [];
+    for (let i=1; i < n; i++) {
+        for (let j=0; j>(n-i);j++) {
+            let out = i & (i+1)+j;
+            console.log('out: ', out)
+            
+            if (out < k) {
+                decimal_arr.push(out);
+            }
+        }
+    }
+    return decimal_arr.sort().pop();
+}
     
 </script>
   
