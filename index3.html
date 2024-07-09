@@ -39,6 +39,7 @@ async function run_it() {
     // Find the max decimal number after bitwise AND operation on binary values
     var bin_a_str;
     var bin_b_str;
+    var bin_str;
     var binary_str = [];
     
     for (let i=0; i<a.length; i++) {
@@ -65,8 +66,9 @@ async function run_it() {
         }
         // console.log('bin_a_str: ', bin_a_str);
         // console.log('bin_b_str: ', bin_b_str);
-        
-        binary_str.push(await bitwise_AND(bin_a_str, bin_b_str);)
+
+        bin_str = await bitwise_AND(bin_a_str, bin_b_str);
+        binary_str.push(bin_str);
         console.log('binary_str: ', binary_str);
     }
 
