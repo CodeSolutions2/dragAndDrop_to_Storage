@@ -44,6 +44,9 @@ async function run_it() {
     var decimal_arr = [];
     // for (let i=0; i<a.length; i++) {
     for (let i=0; i<2; i++) {
+
+        console.log('a.at(i): ', a.at(i));
+        
         bin_a_str = await convert_decimal_to_binary(a.at(i));
         console.log('bin_a_str: ', bin_a_str);
         
@@ -77,13 +80,17 @@ async function convert_decimal_to_binary(decimal_num) {
 
     // convert base-10 (decimal) to base-2 (binary)
     var binary_number = [];
-    while (Math.floor(decimal_num/2) > 0) {
+    decimal_num2 = Math.floor(decimal_num/2);
+    
+    while (decimal_num2 > 0) {
 
         if (decimal_num % 2 != 0) {
             binary_number.push(1);
         } else {
             binary_number.push(0);
         }
+        decimal_num = decimal_num2;
+        decimal_num2 = Math.floor(decimal_num/2);
     }
     // concatenate the remainder bits from most to least significant (ie: (71)_10 = (1000111)_2 )
     return binary_number.join('');
