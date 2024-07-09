@@ -43,15 +43,15 @@ async function run_it() {
     var decimal_num;
     var decimal_arr = [];
     // for (let i=0; i<a.length; i++) {
-    for (let i=0; i<2; i++) {
+    for (let i=0; i<1; i++) {
 
         console.log('a.at(i): ', a.at(i));
-        bin_a_str = await convert_decimal_to_binary1(a.at(i));
+        bin_a_str = await convert_decimal_to_binary(a.at(i));
         console.log('bin_a_str: ', bin_a_str);
         console.log('bin_a_str.length: ', bin_a_str.length);
         
         console.log('b.at(i): ', b.at(i));
-        bin_b_str = await convert_decimal_to_binary1(b.at(i));
+        bin_b_str = await convert_decimal_to_binary(b.at(i));
         console.log('bin_b_str: ', bin_b_str);
         console.log('bin_b_str.length: ', bin_b_str.length);
         
@@ -92,35 +92,8 @@ async function run_it() {
     return max_num;
 }
 
+
 async function convert_decimal_to_binary(decimal_num) {
-
-    // convert base-10 (decimal) to base-2 (binary)
-    var binary_number = [];
-    var decimal_num2 = Math.floor(decimal_num/2);
-    console.log('decimal_num2: ', decimal_num2);
-
-    
-    while (decimal_num2 >= 0) {
-        if (decimal_num % 2 != 0) {
-            binary_number.push(1);
-        } else {
-            binary_number.push(0);
-        }
-
-        // reassign decimal_num2
-        if (decimal_num2 == 0) {
-            decimal_num2 = -1; // to stop loop
-        } else {
-            decimal_num2 = Math.floor(decimal_num2/2);
-        }
-        console.log('decimal_num2: ', decimal_num2);
-    }
-    // concatenate the remainder bits from most to least significant (ie: (71)_10 = (1000111)_2 )
-    return binary_number.join('');
-}
-
-
-async function convert_decimal_to_binary1(decimal_num) {
 
     // convert base-10 (decimal) to base-2 (binary)
     var binary_number = "";
@@ -137,6 +110,7 @@ async function convert_decimal_to_binary1(decimal_num) {
         }
         decimal_num = decimal_num2;
         decimal_num2 = Math.floor(decimal_num/2);
+        console.log('binary_number: ', binary_number);
         console.log('decimal_num: ', decimal_num);
         console.log('decimal_num2: ', decimal_num2);
     }
