@@ -14,14 +14,14 @@ window.onload = async (event) => { await run_it(); };
 
 async function run_it() {
     
-    var n = 5;
+    var n = 9;
     var k = 2;
     var S = Array.from({length: n}, (_,i) => i+1);
-    console.log('S: ', S);
+    // console.log('S: ', S);
 
     // Create a
     var lowest_val = S.sort().shift();
-    console.log('lowest_val: ',lowest_val);
+    
     var a = [];
     var b = [];
     for (let i=lowest_val; i < n; i++) {
@@ -33,8 +33,8 @@ async function run_it() {
         let temp_b = Array.from({length: n-i}, (_,index) => index+(i+1));
         b = b.concat(temp_b);
     }
-    console.log('a: ', a);
-    console.log('b: ', b);
+    // console.log('a: ', a);
+    // console.log('b: ', b);
 
     // Find the max decimal number after bitwise AND operation on binary values
     var bin_a_str;
@@ -87,7 +87,7 @@ async function run_it() {
         bin_str = zeros.concat(temp).join("");
         binary_str_same_len.push(bin_str);
     }
-    console.log('binary_str_same_len: ', binary_str_same_len);
+    // console.log('binary_str_same_len: ', binary_str_same_len);
         
     // --------------------------------------------------
         
@@ -97,15 +97,12 @@ async function run_it() {
         decimal_num = await convert_binary_to_decimal(binary_str_same_len.at(i));
         decimal_arr.push(decimal_num);
     }
-    console.log('decimal_arr: ', decimal_arr);
-    
+    // console.log('decimal_arr: ', decimal_arr);
     decimal_arr = decimal_arr.sort();
-    console.log('decimal_arr sorted: ', decimal_arr);
 
     // --------------------------------------------------
     
     var max_num = decimal_arr.pop();
-    console.log('max_num: ', max_num);
     
     var max_loop_num = 0;
     while (max_num > k && max_loop_num < decimal_arr.length) {
@@ -122,8 +119,6 @@ async function convert_decimal_to_binary(decimal_num) {
     // convert base-10 (decimal) to base-2 (binary)
     var binary_number = [];
     var decimal_num2 = Math.floor(decimal_num/2);
-    // console.log('decimal_num: ', decimal_num);
-    // console.log('decimal_num2: ', decimal_num2);
     
     while (decimal_num != 0) {
         if (decimal_num % 2 == 0) {
@@ -134,8 +129,6 @@ async function convert_decimal_to_binary(decimal_num) {
         }
         decimal_num = decimal_num2;
         decimal_num2 = Math.floor(decimal_num/2);
-        // console.log('decimal_num: ', decimal_num);
-        // console.log('decimal_num2: ', decimal_num2);
     }
     // Inverse binary_number because they are pushed in from left to right.
     // Then, concatenate the remainder bits from most to least significant (ie: (71)_10 = (1000111)_2 )
@@ -164,7 +157,6 @@ async function bitwise_AND(bin_a_str, bin_b_str) {
 
 async function convert_binary_to_decimal(binary_str) {
     var bin_arr = binary_str.split("").map((val, ind) => { return Number(val); });
-    console.log("bin_arr: ", bin_arr);
 
     // Reverse the array
     bin_arr = bin_arr.toReversed();
@@ -172,14 +164,7 @@ async function convert_binary_to_decimal(binary_str) {
     var decimal_num = 0;
     for (let i=0; i<bin_arr.length; i++) {
         // sum from least to most significant bit
-        b_i = bin_arr.at(i);
-        console.log("b_i: ", b_i);
-        
-        two_i = Math.pow(2, i);
-        console.log("two_i: ", two_i);
-        
-        decimal_num = decimal_num + (b_i * two_i);
-        console.log("decimal_num: ", decimal_num);
+        decimal_num = decimal_num + (bin_arr.at(i) * Math.pow(2, i));
     }
     return decimal_num;
 }
