@@ -9,15 +9,18 @@
 
 <script>
 
-window.onload = async (event) => { run_it(); };
+window.onload = async (event) => { await run_it(); };
 
 
-function run_it() {
+async function run_it() {
 
   
   var n = 5;
   var S = [1, 2, 3, 4, 5];
   var a = [];
+
+    console.log('Math.min(S): ', Math.min(S));
+    
   for (let i=Math.min(S); i < n; i++) {
     let temp = Array.from({length: n-i}, (_,index) => i);
     console.log('temp: ', temp);
