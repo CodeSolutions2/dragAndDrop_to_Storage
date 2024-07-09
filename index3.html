@@ -105,7 +105,7 @@ async function run_it() {
     var max_num = decimal_arr.pop();
     
     var max_loop_num = 0;
-    while (max_num > k && max_loop_num < decimal_arr.length) {
+    while (max_num > k-1 && max_loop_num < decimal_arr.length) {
         // keep taking a value from the end of the sorted array until it is satisfied
         max_num = decimal_arr.pop();
         max_loop_num += 1;
