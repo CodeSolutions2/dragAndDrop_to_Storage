@@ -14,7 +14,7 @@ window.onload = async (event) => { await run_it(); };
 
 async function run_it() {
     
-    var n = 5;
+    var n = 9;
     var k = 2;
 
     // ---------------------------------
@@ -47,7 +47,7 @@ async function run_it() {
         let out = a.map((val, ind) => { return parseInt(val.toString(2), 2) & parseInt(b.at(ind).toString(2), 2); }).sort().pop();
         decimal_arr.push(out);
     }
-    
+    console.log('decimal_arr: ', decimal_arr);
     
     // ---------------------------------
     
