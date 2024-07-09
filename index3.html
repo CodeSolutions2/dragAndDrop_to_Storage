@@ -47,8 +47,14 @@ async function run_it() {
 
         console.log('a.at(i): ', a.at(i));
         
-        bin_a_str = await convert_decimal_to_binary(a.at(i));
-        bin_b_str = await convert_decimal_to_binary(b.at(i));
+        bin_a_str = await convert_decimal_to_binary1(a.at(i));
+        bin_b_str = await convert_decimal_to_binary1(b.at(i));
+
+        console.log('bin_a_str: ', bin_a_str);
+        console.log('bin_b_str: ', bin_b_str);
+
+        console.log('bin_a_str.length: ', bin_a_str.length);
+        console.log('bin_b_str.length: ', bin_b_str.length);
         
         // make bin_a_str and bin_b_str the same length by padding zeros to the left
         if (bin_a_str.length > bin_b_str.length) {
@@ -113,6 +119,29 @@ async function convert_decimal_to_binary(decimal_num) {
     return binary_number.join('');
 }
 
+
+async function convert_decimal_to_binary1(decimal_num) {
+
+    // convert base-10 (decimal) to base-2 (binary)
+    var binary_number = [];
+    var decimal_num2 = Math.floor(decimal_num/2);
+    console.log('decimal_num2: ', decimal_num2);
+    
+    while (decimal_num != 0) {
+        if (decimal_num % 2 != 0) {
+            binary_number.push(1);
+        } else {
+            binary_number.push(0);
+        }
+        decimal_num = decimal_num2;
+        decimal_num2 = Math.floor(decimal_num/2);
+        console.log('decimal_num2: ', decimal_num2);
+    }
+    // concatenate the remainder bits from most to least significant (ie: (71)_10 = (1000111)_2 )
+    return binary_number.join('');
+}
+
+    
 async function bitwise_AND(bin_a_str, bin_b_str) {
 
     // Only works if a and b are the same length
