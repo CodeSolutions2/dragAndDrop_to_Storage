@@ -44,12 +44,12 @@ async function run_it() {
     
     for (let i=0; i<a.length; i++) {
 
-        console.log('a.at(i): ', a.at(i));
+        // console.log('a.at(i): ', a.at(i));
         bin_a_str = await convert_decimal_to_binary(a.at(i));
         // console.log('bin_a_str: ', bin_a_str);
         // console.log('bin_a_str.length: ', bin_a_str.length);
         
-        console.log('b.at(i): ', b.at(i));
+        // console.log('b.at(i): ', b.at(i));
         bin_b_str = await convert_decimal_to_binary(b.at(i));
         // console.log('bin_b_str: ', bin_b_str);
         // console.log('bin_b_str.length: ', bin_b_str.length);
@@ -69,7 +69,7 @@ async function run_it() {
 
         bin_str = await bitwise_AND(bin_a_str, bin_b_str);
         binary_str.push(bin_str);
-        console.log('binary_str: ', binary_str);
+        // console.log('binary_str: ', binary_str);
     }
 
     // --------------------------------------------------
