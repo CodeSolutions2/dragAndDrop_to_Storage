@@ -13,16 +13,20 @@ window.onload = async (event) => { await run_it(); };
 
 
 async function run_it() {
-
   
   var n = 5;
   var S = Array.from({length: n}, (_,i) => i+1);
     console.log('S: ', S);
-  var a = [];
 
-    console.log('Math.min(S): ', Math.min(S));
+
+    console.log('S.sort(): ', S.sort());
+    var lowest_val = S.sort().shift();
+    console.log('lowest_val: ',lowest_val);
+
     
-  for (let i=Math.min(S); i < n; i++) {
+  var a = [];
+    
+  for (let i=lowest_val; i < n; i++) {
     let temp = Array.from({length: n-i}, (_,index) => i);
     console.log('temp: ', temp);
     a = a.concat(temp);
