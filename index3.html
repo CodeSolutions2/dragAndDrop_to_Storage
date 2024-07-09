@@ -48,9 +48,19 @@ async function run_it() {
         console.log('a.at(i): ', a.at(i));
         
         bin_a_str = await convert_decimal_to_binary(a.at(i));
-        console.log('bin_a_str: ', bin_a_str);
-        
         bin_b_str = await convert_decimal_to_binary(b.at(i));
+        
+        // make bin_a_str and bin_b_str the same length by padding zeros to the left
+        if (bin_a_str.length > bin_b_str.length) {
+            let zeros = Array.from({length: bin_a_str-bin_b_str}, (_,index) => 0);
+            bin_b_str = bin_b_str.split("").map((val, ind) => { return Number(val); });
+            bin_b_str = zeros.concat(bin_b_str);
+        } else if (bin_a_str.length < bin_b_str.length) {
+            let zeros = Array.from({length: bin_b_str-bin_a_str}, (_,index) => 0);
+            bin_a_str = bin_a_str.split("").map((val, ind) => { return Number(val); });
+            bin_a_str = zeros.concat(bin_a_str);
+        }
+        console.log('bin_a_str: ', bin_a_str);
         console.log('bin_b_str: ', bin_b_str);
         
         binary_str = await bitwise_AND(bin_a_str, bin_b_str);
@@ -82,7 +92,7 @@ async function convert_decimal_to_binary(decimal_num) {
     var binary_number = [];
     decimal_num2 = Math.floor(decimal_num/2);
     
-    while (decimal_num2 > 0) {
+    while (decimal_num2 >= 0) {
 
         if (decimal_num % 2 != 0) {
             binary_number.push(1);
