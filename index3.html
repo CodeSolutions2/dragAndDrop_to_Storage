@@ -22,6 +22,15 @@ class Rectangle {
 Rectangle.prototype.area = function(){ return this.w * this.h; }
 
 
+class Square extends Rectangle {
+    constructor(w) {
+        super(w);
+    }
+    area() {
+        return this.w * this.w;
+    }
+}
+
   
 async function run_class() {
 
@@ -31,10 +40,16 @@ async function run_class() {
     // Way 1: add a function to the class definition
     // classObj.prototype.area = function(){ return this.w * this.h; }
 
-  // call the class
+  // Call the original class with an additional function added outside of it's declaration
   const output = classObj.area();
   console.log('output: ', output);
+
+  // Call a new class that inherits from the original class
+  console.log('JSON.stringify(Object.getOwnPropertyNames(Square.prototype)): ', JSON.stringify(Object.getOwnPropertyNames(Square.prototype)));
   
+  const classObj2 = new Square(3);
+  const output2 = classObj2.area();
+  console.log('output2: ', output2);
 
 }
     
