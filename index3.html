@@ -60,13 +60,13 @@ async function run_it() {
 async function convert_decimal_to_binary(decimal_num) {
 
     // convert base-10 (decimal) to base-2 (binary)
-    var binary_num = [];
+    var binary_number = [];
     while (Math.floor(decimal_num/2) > 0) {
 
         if (decimal_num % 2 != 0) {
-            binary_num.push(1);
+            binary_number.push(1);
         } else {
-            binary_num.push(0);
+            binary_number.push(0);
         }
     }
     // concatenate the remainder bits from most to least significant (ie: (71)_10 = (1000111)_2 )
