@@ -58,16 +58,13 @@ async function run_it() {
         // make bin_a_str and bin_b_str the same length by padding zeros to the left
         if (bin_a_str.length > bin_b_str.length) {
             let zeros = Array.from({length: bin_a_str.length-bin_b_str.length}, (_,index) => 0);
-            console.log('zeros: ', zeros);
-            
             bin_b_str = bin_b_str.split("").map((val, ind) => { return Number(val); });
-            bin_b_str = zeros.concat(bin_b_str);
+            bin_b_str = zeros.concat(bin_b_str).join("");
         } else if (bin_a_str.length < bin_b_str.length) {
             let zeros = Array.from({length: bin_b_str.length-bin_a_str.length}, (_,index) => 0);
-            console.log('zeros: ', zeros);
-            
             bin_a_str = bin_a_str.split("").map((val, ind) => { return Number(val); });
-            bin_a_str = zeros.concat(bin_a_str);
+            bin_a_str = zeros.concat(bin_a_str).join("");
+            
         }
         console.log('bin_a_str: ', bin_a_str);
         console.log('bin_b_str: ', bin_b_str);
@@ -132,10 +129,11 @@ async function convert_decimal_to_binary1(decimal_num) {
     console.log('decimal_num2: ', decimal_num2);
     
     while (decimal_num != 0) {
-        if (decimal_num % 2 != 0) {
-            binary_number.push(1);
-        } else {
+        if (decimal_num % 2 == 0) {
+            // There is no remainder if (decimal_num % 2 == 0), put 0
             binary_number.push(0);
+        } else {
+            binary_number.push(1);
         }
         decimal_num = decimal_num2;
         decimal_num2 = Math.floor(decimal_num/2);
