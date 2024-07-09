@@ -16,15 +16,18 @@ async function run_it() {
     
     var n = 5;
     var k = 2;
+
+    // ---------------------------------
+    
     var S = Array.from({length: n}, (_,i) => i+1);
     console.log('S: ', S);
 
     // Create a
-    var lowest_val = S.sort().shift();
+    // var lowest_val = S.sort().shift();
     
     var a = [];
     var b = [];
-    for (let i=lowest_val; i < n; i++) {
+    for (let i=S.sort().shift(); i < n; i++) {
         // Create a
         let temp = Array.from({length: n-i}, (_,index) => i);
         a = a.concat(temp);
@@ -36,94 +39,33 @@ async function run_it() {
     console.log('a: ', a);
     console.log('b: ', b);
 
+    // ---------------------------------
+
     // Find the max decimal number after bitwise AND operation on binary values
-    var bin_a_str;
-    var bin_b_str;
-    var bin_str;
-    var binary_str = [];
-
-    var decimal_arr = [];
+    // var bin_a_str;
+    // var bin_b_str;
+    // var decimal_arr = [];
     
-    for (let i=0; i<a.length; i++) {
-
+    // for (let i=0; i<a.length; i++) {
         // Convert decimal to binary
-        bin_a_str = a.at(i).toString(2);
-        bin_b_str = b.at(i).toString(2);
-      
-        // make bin_a_str and bin_b_str the same length by padding zeros to the left
-        // if (bin_a_str.length > bin_b_str.length) {
-         //    let zeros = Array.from({length: bin_a_str.length-bin_b_str.length}, (_,index) => 0);
-         //    bin_b_str = bin_b_str.split("").map((val, ind) => { return Number(val); });
-        //     bin_b_str = zeros.concat(bin_b_str).join("");
-       //  } else if (bin_a_str.length < bin_b_str.length) {
-        //     let zeros = Array.from({length: bin_b_str.length-bin_a_str.length}, (_,index) => 0);
-        //     bin_a_str = bin_a_str.split("").map((val, ind) => { return Number(val); });
-       //      bin_a_str = zeros.concat(bin_a_str).join("");
-        // }
-
-        // bin_str = await bitwise_AND(bin_a_str, bin_b_str);
-        // binary_str.push(bin_str);
-        
-        // OR
-        
-        decimal_arr.push(parseInt(bin_a_str, 2) & parseInt(bin_b_str, 2));
-    }
-
-    // --------------------------------------------------
-
-    // Pad the binary_str
-
-    // get max length for binary strings
-   //  var binary_str_len = binary_str.map((val, ind) => { return val.length; });
-   //  var max_val = binary_str_len.sort().pop();
-
-   //  var binary_str_same_len = [];
-  //   for (let i=0; i<binary_str.length; i++) {
-  //       let zeros = Array.from({length: max_val-binary_str.at(i).length}, (_,index) => 0);
-    //     let temp = binary_str.at(i).split("").map((val, ind) => { return Number(val); });
-   //      bin_str = zeros.concat(temp).join("");
-    //     binary_str_same_len.push(bin_str);
+    //     bin_a_str = a.at(i).toString(2);
+    //     bin_b_str = b.at(i).toString(2);
+    //     decimal_arr.push(parseInt(bin_a_str, 2) & parseInt(bin_b_str, 2));
     // }
-    // console.log('binary_str_same_len: ', binary_str_same_len);
-        
-    // --------------------------------------------------
+    // OR
+    var decimal_arr = a.map((val, ind) => { return parseInt(val.toString(2), 2) & parseInt(b.at(ind).toString(2), 2); });
 
-    // Convert binary to decimal
-   //  var decimal_arr = binary_str_same_len.map((val, ind) => { return parseInt(binary_str_same_len.at(ind), 2); });
-    console.log('decimal_arr: ', decimal_arr);
-    decimal_arr = decimal_arr.sort();
-
-    // --------------------------------------------------
+    // ---------------------------------
     
-    var max_num = decimal_arr.pop();
+    var max_num = decimal_arr.sort().pop();
     
     var max_loop_num = 0;
     while (max_num > k-1 && max_loop_num < decimal_arr.length) {
-        // keep taking a value from the end of the sorted array until it is satisfied
         max_num = decimal_arr.pop();
         max_loop_num += 1;
     }
     console.log('max_num: ', max_num);
     return max_num;
-}
-
-    
-async function bitwise_AND(bin_a_str, bin_b_str) {
-
-    // Only works if a and b are the same length
-    var a = bin_a_str.split("").map((val, ind) => { return Number(val); });
-    var b = bin_b_str.split("").map((val, ind) => { return Number(val); });
-
-    // perform a & b
-    var binary_a_and_b = [];
-    a.map((val, ind) => {
-        if (val == 1 && b.at(ind) == 1) {
-            binary_a_and_b.push(1);
-        } else {
-            binary_a_and_b.push(0);
-        } 
-    });
-    return binary_a_and_b.join('');
 }
 
     
