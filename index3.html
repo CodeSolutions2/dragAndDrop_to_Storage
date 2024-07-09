@@ -39,21 +39,19 @@ async function run_it() {
     // Find the max decimal number after bitwise AND operation on binary values
     var bin_a_str;
     var bin_b_str;
-    var binary_str;
-    var decimal_num;
-    var decimal_arr = [];
+    var binary_str = [];
     
     for (let i=0; i<a.length; i++) {
 
         console.log('a.at(i): ', a.at(i));
         bin_a_str = await convert_decimal_to_binary(a.at(i));
-        console.log('bin_a_str: ', bin_a_str);
-        console.log('bin_a_str.length: ', bin_a_str.length);
+        // console.log('bin_a_str: ', bin_a_str);
+        // console.log('bin_a_str.length: ', bin_a_str.length);
         
         console.log('b.at(i): ', b.at(i));
         bin_b_str = await convert_decimal_to_binary(b.at(i));
-        console.log('bin_b_str: ', bin_b_str);
-        console.log('bin_b_str.length: ', bin_b_str.length);
+        // console.log('bin_b_str: ', bin_b_str);
+        // console.log('bin_b_str.length: ', bin_b_str.length);
         
         // make bin_a_str and bin_b_str the same length by padding zeros to the left
         if (bin_a_str.length > bin_b_str.length) {
@@ -64,21 +62,44 @@ async function run_it() {
             let zeros = Array.from({length: bin_b_str.length-bin_a_str.length}, (_,index) => 0);
             bin_a_str = bin_a_str.split("").map((val, ind) => { return Number(val); });
             bin_a_str = zeros.concat(bin_a_str).join("");
-            
         }
-        console.log('bin_a_str: ', bin_a_str);
-        console.log('bin_b_str: ', bin_b_str);
+        // console.log('bin_a_str: ', bin_a_str);
+        // console.log('bin_b_str: ', bin_b_str);
         
-        binary_str = await bitwise_AND(bin_a_str, bin_b_str);
+        binary_str.push(await bitwise_AND(bin_a_str, bin_b_str);)
         console.log('binary_str: ', binary_str);
+    }
+
+    // --------------------------------------------------
+
+    // Pad the binary_str
+
+    // get max length for binary strings
+    var binary_str_len = binary_str.map((val, ind) => { return val.length; });
+    var max_val = binary_str_len.sort().pop();
+
+    var binary_str_same_len = [];
+    for (let i=0; i<binary_str.length; i++) {
+        let zeros = Array.from({length: max_val-binary_str.at(i).length}, (_,index) => 0);
+        let temp = binary_str.at(i).split("").map((val, ind) => { return Number(val); });
+        binary_str_same_len.push( zeros.concat(temp).join(""); );
+    }
+    console.log('binary_str_same_len: ', binary_str_same_len);
         
-        decimal_num = await convert_binary_to_decimal(binary_str);
+    // --------------------------------------------------
+        
+    var decimal_num;
+    var decimal_arr = [];
+    for (let i=0; i<binary_str_same_len.length; i++) {
+        decimal_num = await convert_binary_to_decimal(binary_str_same_len.at(i));
         console.log('decimal_num: ', decimal_num);
         
         decimal_arr.push(decimal_num);
     }
     decimal_arr = decimal_arr.sort();
     console.log('decimal_arr: ', decimal_arr);
+
+    // --------------------------------------------------
     
     var max_num = decimal_arr.pop();
     console.log('max_num: ', max_num);
