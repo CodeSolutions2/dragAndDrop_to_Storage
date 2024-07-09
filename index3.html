@@ -16,7 +16,7 @@ async function run_it() {
 
   
   var n = 5;
-  var S = [1, 2, 3, 4, 5];
+  var S = Array.from({length: n}, (_,i) => i+1);
   var a = [];
 
     console.log('Math.min(S): ', Math.min(S));
