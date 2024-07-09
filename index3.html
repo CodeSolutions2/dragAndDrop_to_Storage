@@ -45,7 +45,7 @@ async function run_it() {
         bin_a_str = await convert_decimal_to_binary(a.at(i));
         bin_b_str = await convert_decimal_to_binary(b.at(i));
         binary_str = await bitwise_AND(bin_a_str, bin_b_str);
-        decimal_num = await convert_binary_to_decimal(binary_str);
+        var decimal_num = await convert_binary_to_decimal(binary_str);
         decimal_arr.push(decimal_num);
     }
     decimal_arr = decimal_arr.sort();
