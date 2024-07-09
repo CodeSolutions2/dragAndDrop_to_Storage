@@ -41,6 +41,8 @@ async function run_it() {
     var bin_b_str;
     var bin_str;
     var binary_str = [];
+
+    var decimal_arr = [];
     
     for (let i=0; i<a.length; i++) {
 
@@ -49,18 +51,22 @@ async function run_it() {
         bin_b_str = b.at(i).toString(2);
       
         // make bin_a_str and bin_b_str the same length by padding zeros to the left
-        if (bin_a_str.length > bin_b_str.length) {
-            let zeros = Array.from({length: bin_a_str.length-bin_b_str.length}, (_,index) => 0);
-            bin_b_str = bin_b_str.split("").map((val, ind) => { return Number(val); });
-            bin_b_str = zeros.concat(bin_b_str).join("");
-        } else if (bin_a_str.length < bin_b_str.length) {
-            let zeros = Array.from({length: bin_b_str.length-bin_a_str.length}, (_,index) => 0);
-            bin_a_str = bin_a_str.split("").map((val, ind) => { return Number(val); });
-            bin_a_str = zeros.concat(bin_a_str).join("");
-        }
+        // if (bin_a_str.length > bin_b_str.length) {
+         //    let zeros = Array.from({length: bin_a_str.length-bin_b_str.length}, (_,index) => 0);
+         //    bin_b_str = bin_b_str.split("").map((val, ind) => { return Number(val); });
+        //     bin_b_str = zeros.concat(bin_b_str).join("");
+       //  } else if (bin_a_str.length < bin_b_str.length) {
+        //     let zeros = Array.from({length: bin_b_str.length-bin_a_str.length}, (_,index) => 0);
+        //     bin_a_str = bin_a_str.split("").map((val, ind) => { return Number(val); });
+       //      bin_a_str = zeros.concat(bin_a_str).join("");
+        // }
 
-        bin_str = await bitwise_AND(bin_a_str, bin_b_str);
-        binary_str.push(bin_str);
+        // bin_str = await bitwise_AND(bin_a_str, bin_b_str);
+        // binary_str.push(bin_str);
+        
+        // OR
+        
+        decimal_arr.push(parseInt(bin_a_str, 2) & parseInt(bin_b_str, 2));
     }
 
     // --------------------------------------------------
@@ -68,22 +74,22 @@ async function run_it() {
     // Pad the binary_str
 
     // get max length for binary strings
-    var binary_str_len = binary_str.map((val, ind) => { return val.length; });
-    var max_val = binary_str_len.sort().pop();
+   //  var binary_str_len = binary_str.map((val, ind) => { return val.length; });
+   //  var max_val = binary_str_len.sort().pop();
 
-    var binary_str_same_len = [];
-    for (let i=0; i<binary_str.length; i++) {
-        let zeros = Array.from({length: max_val-binary_str.at(i).length}, (_,index) => 0);
-        let temp = binary_str.at(i).split("").map((val, ind) => { return Number(val); });
-        bin_str = zeros.concat(temp).join("");
-        binary_str_same_len.push(bin_str);
-    }
-    console.log('binary_str_same_len: ', binary_str_same_len);
+   //  var binary_str_same_len = [];
+  //   for (let i=0; i<binary_str.length; i++) {
+  //       let zeros = Array.from({length: max_val-binary_str.at(i).length}, (_,index) => 0);
+    //     let temp = binary_str.at(i).split("").map((val, ind) => { return Number(val); });
+   //      bin_str = zeros.concat(temp).join("");
+    //     binary_str_same_len.push(bin_str);
+    // }
+    // console.log('binary_str_same_len: ', binary_str_same_len);
         
     // --------------------------------------------------
 
     // Convert binary to decimal
-    var decimal_arr = binary_str_same_len.map((val, ind) => { return parseInt(binary_str_same_len.at(ind), 2); });
+   //  var decimal_arr = binary_str_same_len.map((val, ind) => { return parseInt(binary_str_same_len.at(ind), 2); });
     console.log('decimal_arr: ', decimal_arr);
     decimal_arr = decimal_arr.sort();
 
