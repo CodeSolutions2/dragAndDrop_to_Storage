@@ -43,10 +43,10 @@ async function run_it() {
     var binary_str = [];
     
     for (let i=0; i<a.length; i++) {
-        bin_a_str = await convert_decimal_to_binary(a.at(i));
-        
-        // console.log('b.at(i): ', b.at(i));
-        bin_b_str = await convert_decimal_to_binary(b.at(i));
+
+        // Convert decimal to binary
+        bin_a_str = a.at(i).toString(2);
+        bin_b_str = b.at(i).toString(2);
       
         // make bin_a_str and bin_b_str the same length by padding zeros to the left
         if (bin_a_str.length > bin_b_str.length) {
@@ -81,9 +81,9 @@ async function run_it() {
     console.log('binary_str_same_len: ', binary_str_same_len);
         
     // --------------------------------------------------
-  
-    var decimal_arr = binary_str_same_len.map((val, ind) => { return parseInt(binary_str_same_len.at(i), 2); });
-    
+
+    // Convert binary to decimal
+    var decimal_arr = binary_str_same_len.map((val, ind) => { return parseInt(binary_str_same_len.at(ind), 2); });
     console.log('decimal_arr: ', decimal_arr);
     decimal_arr = decimal_arr.sort();
 
@@ -99,28 +99,6 @@ async function run_it() {
     }
     console.log('max_num: ', max_num);
     return max_num;
-}
-
-
-async function convert_decimal_to_binary(decimal_num) {
-
-    // convert base-10 (decimal) to base-2 (binary)
-    var binary_number = [];
-    var decimal_num2 = Math.floor(decimal_num/2);
-    
-    while (decimal_num != 0) {
-        if (decimal_num % 2 == 0) {
-            // There is no remainder if (decimal_num % 2 == 0), put 0
-            binary_number.push(0);
-        } else {
-            binary_number.push(1);
-        }
-        decimal_num = decimal_num2;
-        decimal_num2 = Math.floor(decimal_num/2);
-    }
-    // Inverse binary_number because they are pushed in from left to right.
-    // Then, concatenate the remainder bits from most to least significant (ie: (71)_10 = (1000111)_2 )
-    return binary_number.toReversed().join("");
 }
 
     
@@ -142,20 +120,6 @@ async function bitwise_AND(bin_a_str, bin_b_str) {
     return binary_a_and_b.join('');
 }
 
-
-async function convert_binary_to_decimal(binary_str) {
-    var bin_arr = binary_str.split("").map((val, ind) => { return Number(val); });
-
-    // Reverse the array
-    bin_arr = bin_arr.toReversed();
-    
-    var decimal_num = 0;
-    for (let i=0; i<bin_arr.length; i++) {
-        // sum from least to most significant bit
-        decimal_num = decimal_num + (bin_arr.at(i) * Math.pow(2, i));
-    }
-    return decimal_num;
-}
     
 </script>
   
