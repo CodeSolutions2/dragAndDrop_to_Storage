@@ -95,12 +95,12 @@ async function run_it() {
     var decimal_arr = [];
     for (let i=0; i<binary_str_same_len.length; i++) {
         decimal_num = await convert_binary_to_decimal(binary_str_same_len.at(i));
-        console.log('decimal_num: ', decimal_num);
-        
         decimal_arr.push(decimal_num);
     }
-    decimal_arr = decimal_arr.sort();
     console.log('decimal_arr: ', decimal_arr);
+    
+    decimal_arr = decimal_arr.sort();
+    console.log('decimal_arr sorted: ', decimal_arr);
 
     // --------------------------------------------------
     
@@ -164,11 +164,19 @@ async function bitwise_AND(bin_a_str, bin_b_str) {
 
 async function convert_binary_to_decimal(binary_str) {
     var bin_arr = binary_str.split("").map((val, ind) => { return Number(val); });
-
+    console.log("bin_arr: ", bin_arr);
+    
     var decimal_num = 0;
     for (let i=0; i<bin_arr.length; i++) {
         // sum from least to most significant bit
-        decimal_num = decimal_num + (bin_arr.at(i)*Math.pow(2, i));
+        b_i = bin_arr.at(i);
+        console.log("b_i: ", b_i);
+        
+        two_i = Math.pow(2, i);
+        console.log("two_i: ", two_i);
+        
+        decimal_num = decimal_num + (b_i * two_i);
+        console.log("decimal_num: ", decimal_num);
     }
     return decimal_num;
 }
