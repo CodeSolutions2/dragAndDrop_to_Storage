@@ -40,19 +40,34 @@ async function run_it() {
     var bin_a_str;
     var bin_b_str;
     var binary_str;
+    var decimal_num;
     var decimal_arr = [];
     for (let i=0; i<a.length; i++) {
         bin_a_str = await convert_decimal_to_binary(a.at(i));
+        console.log('bin_a_str: ', bin_a_str);
+        
         bin_b_str = await convert_decimal_to_binary(b.at(i));
+        console.log('bin_b_str: ', bin_b_str);
+        
         binary_str = await bitwise_AND(bin_a_str, bin_b_str);
-        var decimal_num = await convert_binary_to_decimal(binary_str);
+        console.log('binary_str: ', binary_str);
+        
+        decimal_num = await convert_binary_to_decimal(binary_str);
+        console.log('decimal_num: ', decimal_num);
+        
         decimal_arr.push(decimal_num);
     }
     decimal_arr = decimal_arr.sort();
+    console.log('decimal_arr: ', decimal_arr);
+    
     var max_num = decimal_arr.pop();
-    while (max_num > k) {
+    console.log('max_num: ', max_num);
+    
+    var max_loop_num = 0;
+    while (max_num > k && max_loop_num < decimal_arr.length) {
         // keep taking a value from the end of the sorted array until it is satisfied
         max_num = decimal_arr.pop();
+        max_loop_num += 1;
     }
     return max_num;
 }
@@ -82,7 +97,7 @@ async function bitwise_AND(bin_a_str, bin_b_str) {
     // perform a & b
     var binary_a_and_b = [];
     a.map((val, ind) => {
-        if (val == 1 & b.at(ind) == 1) {
+        if (val == 1 && b.at(ind) == 1) {
             binary_a_and_b.push(1);
         } else {
             binary_a_and_b.push(0);
