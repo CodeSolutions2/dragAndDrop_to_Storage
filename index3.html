@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head></head>
+    
+<body>
+
+</body>
+
+
+<script>
+
+window.onload = async (event) => { run_it(); };
+
+
+function run_it() {
+
+  
+  var n = 5;
+  var S = [1, 2, 3, 4, 5];
+  var a = [];
+  for (let i=Math.min(S); i < n; i++) {
+    let temp = Array.from({length: n-i}, (_,index) => i);
+    console.log('temp: ', temp);
+    a = a.concat(temp);
+    console.log('a: ', a);
+  }
+
+</script>
+  
+</html>
