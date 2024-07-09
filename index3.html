@@ -96,7 +96,7 @@ async function run_it() {
 async function convert_decimal_to_binary(decimal_num) {
 
     // convert base-10 (decimal) to base-2 (binary)
-    var binary_number = "";
+    var binary_number = [];
     var decimal_num2 = Math.floor(decimal_num/2);
     console.log('decimal_num: ', decimal_num);
     console.log('decimal_num2: ', decimal_num2);
@@ -104,18 +104,18 @@ async function convert_decimal_to_binary(decimal_num) {
     while (decimal_num != 0) {
         if (decimal_num % 2 == 0) {
             // There is no remainder if (decimal_num % 2 == 0), put 0
-            binary_number += "0";
+            binary_number.push(0);
         } else {
-            binary_number += "1";
+            binary_number.push(1);
         }
         decimal_num = decimal_num2;
         decimal_num2 = Math.floor(decimal_num/2);
-        console.log('binary_number: ', binary_number);
         console.log('decimal_num: ', decimal_num);
         console.log('decimal_num2: ', decimal_num2);
     }
-    // concatenate the remainder bits from most to least significant (ie: (71)_10 = (1000111)_2 )
-    return binary_number;
+    // Inverse binary_number because they are pushed in from left to right.
+    // Then, concatenate the remainder bits from most to least significant (ie: (71)_10 = (1000111)_2 )
+    return binary_number.toReversed().join("");
 }
 
     
