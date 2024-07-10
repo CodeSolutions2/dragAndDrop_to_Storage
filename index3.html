@@ -139,7 +139,7 @@ async function convert_decimal_to_binary(decimal_num) {
     
 async function bitwise_AND(bin_a_str, bin_b_str) {
 
-    // Only works if a and b are the same length
+    // Binary addition: also called bitwise AND
     var a = bin_a_str.split("").map((val, ind) => { return Number(val); });
     var b = bin_b_str.split("").map((val, ind) => { return Number(val); });
 
@@ -152,8 +152,21 @@ async function bitwise_AND(bin_a_str, bin_b_str) {
             binary_a_and_b.push(0);
         } 
     });
+    // returns a binary string
     return binary_a_and_b.join('');
 }
+
+
+async function bitwise_AND_way1(a_number, b_number) {
+    return a_number & b_number;
+}
+
+async function bitwise_AND_way2(a_binary_string, b_binary_string) {
+    // Converts the binary strings to decimal numbers, performs additon, then converts decimal number back to binary
+    // returns a binary string, base 2 (ie: toString(2)) indicates binary
+    return (parseInt(a_binary_string, 2) + parseInt(b_binary_string, 2)).toString(2);
+}
+
 
 
 async function convert_binary_to_decimal(binary_str) {
