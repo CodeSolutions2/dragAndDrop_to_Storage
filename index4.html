@@ -15,8 +15,23 @@ window.onload = async (event) => { await run_it(); };
 async function run_it() {
     var n = 9;
     var k = 2;
-    var max_num = await getMaxLessThanK(n, k);
-    console.log('max_num:', max_num);
+    // var max_num = await getMaxLessThanK(n, k);
+    // console.log('max_num:', max_num);
+    
+    var out_max = 0;
+    var out = 0;
+    
+    for (let i=1; i < n; i++) {
+        for (let j=0; j < (n-i); j++) {
+            out = i & (i+1)+j;
+            if (out < k && out > out_max) {
+                out_max = out;
+            }
+            console.log('out_max:', out_max);
+            console.log('out:', out);
+    }
+    
+    console.log('out_max:', out_max);
 }
 
 
@@ -36,6 +51,22 @@ async function getMaxLessThanK(n, k) {
         }
     }
     return decimal_arr.sort().pop();
+}
+
+
+async function getMaxLessThanK1(n, k) {
+    
+    var out_max = 0;
+    var out = 0;
+    
+    for (let i=1; i < n; i++) {
+        for (let j=0; j < (n-i); j++) {
+            out = i & (i+1)+j;
+            if (out < k && out > out_max) {
+                out_max = out;
+            }
+    }
+    return out_max;
 }
 
     
