@@ -1,24 +1,6 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <style>
-            .body { width: 33%; }
-            .div#res { background-color: lightgray; border: solid; height: 48px; font-size: 20px; }
-            .buttonContainer { width: 148px; }
-            .buttonContainer > .buttonClass { width: 25%; height: 36px; font-size: 18px; margin: 0px; float: left }
-
-            .button#btn0 { background-color: lightgreen; color: brown; }
-            .button#btn1 { background-color: lightgreen; color: brown; }
-            
-            .button#btnClr { background-color: darkgreen; color: white; }
-            .button#btnEql { background-color: darkgreen; color: white; }
-          
-            .button#btnSum { background-color: black; color: red; }
-            .button#btnSub { background-color: black; color: red; }
-            .button#btnMul { background-color: black; color: red; }
-            .button#btnDiv { background-color: black; color: red; }
-        </style>
-    </head>
+    <head></head>
     
     <body>
         <div id='res'></div>
@@ -33,6 +15,26 @@
             <button id='btnDiv' class='buttonClass'>/</button>
         </div>
 
+
+
+<style>
+            .body { width: 33%; }
+            .div#res { background-color: lightgray; border: solid; height: 48px; font-size: 20px; display: block; }
+            .buttonContainer { width: 148px; }
+            .buttonContainer > .buttonClass { width: 25%; height: 36px; font-size: 18px; margin: 0px; float: left }
+
+            .buttonClass#btn0 { background-color: lightgreen; color: brown; }
+            .buttonClass#btn1 { background-color: lightgreen; color: brown; }
+            
+            .buttonClass#btnClr { background-color: darkgreen; color: white; }
+            .buttonClass#btnEql { background-color: darkgreen; color: white; }
+          
+            .buttonClass#btnSum { background-color: black; color: red; }
+            .buttonClass#btnSub { background-color: black; color: red; }
+            .buttonClass#btnMul { background-color: black; color: red; }
+            .buttonClass#btnDiv { background-color: black; color: red; }
+        </style>
+        
         <script>
             document.getElementById('btn0').onclick = function() { document.getElementById('res').innerText += "0"; };
             document.getElementById('btn1').onclick = function() { document.getElementById('res').innerText += "1"; };
