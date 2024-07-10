@@ -34,13 +34,13 @@
         </div>
 
         <script>
-            document.getElementById('btn0').onclick = function() { document.getElementById('res').innerText += 0; };
-            document.getElementById('btn1').onclick = function() { document.getElementById('res').innerText += 1; };
+            document.getElementById('btn0').onclick = function() { document.getElementById('res').innerText += "0"; };
+            document.getElementById('btn1').onclick = function() { document.getElementById('res').innerText += "1"; };
             document.getElementById('btnClr').onclick = function() { document.getElementById('res').innerText = ""; };
-            document.getElementById('btnSum').onclick = function() { document.getElementById('res').innerText += +; };
-            document.getElementById('btnSub').onclick = function() { document.getElementById('res').innerText += -; };
-            document.getElementById('btnMul').onclick = function() { document.getElementById('res').innerText += *; };
-            document.getElementById('btnDiv').onclick = function() { document.getElementById('res').innerText += /; };
+            document.getElementById('btnSum').onclick = function() { document.getElementById('res').innerText += "+"; };
+            document.getElementById('btnSub').onclick = function() { document.getElementById('res').innerText += "-"; };
+            document.getElementById('btnMul').onclick = function() { document.getElementById('res').innerText += "*"; };
+            document.getElementById('btnDiv').onclick = function() { document.getElementById('res').innerText += "/"; };
           
             document.getElementById('btnEql').onclick = function() {
               var input_text = document.getElementById('res').innerText;
