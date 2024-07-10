@@ -29,6 +29,7 @@ async function run_it() {
             }
             console.log('out_max:', out_max);
             console.log('out:', out);
+        }
     }
     
     console.log('out_max:', out_max);
@@ -65,6 +66,7 @@ async function getMaxLessThanK1(n, k) {
             if (out < k && out > out_max) {
                 out_max = out;
             }
+        }
     }
     return out_max;
 }
