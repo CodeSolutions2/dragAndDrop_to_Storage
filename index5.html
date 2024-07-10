@@ -9,6 +9,7 @@
 
             .button#btn0 { background-color: lightgreen; color: brown; }
             .button#btn1 { background-color: lightgreen; color: brown; }
+            
             .button#btnClr { background-color: darkgreen; color: white; }
             .button#btnEql { background-color: darkgreen; color: white; }
           
@@ -35,7 +36,7 @@
         <script>
             document.getElementById('btn0').onclick = function() { document.getElementById('res').innerHTML += 0; };
             document.getElementById('btn1').onclick = function() { document.getElementById('res').innerHTML += 1; };
-            document.getElementById('btnClr').onclick = function() { document.getElementById('res').innerHTML = ''; };
+            document.getElementById('btnClr').onclick = function() { document.getElementById('res').innerHTML = ""; };
             document.getElementById('btnSum').onclick = function() { document.getElementById('res').innerHTML += +; };
             document.getElementById('btnSub').onclick = function() { document.getElementById('res').innerHTML += -; };
             document.getElementById('btnMul').onclick = function() { document.getElementById('res').innerHTML += *; };
