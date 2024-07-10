@@ -34,16 +34,16 @@
         </div>
 
         <script>
-            document.getElementById('btn0').onclick = function() { document.getElementById('res').innerHTML += 0; };
-            document.getElementById('btn1').onclick = function() { document.getElementById('res').innerHTML += 1; };
-            document.getElementById('btnClr').onclick = function() { document.getElementById('res').innerHTML = ""; };
-            document.getElementById('btnSum').onclick = function() { document.getElementById('res').innerHTML += +; };
-            document.getElementById('btnSub').onclick = function() { document.getElementById('res').innerHTML += -; };
-            document.getElementById('btnMul').onclick = function() { document.getElementById('res').innerHTML += *; };
-            document.getElementById('btnDiv').onclick = function() { document.getElementById('res').innerHTML += /; };
+            document.getElementById('btn0').onclick = function() { document.getElementById('res').innerText += 0; };
+            document.getElementById('btn1').onclick = function() { document.getElementById('res').innerText += 1; };
+            document.getElementById('btnClr').onclick = function() { document.getElementById('res').innerText = ""; };
+            document.getElementById('btnSum').onclick = function() { document.getElementById('res').innerText += +; };
+            document.getElementById('btnSub').onclick = function() { document.getElementById('res').innerText += -; };
+            document.getElementById('btnMul').onclick = function() { document.getElementById('res').innerText += *; };
+            document.getElementById('btnDiv').onclick = function() { document.getElementById('res').innerText += /; };
           
             document.getElementById('btnEql').onclick = function() {
-              var input_text = document.getElementById('res').innerHTML;
+              var input_text = document.getElementById('res').innerText;
               
               // Find the operand character: + - * /
               var regexp = /[\+|-|*|\/]/g;
@@ -56,22 +56,17 @@
               
               if (operand == '+') {
                 // Binary addition: also called bitwise AND
-                document.getElementById('res').innerHTML = (parseInt(a_binary_string, 2) + parseInt(b_binary_string, 2)).toString(2);
+                document.getElementById('res').innerText = (parseInt(a_binary_string, 2) + parseInt(b_binary_string, 2)).toString(2);
               } else if (operand == '-') {
                 // Binary subtraction
-                document.getElementById('res').innerHTML = (parseInt(a_binary_string, 2) - parseInt(b_binary_string, 2)).toString(2);
+                document.getElementById('res').innerText = (parseInt(a_binary_string, 2) - parseInt(b_binary_string, 2)).toString(2);
               } else if (operand == '*') {
                 // Binary multiplication
-                document.getElementById('res').innerHTML = (parseInt(a_binary_string, 2) * parseInt(b_binary_string, 2)).toString(2);
+                document.getElementById('res').innerText = (parseInt(a_binary_string, 2) * parseInt(b_binary_string, 2)).toString(2);
               } else if (operand == '/') {
-                document.getElementById('res').innerHTML = (parseInt(a_binary_string, 2) / parseInt(b_binary_string, 2)).toString(2);
+                document.getElementById('res').innerText = (parseInt(a_binary_string, 2) / parseInt(b_binary_string, 2)).toString(2);
               }
-              
             };
-
-          
-
-          
         </script>
     </body>
 </html>
