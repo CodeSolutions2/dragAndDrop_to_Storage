@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            .body { width: 33%; }
+            .div#res { background-color: lightgray; border: solid; height: 48px; font-size: 20px; }
+            .buttonContainer { width: 148px; }
+            .buttonContainer > .buttonClass { width: 25%; height: 36px; font-size: 18px; margin: 0px; float: left }
+
+            .button#btn0 { background-color: lightgreen; color: brown; }
+            .button#btn1 { background-color: lightgreen; color: brown; }
+            .button#btnClr { background-color: darkgreen; color: white; }
+            .button#btnEql { background-color: darkgreen; color: white; }
+          
+            .button#btnSum { background-color: black; color: red; }
+            .button#btnSub { background-color: black; color: red; }
+            .button#btnMul { background-color: black; color: red; }
+            .button#btnDiv { background-color: black; color: red; }
+        </style>
+    </head>
+    
+    <body>
+        <div id='res'></div>
+        <div id='btns' class='buttonContainer'>
+            <button id='btn0' class='buttonClass'>0</button>
+            <button id='btn1' class='buttonClass'>1</button>
+            <button id='btnClr' class='buttonClass'>C</button>
+            <button id='btnEql' class='buttonClass'>=</button>
+            <button id='btnSum' class='buttonClass'>+</button>
+            <button id='btnSub' class='buttonClass'>-</button>
+            <button id='btnMul' class='buttonClass'>*</button>
+            <button id='btnDiv' class='buttonClass'>/</button>
+        </div>
+
+        <script>
+            document.getElementById('btn0').onclick = function() { document.getElementById('res').innerHTML += 0; };
+            document.getElementById('btn1').onclick = function() { document.getElementById('res').innerHTML += 1; };
+            document.getElementById('btnClr').onclick = function() { document.getElementById('res').innerHTML = ''; };
+            document.getElementById('btnSum').onclick = function() { document.getElementById('res').innerHTML += +; };
+            document.getElementById('btnSub').onclick = function() { document.getElementById('res').innerHTML += -; };
+            document.getElementById('btnMul').onclick = function() { document.getElementById('res').innerHTML += *; };
+            document.getElementById('btnDiv').onclick = function() { document.getElementById('res').innerHTML += /; };
+          
+            document.getElementById('btnEql').onclick = function() {
+              var input_text = document.getElementById('res').innerHTML;
+              
+              // Find the operand character: + - * /
+              var regexp = /[\+|-|*|\/]/g;
+            var out = input_text.match(regexp);
+            console.log('out: ', out);
+              var operand = out.at(0);
+            
+              // split on the operand character
+              const [a_binary_string, b_binary_string] = input_text.split(operand);
+              
+              if (operand == '+') {
+                // Binary addition: also called bitwise AND
+                document.getElementById('res').innerHTML = (parseInt(a_binary_string, 2) + parseInt(b_binary_string, 2)).toString(2);
+              } else if (operand == '-') {
+                // Binary subtraction
+                document.getElementById('res').innerHTML = (parseInt(a_binary_string, 2) - parseInt(b_binary_string, 2)).toString(2);
+              } else if (operand == '*') {
+                // Binary multiplication
+                document.getElementById('res').innerHTML = (parseInt(a_binary_string, 2) * parseInt(b_binary_string, 2)).toString(2);
+              } else if (operand == '/') {
+                document.getElementById('res').innerHTML = (parseInt(a_binary_string, 2) / parseInt(b_binary_string, 2)).toString(2);
+              }
+              
+            };
+
+          
+
+          
+        </script>
+    </body>
+</html>
