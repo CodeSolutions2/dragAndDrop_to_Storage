@@ -4,17 +4,24 @@
     
 <body>
 
+<input id="n" type="text" value="" placeholder="n" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
+<br>
+<input id="k" type="text" value="" placeholder="k" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
+
+<button id="run_it" onclick="run_it()">Run Selection</button>
+    
 </body>
 
 
 <script>
 
-window.onload = async (event) => { await run_it(); };
+// window.onload = async (event) => { await run_it(); };
 
 
 async function run_it() {
-    var n = 5;
-    var k = 2;
+    var n = document.getElementById("n").value;   // 5;
+    var k = document.getElementById("k").value;   // 2;
+    
     // var max_num = await getMaxLessThanK(n, k);
     // console.log('max_num:', max_num);
     
