@@ -5,6 +5,8 @@
 
 <input id="location_name" type="text" value="" placeholder="location_name" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
 
+<button id="run_script" onclick="run_script()">run_script</button>
+<button id="regular_fetch" onclick="regular_fetch()">regular_fetch</button>
 <button id="run_selection_w_JSONP" onclick="run_selection_w_JSONP()">run_selection_w_JSONP</button>
 <button id="run_selection_w_CORS" onclick="run_selection_w_CORS()">run_selection_w_CORS</button>
 
@@ -13,17 +15,6 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-<!-- <script type="text/javascript" crossorigin="anonymous"> -->
-<!-- function func_callback(response) { -->
-<!--   var meta = response.meta; -->
-<!--   var data = response.data; -->
-<!--   console.log(meta); -->
-<!--   console.log(data); -->
-<!-- } -->
-<!-- var script = document.createElement('script'); -->
-<!-- script.src = `https://nominatim.openstreetmap.org/search?q=${document.getElementById('location_name').innerHTML}&format=json?callback=` -->
-<!-- document.getElementsByTagName('head')[0].appendChild(script); -->
-<!-- </script> -->
 
 <script>
 	
@@ -39,6 +30,57 @@ var url = `https://nominatim.openstreetmap.org/search?q=${document.getElementByI
 
 // -----------------------------------------------
 
+
+async function script_method(url, callback) {
+
+	const scriptElement = document.createElement('script');
+
+	scriptElement.src = `${url}&callback=callback`;
+	scriptElement.type="text/javascript";
+	scriptElement.crossorigin="anonymous";
+}
+	
+function func_callback(response) {
+	var meta = response.meta;
+	var data = response.data;
+	console.log(meta);
+	console.log(data);
+}
+
+document.getElementById('run_script').onclick = async function() {
+	await script_method(url, func_callback);
+};
+
+	
+// -----------------------------------------------
+	
+async function regular_fetch() {
+
+	var headers = {
+		"Content-Type": "application/json",
+		"Connection": "keep-alive",
+		"Access-Control-Allow-Origin": "*",
+	};
+	var options = {
+		method : 'GET',
+		mode: 'cors',
+		cache: "no-cache",
+		// crossorigin: 'anonymous',
+		crossorigin: '*',
+		headers: new Headers(headers),
+		redirect: "follow"
+	};
+	
+	await fetch(url, options)
+		.then(response => response.json())
+		.then(async function(data) { 
+			console.log('data: ', data);
+		})
+		.catch(error => console.error("error: ", error); );
+
+}
+
+// -----------------------------------------------
 	
 function run_selection_w_JSONP() {
 	
@@ -52,18 +94,35 @@ function run_selection_w_JSONP() {
 		// success: successResopnse, jsonpCallback will call the successCallback
 		// error: failureFunction jsonp does not support errorCallback. So cannot use this 
 	};
+
+	// [Step 0] Declare a constant variable proxy as a function
+	const proxy = function(response) { 
+		var meta = response.meta;
+		var data = response.data;
+		console.log("meta: ", meta);
+		console.log("data: ", data);
+		return data;
+	}
+
+	// [Step 1] Assign an existing global variable named myCallBackMethod to the return of proxy function
+	// Then call the constant variable proxy as a function
+	window.myCallBackMethod = function(data) { return proxy(data); }
+
+	// [Step 2] Call the fetch method from jQuery
+	// They say you only need to do the callback and not a promise
+	$.ajax(settings)
+		.then(function(response) {
+			console.log("returned GET data: ", response);
+		});
+
+	// So when ajax returns it will run the callback function called proxy. proxy basically reorganizes the data received from the server, the callback function proxy does not help one to gain access to the data it only reorganizes the data.  If one wants to gain access to the data directly, a callback is not needed.
 	
-	$.ajax(settings);
-
-	window.myCallBackMethod = function(data) { successResponse(data); }
-		 
-	successResponse = function(data) { console.log("data: ", data); }
-
-	myCallBackMethod({"place_id":0,"licence":"","osm_type":"","osm_id":0,"lat":"","lon":"","class":"","type":"","place_rank":0,"importance":0,"addresstype":"","name":"","display_name":"","boundingbox":["","","",""]})
+	// So then does ajax return the result of myCallBackMethod
 
 }
 
 // -----------------------------------------------
+
 	
 async function run_selection_w_CORS() {
 
