@@ -41,7 +41,7 @@ async function script_method(url, callback) {
 	scriptElement.src = `${url}&callback=callback`;
 
 	// Looks like one needs to remove the script from the document to make it stop
-	// document.getElementByTagName('body')[0].removeChild(scriptElement);
+	// document.getElementsByTagName('body')[0].removeChild(scriptElement);
 	return data;
 }
 
@@ -53,7 +53,7 @@ function func_callback(response) {
 	console.log(data);
 
 	// Looks like one needs to append the script to the document to make it run
-	document.getElementByTagName('body')[0].appendChild(scriptElement);
+	document.getElementsByTagName('body')[0].appendChild(scriptElement);
 	return data;
 }
 
@@ -63,7 +63,7 @@ document.getElementById('run_script').onclick = async function() {
 			console.log("data: ", data);
 
 			// Looks like one needs to remove the script from the document to make it stop
-			document.getElementByTagName('body')[0].removeChild(scriptElement);
+			document.getElementsByTagName('body')[0].removeChild(scriptElement);
 		});
 };
 
@@ -160,9 +160,25 @@ async function run_form_GET_request() {
   form.setAttribute('headers', {"Content-Type": "application/json", "Access-Control-Allow-Origin": "*"});
   
   // Just use arrays: each column is a form variable
-  let type_parameters = ['text', 'text', 'submit'];
-  var name_parameters = ['lat', 'lon', 'confirm_submit'] 
-  var value_parameters = [00, 00, 'Submit'];
+  let type_parameters = ['text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'submit'];
+  var name_parameters = ['place_id', 'licence', 'osm_type', 'osm_id', 'lat', 'lon', 'class', 'type', 'place_rank', 'importance', 'addresstype', 'name', 'display_name', 'boundingbox', 'confirm_submit'] 
+  var value_parameters = [0, "", "", 0, "", "", "", "", 0, 0, "", "", "", ["", "", "", ""], 'Submit'];
+
+	[{"place_id":108560795,
+	  "licence":"Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright",
+	  "osm_type":"relation",
+	  "osm_id":120965,
+	  "lat":"45.7578137",
+	  "lon":"4.8320114",
+	  "class":"boundary",
+	  "type":"administrative",
+	  "place_rank":16,
+	  "importance":0.6913775965432666,
+	  "addresstype":"city",
+	  "name":"Lyon",
+	  "display_name":"Lyon, Métropole de Lyon, Rhône, Auvergne-Rhône-Alpes, Metropolitan France, France",
+	  "boundingbox":["45.7073666","45.8082628","4.7718134","4.8983774"]},
+	
 	
   type_parameters.forEach(async function(type_val, index) {
 	  let type = type_val;
