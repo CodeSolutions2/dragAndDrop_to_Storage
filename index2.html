@@ -4,6 +4,8 @@
 <body>
 
 <input id="location_name" type="text" value="" placeholder="location_name" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
+<input id="lat" type="text" value="" placeholder="lat" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
+<input id="lon" type="text" value="" placeholder="lon" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
 
 <button id="run_script" onclick="run_script()">run_script</button>
 <button id="regular_fetch" onclick="regular_fetch()">regular_fetch</button>
@@ -105,6 +107,57 @@ async function regular_fetch() {
 }
 	
 // RESULT: data:  Array []
+
+// -----------------------------------------------
+
+	
+async function get_forecast_temperature_data() {
+
+	var location_latitude = document.getElementById('lat').innerHTML;
+	var location_longitude = document.getElementById('lon').innerHTML;
+
+	
+    // https://open-meteo.com/en/docs
+
+  var url = 'https://open-meteo.com/v1/forecast';
+	  
+		var headers = {
+			"Content-Type": "application/json",
+			"Connection": "keep-alive",
+			"Access-Control-Allow-Origin": "*",
+		};
+	
+		var data = {"latitude": Number(location_latitude),
+			    "longitude": Number(location_longitude), 
+			    "forecast_days": 1, 
+			    "forecast_hours": 5
+		};
+		
+		// --------------------
+		
+		var options = {method : 'POST', 
+			       body : JSON.stringify(data)
+			      mode: 'cors',
+				cache: "no-cache",
+				// crossorigin: 'anonymous',
+				crossorigin: '*',
+				headers: new Headers(headers),
+				redirect: "follow"
+			};
+		
+		// ------------------------------------------
+		
+		await fetch(url, options)
+			.then(res => res.json())
+			.then(res => { 
+				let output = JSON.parse(JSON.stringify(res));
+				console.log('output: ', output);
+			})
+			.catch(error => { console.error("error: ", error) });
+
+  
+  
+}
 	
 // -----------------------------------------------
 	
