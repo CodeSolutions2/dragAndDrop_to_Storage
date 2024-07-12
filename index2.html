@@ -20,7 +20,7 @@ window.addEventListener('beforeunload', function() {
 
 async function run_selection(url, options) {
 
-  var url = `https://nominatim.openstreetmap.org/search?q=${document.getElementById('location_name').innerHTML}`;
+  var url = `https://nominatim.openstreetmap.org/search?q=${document.getElementById('location_name').innerHTML}&format=json`;
 
   var settings = {
 		type : 'GET',
