@@ -9,7 +9,7 @@
 <button id="regular_fetch" onclick="regular_fetch()">regular_fetch</button>
 <button id="run_selection_w_JSONP" onclick="run_selection_w_JSONP()">run_selection_w_JSONP</button>
 	
-<button id="run_form_GET_request" onclick="run_form_GET_request()" style="display:block" onsubmit="return checkForm(this)>run_form_GET_request</button>
+<button id="run_form_GET_request" onclick="run_form_GET_request()">run_form_GET_request</button>
 
 <button id="run_selection_w_CORS" onclick="run_selection_w_CORS()">run_selection_w_CORS</button>
 
@@ -197,13 +197,14 @@ async function run_form_GET_request() {
 // Do not redirect page to the page that we want to perform GET,POST requests with
 document.getElementById("run_form_GET_request").addEventListener("click", (event) => {
 	event.preventDefault();
+	console.log("Form submitted with click");
 });
 
-// The onsubmit ONLY in 'form action' allows one to call a function after the form is submitted
-function checkForm(thisForm){
-	document.getElementById("outData0").innerHTML = "data sent";
-	thisForm.preventDefault();
-}
+document.getElementById("run_form_GET_request").addEventListener("submit", (event) => {
+	event.preventDefault();
+	console.log("Form submitted with submit");
+});
+
 	
 // https://nominatim.openstreetmap.org/ui/search.html?place_idvalue%3D0=&licencevalue%3D=&osm_typevalue%3D=&osm_idvalue%3D0=&latvalue%3D=&lonvalue%3D=&classvalue%3D=&typevalue%3D=&place_rankvalue%3D0=&importancevalue%3D0=&addresstypevalue%3D=&namevalue%3D=&display_namevalue%3D=&boundingboxvalue%3D%2C%2C%2C=
 
