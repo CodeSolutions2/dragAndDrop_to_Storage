@@ -32,6 +32,7 @@ var url = `https://nominatim.openstreetmap.org/search?q=${document.getElementByI
 // -----------------------------------------------
 
 const scriptElement = document.createElement('script');
+var data = [];
 
 // This is like a template for how to use the callback with the called function
 async function script_method(url, callback) {
@@ -41,17 +42,19 @@ async function script_method(url, callback) {
 
 	// Looks like one needs to remove the script from the document to make it stop
 	// document.getElementByTagName('body')[0].removeChild(scriptElement);
+	return data;
 }
 
 // This is the callback function that manipulates the response
 function func_callback(response) {
 	var meta = response.meta;
-	var data = response.data;
+	data = response.data;
 	console.log(meta);
 	console.log(data);
 
 	// Looks like one needs to append the script to the document to make it run
 	document.getElementByTagName('body')[0].appendChild(scriptElement);
+	return data;
 }
 
 document.getElementById('run_script').onclick = async function() {
