@@ -192,6 +192,12 @@ async function run_form_GET_request() {
   
 }
 
+// Add an eventlistener to a button, when the button is clicked, do not redirect AND output the form results
+// Do not redirect page to the page that we want to perform GET,POST requests with
+document.getElementById("run_form_GET_request").addEventListener("click", (event) => {
+	event.preventDefault();
+});
+	
 // https://nominatim.openstreetmap.org/ui/search.html?place_idvalue%3D0=&licencevalue%3D=&osm_typevalue%3D=&osm_idvalue%3D0=&latvalue%3D=&lonvalue%3D=&classvalue%3D=&typevalue%3D=&place_rankvalue%3D0=&importancevalue%3D0=&addresstypevalue%3D=&namevalue%3D=&display_namevalue%3D=&boundingboxvalue%3D%2C%2C%2C=
 
 // -----------------------------------------------
