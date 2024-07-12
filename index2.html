@@ -40,8 +40,8 @@ async function script_method(url, callback) {
 	scriptElement.crossorigin="anonymous";
 	scriptElement.src = `${url}&callback=callback`;
 
-	// Looks like one needs to remove the script from the document to make it stop
-	// document.getElementsByTagName('body')[0].removeChild(scriptElement);
+	// Looks like one needs to append the script to the document to make it run
+	document.getElementsByTagName('body')[0].appendChild(scriptElement);
 	return data;
 }
 
@@ -53,7 +53,7 @@ function func_callback(response) {
 	console.log(data);
 
 	// Looks like one needs to append the script to the document to make it run
-	document.getElementsByTagName('body')[0].appendChild(scriptElement);
+	// document.getElementsByTagName('body')[0].appendChild(scriptElement);
 	return data;
 }
 
@@ -183,6 +183,8 @@ async function run_form_GET_request() {
   form.submit();
   
 }
+
+// https://nominatim.openstreetmap.org/ui/search.html?place_idvalue%3D0=&licencevalue%3D=&osm_typevalue%3D=&osm_idvalue%3D0=&latvalue%3D=&lonvalue%3D=&classvalue%3D=&typevalue%3D=&place_rankvalue%3D0=&importancevalue%3D0=&addresstypevalue%3D=&namevalue%3D=&display_namevalue%3D=&boundingboxvalue%3D%2C%2C%2C=
 
 // -----------------------------------------------
 
