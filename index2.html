@@ -38,6 +38,14 @@ var data = [];
 async function script_method(url, callback) {
 	scriptElement.type="text/javascript";
 	scriptElement.crossorigin="anonymous";
+	scriptElement.redirect="follow";
+	scriptElement.mode='cors';
+	var headers = {
+		"Content-Type": "application/json",
+		"Connection": "keep-alive",
+		"Access-Control-Allow-Origin": "*",
+	};
+	scriptElement.headers=new Headers(headers);
 	scriptElement.src = `${url}&callback=callback`;
 
 	// Looks like one needs to append the script to the document to make it run
