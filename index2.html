@@ -24,9 +24,8 @@ async function run_selection(url, options) {
 
   var settings = {
 		type : 'GET',
-		url: urlg,
+		url: url,
       dataType: 'jsonp',
-      jsonpCallback: 'myCallBackMethod',
       async: true, // this is by default false, so not need to mention
       crossDomain: true
 	};
