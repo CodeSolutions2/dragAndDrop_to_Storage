@@ -63,7 +63,7 @@ function run_selection_w_JSONP() {
 
 	window.myCallBackMethod = function(data) { successResponse(data); }
 		 
-	successResponse = function(data) { console.log("response: ", response); }
+	successResponse = function(data) { console.log("data: ", data); }
 
 	myCallBackMethod({"place_id":108560795,"licence":"Data © OpenStreetMap contributors, ODbL 1.0. http://osm.org/copyright","osm_type":"relation","osm_id":120965,"lat":"45.7578137","lon":"4.8320114","class":"boundary","type":"administrative","place_rank":16,"importance":0.6913775965432666,"addresstype":"city","name":"Lyon","display_name":"Lyon, Métropole de Lyon, Rhône, Auvergne-Rhône-Alpes, Metropolitan France, France","boundingbox":["45.7073666","45.8082628","4.7718134","4.8983774"]})
 
