@@ -38,7 +38,7 @@ var data = [];
 
 // This is like a template for how to use the callback with the called function
 async function script_method(url, callback) {
-	scriptElement.type="text/javascript";
+	scriptElement.type="application/json"; // "text/javascript";
 	scriptElement.crossorigin="*";
 	scriptElement.redirect="follow";
 	scriptElement.mode='cors';
