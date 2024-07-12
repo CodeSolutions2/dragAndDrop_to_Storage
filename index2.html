@@ -7,7 +7,25 @@
 
 <button id="run_selection" onclick="run_selection()">Run Selection</button>
 
-<script src='https://code.jquery.com/jquery-3.6.3.min.js'></script>
+
+	
+<!-- <script src='https://code.jquery.com/jquery-3.6.3.min.js'></script> -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script type="text/javascript" crossorigin>
+function func_callback(response) {
+  var meta = response.meta;
+  var data = response.data;
+  console.log(meta);
+  console.log(data);
+}
+
+var script = document.createElement('script');
+script.src = `https://nominatim.openstreetmap.org/search?q=${document.getElementById('location_name').innerHTML}&format=json?callback=func_callback`
+
+document.getElementsByTagName('head')[0].appendChild(script);
+</script>
 
 <script>
 	
@@ -35,7 +53,8 @@ async function run_selection(url, options) {
   $.ajax(settings).done(function(response) { console.log('response: ', response); })
 
 // OpaqueResponseBlocking error occurs because the browser blocks the response due to cross-origin restrictions. This typically happens when the requested resource is on a different domain or protocol than the origin of the request.
-	
+
+// jQuery363000451280049135816_1720786311751 was not called
 }
 
 
