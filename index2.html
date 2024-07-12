@@ -8,6 +8,7 @@
 <button id="run_script" onclick="run_script()">run_script</button>
 <button id="regular_fetch" onclick="regular_fetch()">regular_fetch</button>
 <button id="run_selection_w_JSONP" onclick="run_selection_w_JSONP()">run_selection_w_JSONP</button>
+<button id="run_form_GET_request" onclick="run_form_GET_request()" style="display:block">run_form_GET_request</button>
 <button id="run_selection_w_CORS" onclick="run_selection_w_CORS()">run_selection_w_CORS</button>
 
 	
@@ -30,30 +31,43 @@ var url = `https://nominatim.openstreetmap.org/search?q=${document.getElementByI
 
 // -----------------------------------------------
 
+const scriptElement = document.createElement('script');
 
+// This is like a template for how to use the callback with the called function
 async function script_method(url, callback) {
-
-	const scriptElement = document.createElement('script');
-
-	scriptElement.src = `${url}&callback=callback`;
 	scriptElement.type="text/javascript";
 	scriptElement.crossorigin="anonymous";
+	scriptElement.src = `${url}&callback=callback`;
+
+	// Looks like one needs to remove the script from the document to make it stop
+	// document.getElementByTagName('body')[0].removeChild(scriptElement);
 }
-	
+
+// This is the callback function that manipulates the response
 function func_callback(response) {
 	var meta = response.meta;
 	var data = response.data;
 	console.log(meta);
 	console.log(data);
+
+	// Looks like one needs to append the script to the document to make it run
+	document.getElementByTagName('body')[0].appendChild(scriptElement);
 }
 
 document.getElementById('run_script').onclick = async function() {
-	await script_method(url, func_callback);
+	await script_method(url, func_callback)
+		.then(function(data) {
+			console.log("data: ", data);
+
+			// Looks like one needs to remove the script from the document to make it stop
+			document.getElementByTagName('body')[0].removeChild(scriptElement);
+		});
 };
 
+// RESULT: no response
 	
 // -----------------------------------------------
-	
+
 async function regular_fetch() {
 
 	var headers = {
@@ -75,9 +89,10 @@ async function regular_fetch() {
 		.then(response => response.json())
 		.then(async function(data) { console.log('data: ', data); })
 		.catch(error => console.error("error: ", error));
-
 }
-
+	
+// RESULT: data:  Array []
+	
 // -----------------------------------------------
 	
 function run_selection_w_JSONP() {
@@ -119,9 +134,53 @@ function run_selection_w_JSONP() {
 
 }
 
+// RESULT: The script from “https://nominatim.openstreetmap.org/search?q=&format=json&callback=myCallBackMethod&_=1720795397518” was loaded even though its MIME type (“application/json”) is not a valid JavaScript MIME type.
+// A resource is blocked by OpaqueResponseBlocking, please check browser console for details.
+
 // -----------------------------------------------
 
+async function run_form_GET_request() {
 	
+  // Create <form> element to submit parameters to endpoint
+  var form = document.createElement('form');
+	
+  form.setAttribute('method', 'GET'); 
+
+  // Step 0: The browser navigates to the URL given in the action attribute : the user is taken away from the current page and redirected to a new page.
+  // The action attribute is used to indicate where the form’s data is sent to when it is submitted.
+  form.setAttribute('action', url);
+
+
+  // The form submission result will open in a new tab or window, depending on the user's browser settings.
+  // form.setAttribute('target', "_blank");
+	
+  form.setAttribute('headers', {"Content-Type": "application/json", "Access-Control-Allow-Origin": "*"});
+  
+  // Just use arrays: each column is a form variable
+  let type_parameters = ['text', 'text', 'submit'];
+  var name_parameters = ['lat', 'lon', 'confirm_submit'] 
+  var value_parameters = [00, 00, 'Submit'];
+	
+  type_parameters.forEach(async function(type_val, index) {
+	  let type = type_val;
+	  let name = name_parameters[index];
+	  let value = value_parameters[index];
+	  
+    var input = document.createElement('input');
+    input.innerHTML = '<input style="display:none;" type=' +type+ ' name=' +name+ 'value=' +value+ '>';
+          
+     form.appendChild(input);
+    });
+
+  // Add form to page and submit it to open the endpoint.
+  document.body.appendChild(form);
+	
+  form.submit();
+  
+}
+
+// -----------------------------------------------
+
 async function run_selection_w_CORS() {
 
   var settings = {
@@ -135,8 +194,9 @@ async function run_selection_w_CORS() {
 	};
 
   $.ajax(settings).done(function(response) { console.log('response: ', response); })
-
 }
+
+// RESULT: data:  Array []
 
 // -----------------------------------------------
 
