@@ -8,7 +8,9 @@
 <button id="run_script" onclick="run_script()">run_script</button>
 <button id="regular_fetch" onclick="regular_fetch()">regular_fetch</button>
 <button id="run_selection_w_JSONP" onclick="run_selection_w_JSONP()">run_selection_w_JSONP</button>
+	
 <button id="run_form_GET_request" onclick="run_form_GET_request()" style="display:block" onsubmit="return checkForm(this)>run_form_GET_request</button>
+
 <button id="run_selection_w_CORS" onclick="run_selection_w_CORS()">run_selection_w_CORS</button>
 
 	
@@ -37,7 +39,7 @@ var data = [];
 // This is like a template for how to use the callback with the called function
 async function script_method(url, callback) {
 	scriptElement.type="text/javascript";
-	scriptElement.crossorigin="anonymous";
+	scriptElement.crossorigin="*";
 	scriptElement.redirect="follow";
 	scriptElement.mode='cors';
 	var headers = {
@@ -169,8 +171,8 @@ async function run_form_GET_request() {
   
   // Just use arrays: each column is a form variable
   let type_parameters = ['text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'submit'];
-  var name_parameters = ['place_id', 'licence', 'osm_type', 'osm_id', 'lat', 'lon', 'class', 'type', 'place_rank', 'importance', 'addresstype', 'name', 'display_name', 'boundingbox', 'confirm_submit'] 
-  var value_parameters = [0, "", "", 0, "", "", "", "", 0, 0, "", "", "", ["", "", "", ""], 'Submit'];
+  var name_parameters = ['place_id', 'licence', 'osm_type', 'osm_id', 'lat', 'lon', 'class', 'type', 'place_rank', 'importance', 'addresstype', 'name', 'display_name', 'boundingbox', 'submit'] 
+  var value_parameters = [0, "", "", 0, "", "", "", "", 0, 0, "", "", "", ["", "", "", ""], 'submit'];
 
 	
 	
