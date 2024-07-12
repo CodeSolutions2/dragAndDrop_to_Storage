@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head></head>
+<body>
+
+<input id="location_name" type="text" value="" placeholder="location_name" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
+
+<button id="run_selection" onclick="run_selection()">Run Selection</button>
+
+<script src='https://code.jquery.com/jquery-3.6.3.min.js'></script>
+
+<script>
+	
+// -----------------------------------------------
+	
+window.addEventListener('beforeunload', function() {
+    window.location.href = window.location.href + '?nocache=' + new Date().getTime();
+});
+
+
+async function run_selection(url, options) {
+
+  var url = `https://nominatim.openstreetmap.org/search?q=${document.getElementById('location_name').innerHTML}`;
+
+  var settings = {
+		type : 'GET',
+		url: urlg,
+      dataType: 'jsonp',
+      jsonpCallback: 'myCallBackMethod',
+      async: true, // this is by default false, so not need to mention
+      crossDomain: true
+	};
+
+  $.ajax(settings).done(function(response) { console.log('response: ', response); })
+
+}
+
+
+</script>
+
+
+
+
+
+  
+</body>
+</html>
