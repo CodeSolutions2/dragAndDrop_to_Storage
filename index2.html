@@ -37,9 +37,23 @@ var url = `https://nominatim.openstreetmap.org/search?q=${document.getElementByI
 // -----------------------------------------------
 
 
-	
+// [Step 0] create the script element
 const scriptElement = document.createElement('script');
-var data = ["start"];
+scriptElement.type="application/json"; // "text/javascript";
+scriptElement.crossorigin="*";
+scriptElement.redirect="follow";
+scriptElement.mode='cors';
+
+var headers = {
+	"Content-Type": "application/json",
+	"Connection": "keep-alive",
+	"Access-Control-Allow-Origin": "*",
+};
+scriptElement.headers = new Headers(headers);
+console.log('[Step 0] create the script element');
+
+	
+var response;  // response is the output of running scriptElement.src
 
 
 // Way 2: use an eventListener to load the src
@@ -52,27 +66,9 @@ scriptElement.addEventListener('load', (event) => {
 	
 // This is like a template for how to use the callback with the called function
 async function script_method(url, callback) {
-
-  	// [Step 0] create the script element
-	console.log('[Step 0] create the script element');
-	scriptElement.type="application/json"; // "text/javascript";
-	scriptElement.crossorigin="*";
-	scriptElement.redirect="follow";
-	scriptElement.mode='cors';
-  
-	var headers = {
-		"Content-Type": "application/json",
-		"Connection": "keep-alive",
-		"Access-Control-Allow-Origin": "*",
-	};
-	scriptElement.headers = new Headers(headers);
 	
-	
-	
-	
-	
-	// [Step 1] Run/call the callback
-	console.log('[Step 1] Run/call the callback');
+	// [Step 1] Run/call the script with a callback
+	console.log('[Step 1] Run/call the script with a callback');
 	// This does not run/call the callback, it just assigns the callback to run the function func_callback
 	// The ? starts a query, and should only be used once; there is already a ? in the url so we add callback on using &
 	// The & separates value-pairs
@@ -83,15 +79,17 @@ async function script_method(url, callback) {
 	// Where is the output of the ran command 'scriptElement.src'?
 
 	// after the assignment of scriptElement.src = `${url}&callback=callback` such that the callback runs, how does 
+
+
 	
-	// [Step 2] Run/call scriptElement.src, so that the response is given to the callback
+	// [Step 2] Get the output from running scriptElement.src
 	console.log('[Step 2] Get the output from running scriptElement.src')
 	
 	// Way 0: Basic method to call a callback
 	// Problems:
 	// 0) where does response come from? response is the output of running scriptElement.src.
 	// 1) this has nothing to do with the callback that is defined in scriptElement.src? Yes, it does because running scriptElement.src caused the callback to return the output
-	var response;  // response is the output of running scriptElement.src
+	
 	var data_out = await new Promise(resolve => { var data = resolve(callback(response)); return data; });
 	console.log('data_out: ', data_out); 
 
