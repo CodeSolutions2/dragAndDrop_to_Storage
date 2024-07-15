@@ -207,9 +207,27 @@ async function fetch_CORS(url, method, data, w_or_wo_proxyhandler, return_type) 
 	// --------------------------------
 
 	// Determine request method
+	var headers = {
+		"Content-Type": "application/json",
+		"Referer": url,
+		"Origin": "https://codesolutions2.github.io",
+		"Connection": "keep-alive",
+		//"Sec-Fetch-Dest": "empty",
+		//"Sec-Fetch-Mode": "cors", 
+		//"Sec-Fetch-Site": "cross-site",
+		//"Sec-Fetch-User": "?1",
+		"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0",
+		"Access-Control-Allow-Origin": "*",
+		//'Access-Control-Allow-Credentials': false, 
+		//"Access-Control-Request-Method": method,
+		//"Access-Control-Request-Headers": 'content-type,x-pingother',
+		//'Cache-Control': 'max-age=0',
+	};
+	
 	var options = { 
 		method : method,
 		mode: 'cors',
+		headers: new Headers(headers),
 		cache: "no-cache",
 		// crossorigin: 'anonymous',
 		crossorigin: '*',
@@ -221,87 +239,12 @@ async function fetch_CORS(url, method, data, w_or_wo_proxyhandler, return_type) 
 	}
 
 	// --------------------------------
-	
-	// Determine request settings for the request and response headers
-		
-	if (w_or_wo_proxyhandler == 'w_proxyhandler') {
-		// Parameters to influence Response Header
-		// The `handler` object defines a `apply` method that intercepts the `fetch` function calls and adds the "Access-Control-Allow-Origin" header with a value of "*" to the request options. The `new Proxy(fetch, handler)` creates a proxied version of the `fetch` function that applies the defined handler.
-		// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Headers
-		const handler = {
-			apply: function(target, thisArg, args) {
-				// One needs to re-define the input arguments of the handler because a constant variable is used as a function (ie: await proxy3(url, options))
-				const [url, options] = args;
-				if (options && options.headers) {
-					options.headers['Access-Control-Allow-Origin'] = '*';
-					options.headers['Access-Control-Allow-Credentials'] = false;
-					options.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE';
-					// options.headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept';
-					options.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization';
-					options.headers['Access-Control-Max-Age'] = 0;
-				} else {
-					args[1] = {
-						headers: { 
-							'Access-Control-Allow-Origin': '*',
-							'Access-Control-Allow-Credentials': false,
-							'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE',
-							'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-							'Access-Control-Max-Age': 0
-						}
-					};
-		 		}
-		 		// console.log('args: ', args);
-		 		return Reflect.apply(target, thisArg, args);
-			}
-		};
-
-		// Proxy sturcture works! 
-		// Calls the function WITHOUT input variables to assign a proxy definition to a constant variable. 
-		// The constant variable is called as a function, where it resolves promises. 
-		// Call the constant variable proxy3 as a function to resolve the promise correctly
-		const proxy3 = await new Proxy(fetch, handler);
-
-		// --------------------------------
-		
-		// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers
-		// "Sec-Fetch-Mode": "cors", // Indicates the request's mode to a server: cors, navigate, no-cors, same-origin, websocket
-	
-		// Sec-Fetch-User:  ?0 = false, ?1 = true
-		// Sec-Fetch-Dest: audio, audioworklet, document, embed, empty, font, image, manifest, object, paintworklet, report, script, serviceworker, sharedworker, style, track, video, worker, and xslt
-		// "Sec-Fetch-Site": "cross-site", // cross-site, same-origin, same-site, none
-		// 'Cache-Control': 'max-age=0' // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security?utm_source=mozilla&utm_medium=devtools-netmonitor&utm_campaign=default - this allows one to change the preflight request, other wise the preflight request settings are set for a year
-		var headers = {
-			"Content-Type": "application/json",
-			"Referer": url,
-			"Origin": "https://codesolutions2.github.io",
-			"Connection": "keep-alive",
-			//"Sec-Fetch-Dest": "empty",
-			//"Sec-Fetch-Mode": "cors", 
-			//"Sec-Fetch-Site": "cross-site",
-			//"Sec-Fetch-User": "?1",
-			"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0",
-			"Access-Control-Allow-Origin": "*",
-			//'Access-Control-Allow-Credentials': false, 
-			//"Access-Control-Request-Method": method,
-			//"Access-Control-Request-Headers": 'content-type,x-pingother',
-			//'Cache-Control': 'max-age=0',
-		};
-	} else { 
-		var headers = {
-			"Content-Type": "application/json",
-			"Connection": "keep-alive",
-			"Access-Control-Allow-Origin": "*",
-		};
-	}
-
-	options.headers = await new Headers(headers);
-
-	// --------------------------------
 
 	// Determine the type of output to return 
 	
 	if (return_type == 'json') {
 		if (w_or_wo_proxyhandler == 'w_proxyhandler') {
+			const proxy3 = await define_proxy_handler();
 			return await proxy3(url, options)
 				.then(response => response.json())
 				.then(async function(data) { console.log('data: ', data); return data; })
@@ -387,6 +330,46 @@ async function fetch_CORS(url, method, data, w_or_wo_proxyhandler, return_type) 
 	// --------------------------------
 }
 
+
+async function define_proxy_handler() {
+	// Parameters to influence Response Header
+	// The `handler` object defines a `apply` method that intercepts the `fetch` function calls and adds the "Access-Control-Allow-Origin" header with a value of "*" to the request options. The `new Proxy(fetch, handler)` creates a proxied version of the `fetch` function that applies the defined handler.
+	// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Headers
+	const handler = {
+		apply: function(target, thisArg, args) {
+			// One needs to re-define the input arguments of the handler because a constant variable is used as a function (ie: await proxy3(url, options))
+			const [url, options] = args;
+			if (options && options.headers) {
+				options.headers['Access-Control-Allow-Origin'] = '*';
+				options.headers['Access-Control-Allow-Credentials'] = false;
+				options.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE';
+				// options.headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept';
+				options.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization';
+				options.headers['Access-Control-Max-Age'] = 0;
+			} else {
+				args[1] = {
+					headers: { 
+						'Access-Control-Allow-Origin': '*',
+						'Access-Control-Allow-Credentials': false,
+						'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE',
+						'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+						'Access-Control-Max-Age': 0
+					}
+				};
+			}
+			// console.log('args: ', args);
+			return Reflect.apply(target, thisArg, args);
+		}
+	};
+
+	// Proxy sturcture works! 
+	// Calls the function WITHOUT input variables to assign a proxy definition to a constant variable. 
+	// The constant variable is called as a function, where it resolves promises. 
+	// Call the constant variable proxy3 as a function to resolve the promise correctly
+	return await new Proxy(fetch, handler);
+}
+
+	
 // -----------------------------------------------
 	
 function jQuery_w_JSONP_GET(url) {
