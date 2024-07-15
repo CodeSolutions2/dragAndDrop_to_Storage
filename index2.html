@@ -63,7 +63,7 @@ async function script_method(url, callback) {
 	// This does not run/call the callback, it just assigns the callback to run the function func_callback
 	// The ? starts a query, and should only be used once; there is already a ? in the url so we add callback on using &
 	// The & separates value-pairs
-	scriptElement.src = `${url}&callback=${callback}`;
+	scriptElement.src = `${url}&callback=callback`;
 	
 	
 	
