@@ -8,6 +8,7 @@
 	<li>Enter URL.</li>
 	<ul>
 		<li>https://nominatim.openstreetmap.org/search?q=LOCATION_NAME&format=json</li>
+		<li>https://api.open-meteo.com/v1/forecast?latitude=LATITUDE&longitude=LONGITUDE&hourly=temperature_2m</li>
 		<li>https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf</li>
 		<li>https://raw.githubusercontent.com/CodeSolutions2/pdf_to_text_webapp/main/document_imagepdf.pdf</li>
 	</ul>
@@ -613,28 +614,23 @@ async function get_forecast_temperature_data(url) {
 
 	// --------------------------------
 
-	var location_latitude = out[0].lat;
-	var location_longitude = out[0].lon;
+	var latitude = out[0].lat;
+	var longitude = out[0].lon;
 	console.log("location_latitude: ", location_latitude);
 	console.log("location_longitude: ", location_longitude);
 
 	// [Step 0] Get weather data
 	// https://open-meteo.com/en/docs
+	// The API endpoint /v1/forecast accepts a geographical coordinate, a list of weather variables and responds with a JSON hourly weather forecast for 7 days. Time always starts at 0:00 today and contains 168 hours. If &forecast_days=16 is set, up to 16 days of forecast can be returned. All URL parameters are listed below:
 
-	url = 'https://open-meteo.com/v1/forecast';
-	method = 'POST';  // method: 'GET', 'POST'
-	data = {"latitude": Number(location_latitude),
-			    "longitude": Number(location_longitude), 
-			    "forecast_days": 1, 
-			    "forecast_hours": 5
-		};  // data: required data format for url address
+	url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&hourly=temperature_2m`;
+	
+	method = 'GET';  // method: 'GET', 'POST'
 	w_or_wo_proxyhandler = 'w_proxyhandler';  // w_or_wo_proxyhandler: 'w_proxyhandler', 'wo_proxyhandler'
 	return_type = 'json';  // return_type: 'json', 'blob', 'blob_file_pdf', 'arrayBuffer', 'text'
-	out_fetch = await fetch_CORS(url, method, data, w_or_wo_proxyhandler, return_type);  // CORS error
-	console.log('out_fetch: ', out_fetch);
+	out = await fetch_CORS(url, method, data, w_or_wo_proxyhandler, return_type);
+	console.log('out: ', out);
 	
-	out_jquery = await jQuery_CORS(url, method, data, return_type);
-	console.log('out_jquery: ', out_jquery);
 }
 
 // -----------------------------------------------
