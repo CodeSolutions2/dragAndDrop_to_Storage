@@ -552,7 +552,7 @@ async function get_forecast_temperature_data(url) {
 	var data = [];  // data: required data format for url address
 	var w_or_wo_proxyhandler = 'w_proxyhandler';  // w_or_wo_proxyhandler: 'w_proxyhandler', 'wo_proxyhandler'
 	var return_type = 'json';  // return_type: 'json', 'blob', 'blob_file_pdf', 'arrayBuffer', 'text'
-	var out = await fetch_CORS(url, method, data, w_or_wo_proxyhandler, return_type) {
+	var out = await fetch_CORS(url, method, data, w_or_wo_proxyhandler, return_type);
 	console.log('out: ', out); 
 
 	// --------------------------------
@@ -574,7 +574,7 @@ async function get_forecast_temperature_data(url) {
 		};  // data: required data format for url address
 	w_or_wo_proxyhandler = 'w_proxyhandler';  // w_or_wo_proxyhandler: 'w_proxyhandler', 'wo_proxyhandler'
 	return_type = 'json';  // return_type: 'json', 'blob', 'blob_file_pdf', 'arrayBuffer', 'text'
-	out = await fetch_CORS(url, method, data, w_or_wo_proxyhandler, return_type) {
+	out = await fetch_CORS(url, method, data, w_or_wo_proxyhandler, return_type);
 	console.log('out: ', out);
 	  
 }
