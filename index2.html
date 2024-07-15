@@ -513,7 +513,7 @@ async function jQuery_CORS(url, method, data, return_type) {
 		dataType: 'json', // data type response format: 'xml', html, script, json, jsonp, text
 		async: true,
 		crossDomain: true, // tell the browser to allow cross domain calls.
-		xhrFields: {},
+		xhrFields: {withCredentials: true},
 		headers: {"Access-Control-Allow-Origin": "*" },
 		success: function(response) { console.log('Success'); },
 		error: function(xhr, status, error) { console.log('Error:', error); }
