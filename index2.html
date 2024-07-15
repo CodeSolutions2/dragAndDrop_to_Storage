@@ -542,14 +542,12 @@ async function jQuery_CORS(url, method, data, return_type) {
 	};
 	
 	var settings = {
-		url: url,
+		// url: url,
 		type : method,
 		dataType: 'json', // data type response format: 'xml', html, script, json, jsonp, text
 		async: true,
 		crossDomain: true, // tell the browser to allow cross domain calls.
-		// xhrFields: {withCredentials: true},
-		// xhrFields: {},
-		headers: new Headers(headers),
+		// headers: new Headers(headers),
 		success: function(response) { console.log('Success'); },
 		error: function(xhr, status, error) { console.log('Error:', error); }
 	};
@@ -584,11 +582,15 @@ async function jQuery_CORS(url, method, data, return_type) {
 
 	// --------------------------------
 	
-  	return $.ajax(settings).done(function(response) { console.log('response: ', response); return response; });
+  	// return $.ajax(settings).done(function(response) { console.log('response: ', response); return response; });
 
 	// OR
 
 	// return $.ajax(settings).then(function(response) { console.log('response: ', response); return response; });
+
+	// OR
+
+	return $.ajax(url, [,settings]).done(function(response) { console.log('response: ', response); return response; });
 }
 
 // -----------------------------------------------
@@ -623,55 +625,14 @@ async function get_forecast_temperature_data(url) {
 		};  // data: required data format for url address
 	w_or_wo_proxyhandler = 'w_proxyhandler';  // w_or_wo_proxyhandler: 'w_proxyhandler', 'wo_proxyhandler'
 	return_type = 'json';  // return_type: 'json', 'blob', 'blob_file_pdf', 'arrayBuffer', 'text'
-	// out = await fetch_CORS(url, method, data, w_or_wo_proxyhandler, return_type);  // CORS error
-	// OR
-	// out = await jQuery_CORS(url, method, data, return_type);
-	// OR
-	out = await jQuery_w_CORS_POST(url, data);
-	console.log('out: ', out);
+	out_fetch = await fetch_CORS(url, method, data, w_or_wo_proxyhandler, return_type);  // CORS error
+	console.log('out_fetch: ', out_fetch);
+	
+	out_jquery = await jQuery_CORS(url, method, data, return_type);
+	console.log('out_jquery: ', out_jquery);
 }
 
 // -----------------------------------------------
-
-async function jQuery_w_CORS_blob_GET() {
-
-	var url = document.getElementById('url').value;  // url: url address
-	
-	var settings = {
-		url: url,
-		type : 'GET',
-		dataType: 'json',
-		xhrFields: {responseType: 'blob'},
-		async: true,
-		crossDomain: true,
-		success: function(response) { console.log('Success'); },
-		error: function(xhr, status, error) { console.log('Error:', error); }
-	};
-
-	$.ajax(settings).done(function(response) { console.log('response: ', response); })
-}
-
-// -----------------------------------------------
-
-	
-async function jQuery_w_CORS_POST(url, data) {
-
-  var settings = {
-		url: url,
-		type : 'POST',
-		dataType: 'json',
-	  	body : JSON.stringify(data),
-		async: true,
-		crossDomain: true,
-		success: function(response) { console.log('Success'); },
-		error: function(xhr, status, error) { console.log('Error:', error); }
-	};
-
-  return $.ajax(settings).done(function(response) { console.log('response: ', response); return response; })
-}
-
-// -----------------------------------------------
-	
 
 async function show_pdf_on_page(file_download_url_name) {
 
