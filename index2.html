@@ -90,14 +90,19 @@ async function script_method(url, callback) {
 	
 	// [Step 2] Get the output from running scriptElement.src
 	console.log('[Step 2] Get the output from running scriptElement.src')
+
+	// --------------------------------
 	
 	// Way 0: Basic method to call a callback
 	// Problems:
 	// 0) where does response come from? response is the output of running scriptElement.src.
 	// 1) this has nothing to do with the callback that is defined in scriptElement.src? Yes, it does because running scriptElement.src caused the callback to return the output
 	
-	var data_out = await new Promise(resolve => { var data = resolve(callback(response)); return data; });
-	console.log('data_out: ', data_out); 
+	// var data_out = await new Promise(resolve => { var data = resolve(callback(response)); return data; });
+	// console.log('data_out: ', data_out); 
+	
+	// RESULT: scriptElement.src does not return the response to the callback
+	
 
 	// Way 0b: Add a pause before resolving the callback
 	// Problems:
@@ -105,6 +110,8 @@ async function script_method(url, callback) {
 	// 1) this has nothing to do with the callback that is defined in scriptElement.src
 	// var data_out = new Promise(resolve => { setTimeout(resolve, 2000); resolve(callback(data)); });
 	// console.log('data_out: ', data_out); 
+
+	// --------------------------------
 	
 	// Way 1: create a proxy, handler
 	// Problems:
@@ -113,7 +120,7 @@ async function script_method(url, callback) {
 	window[callback_name] = function(response) { callback.call((window), response); }
 	console.log('window[callback_name]: ', window[callback_name]);
 	
-	
+	// --------------------------------
 	
 	
 	// Way 3: create an anonymous function
@@ -139,7 +146,6 @@ function func_callback(response) {
   return data;
 }
 
-// RESULT: scriptElement.src does not return the response to the callback
 
   
 
@@ -301,12 +307,12 @@ async function form_w_CORS_GET() {
 
 // Add an eventlistener to a button, when the button is clicked, do not redirect AND output the form results
 // Do not redirect page to the page that we want to perform GET,POST requests with
-document.getElementById("run_form_GET_request").addEventListener("click", (event) => {
+document.getElementById("form_w_CORS_GET").addEventListener("click", (event) => {
 	event.preventDefault();
 	console.log("Form submitted with click");
 });
 
-document.getElementById("run_form_GET_request").addEventListener("submit", (event) => {
+document.getElementById("form_w_CORS_GET").addEventListener("submit", (event) => {
 	event.preventDefault();
 	console.log("Form submitted with submit");
 });
