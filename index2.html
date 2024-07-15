@@ -168,10 +168,13 @@ async function script_method(url, callback) {
 	// 0) where does response come from? response is the output of running scriptElement.src.
 	var callback_name = callback.name;
 	window[callback_name] = function(response) { 
+		document.body.appendChild(scriptElement);
 		console.log('response: ', response);
 		return new Promise(resolve => { var data = resolve(callback.call((window), response)); return data; });
 	}
 	console.log('window[callback_name]: ', window[callback_name]);
+
+	console.log('callback_name: ', callback_name);
 	
 	// --------------------------------
 	
@@ -180,8 +183,7 @@ async function script_method(url, callback) {
 
 	// --------------------------------
 	
-	// Looks like one needs to append the script to the document to make it run
-	document.getElementsByTagName('body')[0].appendChild(scriptElement);
+	
 	return window[callback_name];
 }
 
@@ -193,7 +195,6 @@ function func_callback(response) {
 	var data = response.data;
 	console.log('meta: ', meta);
 	console.log('data: ', data);
-	
 	return data;
 }
 
@@ -205,8 +206,8 @@ document.getElementById('script_CORS_GET').onclick = async function() {
 		.then(function(data) {
 			console.log("data: ", data);
 
-			// Looks like one needs to remove the script from the document to make it stop
-			document.getElementsByTagName('body')[0].removeChild(scriptElement);
+			// document.getElementsByTagName('body')[0].removeChild(scriptElement);
+			document.body.removeChild(scriptElement);
 		});
 };
 
