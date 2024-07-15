@@ -403,7 +403,7 @@ function jQuery_w_JSONP_GET(url) {
 		async: false, // this is by default false, so not need to mention
 		crossDomain: true, // tell the browser to allow cross domain calls.
 		scriptAttrs: 'crossorigin',
-		xhrFields: {withCredentials: true}
+		// xhrFields: {withCredentials: true}
 		// success: successResopnse, jsonpCallback will call the successCallback
 		// error: failureFunction jsonp does not support errorCallback. So cannot use this 
 	};
@@ -513,8 +513,9 @@ async function jQuery_CORS(url, method, data, return_type) {
 		dataType: 'json', // data type response format: 'xml', html, script, json, jsonp, text
 		async: true,
 		crossDomain: true, // tell the browser to allow cross domain calls.
-		xhrFields: {withCredentials: true},
-		headers: {"Access-Control-Allow-Origin": "*" },
+		// xhrFields: {withCredentials: true},
+		xhrFields: {},
+		// headers: {"Access-Control-Allow-Origin": "*" },
 		success: function(response) { console.log('Success'); },
 		error: function(xhr, status, error) { console.log('Error:', error); }
 	};
