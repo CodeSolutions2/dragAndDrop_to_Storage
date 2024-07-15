@@ -9,7 +9,6 @@
 	<ul>
 		<li>https://nominatim.openstreetmap.org/search?q=LOCATION_NAME&format=json</li>
 		<li>https://api.open-meteo.com/v1/forecast?latitude=LATITUDE&longitude=LONGITUDE&hourly=temperature_2m</li>
-		<li>https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf</li>
 		<li>https://raw.githubusercontent.com/CodeSolutions2/pdf_to_text_webapp/main/document_imagepdf.pdf</li>
 	</ul>
 	<li>method: 'GET', 'POST'</li>
@@ -24,8 +23,7 @@
 <input id="data" type="text" value="" placeholder="data" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
 <input id="w_or_wo_proxyhandler" type="text" value="" placeholder="w_or_wo_proxyhandler" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
 <input id="return_type" type="text" value="" placeholder="return_type" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
-	
-<button id="script_CORS_GET" onclick="script_CORS_GET()">script_CORS_GET</button>
+
 	
 <button id="run_fetch_CORS" onclick="run_fetch_CORS()">run_fetch_CORS</button>
 
@@ -91,128 +89,6 @@ async function run_jQuery_CORS() {
 
 // -----------------------------------------------
 // SUBFUNCTIONS
-// -----------------------------------------------
-	
-// [Step 0] create the script element
-const scriptElement = document.createElement('script');
-scriptElement.type="application/json"; // "text/javascript";
-scriptElement.crossorigin="*";
-scriptElement.redirect="follow";
-scriptElement.mode='cors';
-
-var headers = {
-	"Content-Type": "application/json",
-	"Connection": "keep-alive",
-	"Access-Control-Allow-Origin": "*",
-};
-scriptElement.headers = new Headers(headers);
-console.log('[Step 0] create the script element');
-
-	
-var response;  // response is the output of running scriptElement.src
-
-
-// Way 2: use an eventListener to load the src
-scriptElement.addEventListener('load', (event) => {
-	console.log('Inside eventlistener'); 
-	console.log('event: ', event); 
-	var data = event.target; 
-	console.log('data: ', data); 
-})
-	
-// This is like a template for how to use the callback with the called function
-async function script_method(url, callback) {
-	
-	// [Step 1] Run/call the script with a callback
-	console.log('[Step 1] Run/call the script with a callback');
-	// This does not run/call the callback, it just assigns the callback to run the function func_callback
-	// The ? starts a query, and should only be used once; there is already a ? in the url so we add callback on using &
-	// The & separates value-pairs
-	scriptElement.src = `${url}&callback=${callback}`;
-	
-	// The robot says that the assignment of scriptElement.src = `${url}&callback=callback`; causes the callback to run.
-
-	// Where is the output of the ran command 'scriptElement.src'?
-
-	// after the assignment of scriptElement.src = `${url}&callback=callback` such that the callback runs, how does 
-
-
-	
-	// [Step 2] Get the output from running scriptElement.src
-	console.log('[Step 2] Get the output from running scriptElement.src')
-
-	// --------------------------------
-	
-	// Way 0: Basic method to call a callback
-	// Problems:
-	// 0) where does response come from? response is the output of running scriptElement.src.
-	// 1) this has nothing to do with the callback that is defined in scriptElement.src? Yes, it does because running scriptElement.src caused the callback to return the output
-	
-	// var data_out = await new Promise(resolve => { var data = resolve(callback(response)); return data; });
-	// console.log('data_out: ', data_out); 
-	
-	// RESULT: gives an error because scriptElement.src does not return the response to the callback
-	
-
-	// Way 0b: Add a pause before resolving the callback
-	// Problems:
-	// 0) here does data come from?
-	// 1) this has nothing to do with the callback that is defined in scriptElement.src
-	// var data_out = new Promise(resolve => { setTimeout(resolve, 2000); resolve(callback(data)); });
-	// console.log('data_out: ', data_out); 
-
-	// --------------------------------
-	
-	// Way 1: create a proxy, handler
-	// Problems:
-	// 0) where does response come from? response is the output of running scriptElement.src.
-	var callback_name = callback.name;
-	window[callback_name] = function(response) { 
-		document.body.appendChild(scriptElement);
-		console.log('response: ', response);
-		return new Promise(resolve => { var data = resolve(callback.call((window), response)); return data; });
-	}
-	console.log('window[callback_name]: ', window[callback_name]);
-
-	console.log('callback_name: ', callback_name);
-	
-	// --------------------------------
-	
-	// Way 3: create an anonymous function
-
-
-	// --------------------------------
-	
-	
-	return window[callback_name];
-}
-
-
-  
-// This is the callback function that manipulates the response
-function func_callback(response) {
-	var meta = response.meta;
-	var data = response.data;
-	console.log('meta: ', meta);
-	console.log('data: ', data);
-	return data;
-}
-
-
-  
-
-document.getElementById('script_CORS_GET').onclick = async function() {
-	await script_method(url, func_callback)
-		.then(function(data) {
-			console.log("data: ", data);
-
-			// document.getElementsByTagName('body')[0].removeChild(scriptElement);
-			document.body.removeChild(scriptElement);
-		});
-};
-
-// RESULT: no response
-	
 // -----------------------------------------------
 
 async function fetch_CORS(url, method, data, w_or_wo_proxyhandler, return_type) {
@@ -393,129 +269,6 @@ async function define_proxy_handler() {
 }
 
 	
-// -----------------------------------------------
-	
-function jQuery_w_JSONP_GET(url) {
-	
-	var settings = {
-		type: 'GET',
-		url: url,
-		dataType: 'jsonp',
-		jsonpCallback: 'myCallBackMethod',
-		async: false, // this is by default false, so not need to mention
-		crossDomain: true, // tell the browser to allow cross domain calls.
-		// scriptAttrs: 'crossorigin',
-		// xhrFields: {withCredentials: true}
-		// success: successResopnse, jsonpCallback will call the successCallback
-		// error: failureFunction jsonp does not support errorCallback. So cannot use this 
-	};
-
-	// [Step 0] Declare a constant variable proxy as a function
-	const proxy = function(response) { 
-		var meta = response.meta;
-		var data = response.data;
-		console.log("meta: ", meta);
-		console.log("data: ", data);
-		return data;
-	}
-
-	// [Step 1] Assign an existing global variable named myCallBackMethod to the return of proxy function
-	// Then call the constant variable proxy as a function
-	window.myCallBackMethod = function(data) { return proxy(data); }
-
-	// [Step 2] Call the fetch method from jQuery
-	// They say you only need to do the callback and not a promise
-	$.ajax(settings)
-		.then(function(response) {
-			console.log("returned GET data: ", response);
-		});
-
-	// So when ajax returns it will run the callback function called proxy. proxy basically reorganizes the data received from the server, the callback function proxy does not help one to gain access to the data it only reorganizes the data.  If one wants to gain access to the data directly, a callback is not needed.
-	
-	// So then does ajax return the result of myCallBackMethod
-
-}
-
-// RESULT: The script from “https://nominatim.openstreetmap.org/search?q=&format=json&callback=myCallBackMethod&_=1720795397518” was loaded even though its MIME type (“application/json”) is not a valid JavaScript MIME type.
-// A resource is blocked by OpaqueResponseBlocking, please check browser console for details.
-
-// -----------------------------------------------
-
-async function form_w_CORS_GET(url) {
-	
-  // Create <form> element to submit parameters to endpoint
-  var form = document.createElement('form');
-	
-  form.setAttribute('method', 'GET'); 
-
-  // Step 0: The browser navigates to the URL given in the action attribute : the user is taken away from the current page and redirected to a new page.
-  // The action attribute is used to indicate where the form’s data is sent to when it is submitted.
-  form.setAttribute('action', url);
-
-
-  // The form submission result will open in a new tab or window, depending on the user's browser settings.
-  // form.setAttribute('target', "_blank");
-
-	var headers = {
-		"Content-Type": "application/json",
-		"Referer": url,
-		"Origin": "https://codesolutions2.github.io",
-		"Connection": "keep-alive",
-		//"Sec-Fetch-Dest": "empty",
-		//"Sec-Fetch-Mode": "cors", 
-		//"Sec-Fetch-Site": "cross-site",
-		//"Sec-Fetch-User": "?1",
-		"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0",
-		"Access-Control-Allow-Origin": "*",
-		//'Access-Control-Allow-Credentials': false, 
-		//"Access-Control-Request-Method": method,
-		//"Access-Control-Request-Headers": 'content-type,x-pingother',
-		//'Cache-Control': 'max-age=0',
-	};
-	
-  form.setAttribute('headers', headers);
-  
-  // Just use arrays: each column is a form variable
-  let type_parameters = ['text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'submit'];
-  var name_parameters = ['place_id', 'licence', 'osm_type', 'osm_id', 'lat', 'lon', 'class', 'type', 'place_rank', 'importance', 'addresstype', 'name', 'display_name', 'boundingbox', 'submit'] 
-  var value_parameters = [0, "", "", 0, "", "", "", "", 0, 0, "", "", "", ["", "", "", ""], 'submit'];
-
-	
-	
-  type_parameters.forEach(async function(type_val, index) {
-	  let type = type_val;
-	  let name = name_parameters[index];
-	  let value = value_parameters[index];
-	  
-    var input = document.createElement('input');
-    input.innerHTML = '<input style="display:none;" type=' +type+ ' name=' +name+ 'value=' +value+ '>';
-          
-     form.appendChild(input);
-    });
-
-  // Add form to page and submit it to open the endpoint.
-  document.body.appendChild(form);
-	
-  form.submit();
-}
-
-// Add an eventlistener to a button, when the button is clicked, do not redirect AND output the form results
-// Do not redirect page to the page that we want to perform GET,POST requests with
-document.getElementById("form_w_CORS_GET").addEventListener("click", (event) => {
-	event.preventDefault();
-	console.log("Form submitted with click");
-});
-
-document.getElementById("form_w_CORS_GET").addEventListener("submit", (event) => {
-	event.preventDefault();
-	console.log("Form submitted with submit");
-});
-
-	
-// https://nominatim.openstreetmap.org/ui/search.html?place_idvalue%3D0=&licencevalue%3D=&osm_typevalue%3D=&osm_idvalue%3D0=&latvalue%3D=&lonvalue%3D=&classvalue%3D=&typevalue%3D=&place_rankvalue%3D0=&importancevalue%3D0=&addresstypevalue%3D=&namevalue%3D=&display_namevalue%3D=&boundingboxvalue%3D%2C%2C%2C=
-
-// -----------------------------------------------
-
 async function jQuery_CORS(url, method, data, return_type) {
 
 	// https://api.jquery.com/jQuery.ajax/
