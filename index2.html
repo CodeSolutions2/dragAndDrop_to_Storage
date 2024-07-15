@@ -130,7 +130,7 @@ async function script_method(url, callback) {
 	var callback_name = callback.name;
 	window[callback_name] = function(response) { 
 		console.log('response: ', response);
-		return new Promise(resolve => { var data = resolve(callback.call((window), response); return data; });
+		return new Promise(resolve => { var data = resolve(callback.call((window), response)); return data; });
 	}
 	console.log('window[callback_name]: ', window[callback_name]);
 	
