@@ -121,8 +121,10 @@ async function script_method(url, callback) {
 	// Problems:
 	// 0) where does response come from? response is the output of running scriptElement.src.
 	var callback_name = callback.name;
-	window[callback_name] = function(response) { callback.call((window), response); }
-	console.log('window[callback_name]: ', window[callback_name]);
+	window[callback_name] = function(response) { 
+		console.log('response: ', response);
+		callback.call((window), response);
+	}
 	
 	// --------------------------------
 	
@@ -167,7 +169,7 @@ document.getElementById('script_CORS_GET').onclick = async function() {
 	
 // -----------------------------------------------
 
-async function fetch_CORS_GET() {
+async function fetch_CORS_GET(url) {
 
 	var headers = {
 		"Content-Type": "application/json",
@@ -194,7 +196,7 @@ async function fetch_CORS_GET() {
 
 // -----------------------------------------------
 
-async function fetch_CORS_blob_GET() {
+async function fetch_CORS_blob_GET(url) {
 
 	var headers = {
 		"Content-Type": "application/json",
@@ -224,7 +226,7 @@ async function fetch_CORS_blob_GET() {
 
 // -----------------------------------------------
 
-async function fetch_CORS_GET_proxy_handler() {
+async function fetch_CORS_GET_proxy_handler(url) {
 
 	// Parameters to influence Response Header
 	// The `handler` object defines a `apply` method that intercepts the `fetch` function calls and adds the "Access-Control-Allow-Origin" header with a value of "*" to the request options. The `new Proxy(fetch, handler)` creates a proxied version of the `fetch` function that applies the defined handler.
@@ -311,7 +313,7 @@ async function fetch_CORS_GET_proxy_handler() {
 
 // -----------------------------------------------
 
-async function fetch_CORS_POST(data) {
+async function fetch_CORS_POST(url, data) {
 
 	var headers = {
 		"Content-Type": "application/json",
@@ -337,7 +339,7 @@ async function fetch_CORS_POST(data) {
 	
 // -----------------------------------------------
 	
-function jQuery_w_JSONP_GET() {
+function jQuery_w_JSONP_GET(url) {
 	
 	var settings = {
 		type: 'GET',
@@ -381,7 +383,7 @@ function jQuery_w_JSONP_GET() {
 
 // -----------------------------------------------
 
-async function form_w_CORS_GET() {
+async function form_w_CORS_GET(url) {
 	
   // Create <form> element to submit parameters to endpoint
   var form = document.createElement('form');
@@ -439,7 +441,7 @@ document.getElementById("form_w_CORS_GET").addEventListener("submit", (event) =>
 
 // -----------------------------------------------
 
-async function jQuery_w_CORS_GET() {
+async function jQuery_w_CORS_GET(url) {
 
   var settings = {
 		url: url,
@@ -456,7 +458,7 @@ async function jQuery_w_CORS_GET() {
 
 // -----------------------------------------------
 
-async function jQuery_w_CORS_blob_GET() {
+async function jQuery_w_CORS_blob_GET(url) {
 
   var settings = {
 		url: url,
@@ -474,7 +476,7 @@ async function jQuery_w_CORS_blob_GET() {
 
 // -----------------------------------------------
 
-async function jQuery_w_CORS_POST(data) {
+async function jQuery_w_CORS_POST(url, data) {
 
   var settings = {
 		url: url,
@@ -492,12 +494,12 @@ async function jQuery_w_CORS_POST(data) {
 	
 // -----------------------------------------------
 
-async function get_forecast_temperature_data() {
+async function get_forecast_temperature_data(url) {
 
 	// [Step 0] Get latitude and longitude
-	var data = await fetch_CORS_GET();
+	var data = await fetch_CORS_GET(url);
 	// OR
-	// var data = await jQuery_w_CORS_GET();
+	// var data = await jQuery_w_CORS_GET(url);
 
 	var location_latitude = data[0].lat;
 	var location_longitude = data[0].lon;
@@ -507,7 +509,7 @@ async function get_forecast_temperature_data() {
 	// [Step 0] Get weather data
 	// https://open-meteo.com/en/docs
 
-	var url = 'https://open-meteo.com/v1/forecast';
+	url = 'https://open-meteo.com/v1/forecast';
 
 	var data = {"latitude": Number(location_latitude),
 			    "longitude": Number(location_longitude), 
@@ -515,10 +517,10 @@ async function get_forecast_temperature_data() {
 			    "forecast_hours": 5
 		};
 	
-	var response0 = await fetch_CORS_POST(data);
+	var response0 = await fetch_CORS_POST(url, data);
 	console.log("response0: ", response0);
 	// OR
-	var response1 = await jQuery_w_CORS_POST(data);
+	var response1 = await jQuery_w_CORS_POST(url, data);
 	console.log("response1: ", response1);
 	  
 }
