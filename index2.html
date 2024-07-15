@@ -56,40 +56,60 @@ async function script_method(url, callback) {
 	};
 	scriptElement.headers = new Headers(headers);
 	
+
+	// Print the callback name
+	console.log('callback_name: ', callback);
+	
+	// callback_name should be 
+	var callback_name = 'func_callback';
 	
 	
-	// [Step 1] Assign which function should be called as the callback
-	console.log('[Step 1] Assign which function should be called as the callback');
+	// [Step 1] Run/call the callback
+	console.log('[Step 1] Run/call the callback');
 	// This does not run/call the callback, it just assigns the callback to run the function func_callback
 	// The ? starts a query, and should only be used once; there is already a ? in the url so we add callback on using &
 	// The & separates value-pairs
-	scriptElement.src = `${url}&callback=callback`;
+	scriptElement.src = `${url}&callback=${callback}`;
 	
-	
+	// The robot says that the assignment of scriptElement.src = `${url}&callback=callback`; causes the callback to run.
+
+	// Where is the output of the ran command 'scriptElement.src'?
+
+	// after the assignment of scriptElement.src = `${url}&callback=callback` such that the callback runs, how does 
 	
 	// [Step 2] Run/call scriptElement.src, so that the response is given to the callback
-	console.log('[Step 2] Run/call scriptElement.src, so that the response is given to the callback')
+	console.log('[Step 2] Get the output from running scriptElement.src')
 	
 	// Way 0: Basic method to call a callback
-	// Same here, where does data come from?
-	var data_out = await new Promise(resolve => { resolve(callback(data)); });
+	// Problems:
+	// 0) here does response come from? response is the output of running scriptElement.src, it does not need to be defined.
+	// 1) this has nothing to do with the callback that is defined in scriptElement.src? Yes, it does because running scriptElement.src caused the callback to return the output
+	
+	var data_out = await new Promise(resolve => { var data = resolve(callback(response)); return data; });
 	console.log('data_out: ', data_out); 
 
 	// Way 0b: Add a pause before resolving the callback
+	// Problems:
+	// 0) here does data come from?
+	// 1) this has nothing to do with the callback that is defined in scriptElement.src
 	// var data_out = new Promise(resolve => { setTimeout(resolve, 2000); resolve(callback(data)); });
 	// console.log('data_out: ', data_out); 
 	
 	// Way 1: create a proxy, handler
 	// but do not understand why data is an input, where does data come from?
-	// window['unique_var_name'] = function (data) { callback.call((window), data); }
+	// window['callback'] = function (data) { callback.call((window), data); }
+
+
+	// Simple example
+	
 	
 	// Way 2: use an eventListener to load the src
-	scriptElement.addEventListener('load', (event) => {
-		console.log('Inside eventlistener'); 
-		console.log('event: ', event); 
-		var data = event.target; 
-		console.log('data: ', data); 
-	})
+	// scriptElement.addEventListener('load', (event) => {
+	// 	console.log('Inside eventlistener'); 
+	// 	console.log('event: ', event); 
+	// 	var data = event.target; 
+	// 	console.log('data: ', data); 
+	// })
 	
 	// Way 3: create an anonymous function
   
