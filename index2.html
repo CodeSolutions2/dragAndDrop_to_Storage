@@ -4,18 +4,19 @@
 <body>
 
 <input id="url" type="text" value="" placeholder="url" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
-<input id="lat" type="text" value="" placeholder="lat" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
-<input id="lon" type="text" value="" placeholder="lon" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
 
-<button id="run_script" onclick="run_script()">run_script</button>
-<button id="regular_fetch" onclick="regular_fetch()">regular_fetch</button>
-<button id="regular_fetch_blob" onclick="regular_fetch_blob()">regular_fetch_blob</button>
+<button id="script_CORS_GET" onclick="script_CORS_GET()">script_CORS_GET</button>
 	
-<button id="run_selection_w_JSONP" onclick="run_selection_w_JSONP()">run_selection_w_JSONP</button>
+<button id="fetch_CORS_GET" onclick="fetch_CORS_GET()">fetch_CORS_GET</button>
+<button id="fetch_CORS_blob_GET" onclick="fetch_CORS_blob_GET()">fetch_CORS_blob_GET</button>
 	
-<button id="run_form_GET_request" onclick="run_form_GET_request()">run_form_GET_request</button>
+<button id="jQuery_w_JSONP_GET" onclick="jQuery_w_JSONP_GET()">jQuery_w_JSONP_GET</button>
+	
+<button id="form_w_CORS_GET" onclick="form_w_CORS_GET()">form_w_CORS_GET</button>
 
-<button id="run_selection_w_CORS" onclick="run_selection_w_CORS()">run_selection_w_CORS</button>
+<button id="jQuery_w_CORS_GET" onclick="jQuery_w_CORS_GET()">jQuery_w_CORS</button>
+<button id="jQuery_w_CORS_blob_GET" onclick="jQuery_w_CORS_blob_GET()">jQuery_w_CORS_blob</button>
+
 <button id="get_forecast_temperature_data" onclick="get_forecast_temperature_data()">get_forecast_temperature_data</button>
 	
 	
@@ -138,10 +139,11 @@ function func_callback(response) {
   return data;
 }
 
+// RESULT: scriptElement.src does not return the response to the callback
 
   
 
-document.getElementById('run_script').onclick = async function() {
+document.getElementById('script_CORS_GET').onclick = async function() {
 	await script_method(url, func_callback)
 		// .then(function(data) {
 			// console.log("data: ", data);
@@ -155,7 +157,7 @@ document.getElementById('run_script').onclick = async function() {
 	
 // -----------------------------------------------
 
-async function regular_fetch() {
+async function fetch_CORS_GET() {
 
 	var headers = {
 		"Content-Type": "application/json",
@@ -182,7 +184,7 @@ async function regular_fetch() {
 
 // -----------------------------------------------
 
-async function regular_fetch_blob() {
+async function fetch_CORS_blob_GET() {
 
 	var headers = {
 		"Content-Type": "application/json",
@@ -212,7 +214,7 @@ async function regular_fetch_blob() {
 
 // -----------------------------------------------
 	
-function run_selection_w_JSONP() {
+function jQuery_w_JSONP_GET() {
 	
 	var settings = {
 		type: 'GET',
@@ -256,7 +258,7 @@ function run_selection_w_JSONP() {
 
 // -----------------------------------------------
 
-async function run_form_GET_request() {
+async function form_w_CORS_GET() {
 	
   // Create <form> element to submit parameters to endpoint
   var form = document.createElement('form');
@@ -314,12 +316,32 @@ document.getElementById("run_form_GET_request").addEventListener("submit", (even
 
 // -----------------------------------------------
 
-async function run_selection_w_CORS() {
+async function jQuery_w_CORS_GET() {
 
   var settings = {
 		url: url,
 		type : 'GET',
 		dataType: 'json',
+		async: true,
+		crossDomain: true,
+		success: function(response) { console.log(response); },
+		error: function(xhr, status, error) { console.log('Error:', error); }
+	};
+
+  $.ajax(settings).done(function(response) { console.log('response: ', response); })
+}
+
+// RESULT: data:  Array []
+
+
+// -----------------------------------------------
+
+async function jQuery_w_CORS_blob_GET() {
+
+  var settings = {
+		url: url,
+		type : 'GET',
+		dataType: 'blob',
 		async: true,
 		crossDomain: true,
 		success: function(response) { console.log(response); },
