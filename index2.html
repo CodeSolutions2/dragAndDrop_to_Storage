@@ -3,8 +3,24 @@
 <head></head>
 <body>
 
+<h1>Multimedia fetch data webapp</h1>
+<ol type="A">
+	<li>Enter URL.</li>
+	<ul>
+		<li>https://nominatim.openstreetmap.org/search?q=LOCATION_NAME&format=json</li>
+		<li>https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf</li>
+		<li>https://raw.githubusercontent.com/CodeSolutions2/pdf_to_text_webapp/main/document_imagepdf.pdf</li>
+	</ul>
+	<li>method: 'GET', 'POST'</li>
+	<li>data: {}</li>
+  	<li>w_or_wo_proxyhandler: w_proxyhandler, wo_proxyhandler</li>
+	<li>return_type: json, blob, blob_file_pdf, arrayBuffer, text</li>
+	
+</ol>
+	
 <input id="url" type="text" value="" placeholder="url" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
 <input id="method" type="text" value="" placeholder="method" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
+<input id="data" type="text" value="" placeholder="data" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
 <input id="w_or_wo_proxyhandler" type="text" value="" placeholder="w_or_wo_proxyhandler" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
 <input id="return_type" type="text" value="" placeholder="return_type" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
 	
@@ -16,9 +32,7 @@
 	
 <button id="form_w_CORS_GET" onclick="form_w_CORS_GET()">form_w_CORS_GET</button>
 
-<button id="jQuery_w_CORS_GET" onclick="jQuery_w_CORS_GET()">jQuery_w_CORS_GET</button>
-<button id="jQuery_w_CORS_blob_GET" onclick="jQuery_w_CORS_blob_GET()">jQuery_w_CORS_blob_GET</button>
-<button id="jQuery_w_CORS_POST" onclick="jQuery_w_CORS_POST()">jQuery_w_CORS_POST</button>
+<button id="run_jQuery_CORS" onclick="run_jQuery_CORS()">run_jQuery_CORS</button>
 
 <button id="get_forecast_temperature_data" onclick="get_forecast_temperature_data()">get_forecast_temperature_data</button>
 	
@@ -38,9 +52,6 @@ window.addEventListener('beforeunload', function() {
 
 // -----------------------------------------------
 
-// https://nominatim.openstreetmap.org/search?q=Lyon&format=json
-// https://raw.githubusercontent.com/CodeSolutions2/pdf_to_text_webapp/main/document_imagepdf.pdf
-// https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf
 	
 // -----------------------------------------------
 
@@ -48,9 +59,9 @@ async function run_fetch_CORS() {
 
 	var url = document.getElementById('url').value;  // url: url address
 	var method = document.getElementById('method').value;  // method: 'GET', 'POST'
-	var data = [];  // data: required data format for url address
-	var w_or_wo_proxyhandler = document.getElementById('w_or_wo_proxyhandler').value;  // w_or_wo_proxyhandler: w_proxyhandler, wo_proxyhandler
-	var return_type = document.getElementById('return_type').value;  // return_type: json, blob, blob_file_pdf, arrayBuffer, text
+	var data = document.getElementById('data').value;  // data: required data format for url address
+	var w_or_wo_proxyhandler = document.getElementById('w_or_wo_proxyhandler').value;  // w_or_wo_proxyhandler: 'w_proxyhandler', 'wo_proxyhandler'
+	var return_type = document.getElementById('return_type').value;  // return_type: 'json', 'blob', 'blob_file_pdf', 'arrayBuffer', 'text'
 
 	var data = await fetch_CORS(url, method, data, w_or_wo_proxyhandler, return_type);
 	console.log('data: ', data); 
@@ -59,7 +70,13 @@ async function run_fetch_CORS() {
 // -----------------------------------------------
 
 async function run_jQuery_CORS() {
-	var data = await jQuery_CORS(url, return_type);
+
+	var url = document.getElementById('url').value;  // url: url address
+	var method = document.getElementById('method').value;  // method: 'GET', 'POST', 'PUT'
+	var data = document.getElementById('data').value;  // data: required data format for url address
+	var return_type = document.getElementById('return_type').value;  // return_type: 'json', 'blob', 'blob_file_pdf', 'arrayBuffer', 'text'
+
+	var data = await  jQuery_CORS(url, method, data, return_type);
 	console.log('data: ', data); 
 }
 	
@@ -384,7 +401,9 @@ function jQuery_w_JSONP_GET(url) {
 		dataType: 'jsonp',
 		jsonpCallback: 'myCallBackMethod',
 		async: false, // this is by default false, so not need to mention
-		crossDomain: true // tell the browser to allow cross domain calls.
+		crossDomain: true, // tell the browser to allow cross domain calls.
+		scriptAttrs: crossorigin,
+		xhrFields: {withCredentials: true}
 		// success: successResopnse, jsonpCallback will call the successCallback
 		// error: failureFunction jsonp does not support errorCallback. So cannot use this 
 	};
@@ -478,57 +497,62 @@ document.getElementById("form_w_CORS_GET").addEventListener("submit", (event) =>
 
 // -----------------------------------------------
 
-async function jQuery_w_CORS_GET(url) {
+async function jQuery_CORS(url, method, data, return_type) {
 
-  var settings = {
-		url: url,
-		type : 'GET',
-		dataType: 'json',
-		async: true,
-		crossDomain: true,
-		success: function(response) { console.log('Success'); },
-		error: function(xhr, status, error) { console.log('Error:', error); }
-	};
-
-  return $.ajax(settings).done(function(response) { console.log('response: ', response); return response; })
-}
-
-// -----------------------------------------------
-
-async function jQuery_w_CORS_blob_GET(url) {
-
-  var settings = {
-		url: url,
-		type : 'GET',
-		dataType: 'json',
-		xhrFields: {responseType: 'blob'},
-		async: true,
-		crossDomain: true,
-		success: function(response) { console.log('Success'); },
-		error: function(xhr, status, error) { console.log('Error:', error); }
-	};
-
-  $.ajax(settings).done(function(response) { console.log('response: ', response); })
-}
-
-// -----------------------------------------------
-
-async function jQuery_w_CORS_POST(url, data) {
-
-  var settings = {
-		url: url,
-		type : 'POST',
-		dataType: 'json',
-	  	body : JSON.stringify(data),
-		async: true,
-		crossDomain: true,
-		success: function(response) { console.log('Success'); },
-		error: function(xhr, status, error) { console.log('Error:', error); }
-	};
-
-  return $.ajax(settings).done(function(response) { console.log('response: ', response); return response; })
-}
+	// https://api.jquery.com/jQuery.ajax/
 	
+	// url: url address
+	// method: 'GET', 'POST', 'PUT'
+	// data: required data format for url address
+	// return_type: json, blob, blob_file_pdf, arrayBuffer, text
+
+	
+	var settings = {
+		url: url,
+		type : method,
+		dataType: 'json', // data type response format: 'xml', html, script, json, jsonp, text
+		async: true,
+		crossDomain: true, // tell the browser to allow cross domain calls.
+		headers: {"Access-Control-Allow-Origin": "*" },
+		success: function(response) { console.log('Success'); },
+		error: function(xhr, status, error) { console.log('Error:', error); }
+	};
+
+	// --------------------------------
+	
+	if (method == 'POST') {
+		settings.body = JSON.stringify(data);
+	}
+
+	// --------------------------------
+
+	// Determine the type of output to return 
+	
+	if (return_type == 'json') {
+		settings.xhrFields.responseType = 'json';
+		
+	} else if (return_type == 'blob') {
+		settings.xhrFields.responseType = 'blob';
+		
+	} else if (return_type == 'blob_file_pdf') {
+		
+		
+	} else if (return_type == 'arrayBuffer') {
+		settings.xhrFields.responseType = 'arrayBuffer';
+		
+	} else if (return_type == 'text') {
+		settings.xhrFields.responseType = 'text';
+	}
+
+	// --------------------------------
+	
+  	return $.ajax(settings).done(function(response) { console.log('response: ', response); return response; });
+
+	// OR
+
+	// return $.ajax(settings).then(function(response) { console.log('response: ', response); return response; });
+}
+
 // -----------------------------------------------
 
 async function get_forecast_temperature_data(url) {
@@ -561,9 +585,10 @@ async function get_forecast_temperature_data(url) {
 		};  // data: required data format for url address
 	w_or_wo_proxyhandler = 'w_proxyhandler';  // w_or_wo_proxyhandler: 'w_proxyhandler', 'wo_proxyhandler'
 	return_type = 'json';  // return_type: 'json', 'blob', 'blob_file_pdf', 'arrayBuffer', 'text'
-	out = await fetch_CORS(url, method, data, w_or_wo_proxyhandler, return_type);
+	// out = await fetch_CORS(url, method, data, w_or_wo_proxyhandler, return_type);  // CORS error
+	// OR
+	out = await jQuery_CORS(url, method, data, return_type);
 	console.log('out: ', out);
-	  
 }
 
 // Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote resource at https://open-meteo.com/v1/forecast. (Reason: CORS header ‘Access-Control-Allow-Origin’ missing). Status code: 404.
@@ -583,7 +608,7 @@ async function show_pdf_on_page(file_download_url_name) {
   	objectElement.setAttribute("width", 800);
   	objectElement.setAttribute("height", 1200);
   	objectElement.setAttribute("data", file_download_url_name);
-  	document.getElementById('pdf_viewer_output').appendChild(objectElement);
+  	document.getElementsByTagName('body')[0].appendChild(objectElement);
 }
 
 // -----------------------------------------------
