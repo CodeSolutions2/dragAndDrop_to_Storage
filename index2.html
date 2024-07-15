@@ -3,7 +3,7 @@
 <head></head>
 <body>
 
-<input id="location_name" type="text" value="" placeholder="location_name" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
+<input id="url" type="text" value="" placeholder="url" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
 <input id="lat" type="text" value="" placeholder="lat" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
 <input id="lon" type="text" value="" placeholder="lon" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
 
@@ -32,8 +32,10 @@ window.addEventListener('beforeunload', function() {
 
 // -----------------------------------------------
 
-var url = `https://nominatim.openstreetmap.org/search?q=${document.getElementById('location_name').innerHTML}&format=json`;
-
+// https://nominatim.openstreetmap.org/search?q=Lyon&format=json
+// https://raw.githubusercontent.com/CodeSolutions2/pdf_to_text_webapp/main/document_imagepdf.pdf
+var url = document.getElementById('url').value;
+	
 // -----------------------------------------------
 
 
@@ -177,56 +179,34 @@ async function regular_fetch() {
 
 // -----------------------------------------------
 
+async function regular_fetch_blob() {
+
+	var headers = {
+		"Content-Type": "application/json",
+		"Connection": "keep-alive",
+		"Access-Control-Allow-Origin": "*",
+	};
+	var options = {
+		method : 'GET',
+		mode: 'cors',
+		cache: "no-cache",
+		// crossorigin: 'anonymous',
+		crossorigin: '*',
+		headers: new Headers(headers),
+		redirect: "follow"
+	};
 	
-async function get_forecast_temperature_data() {
-
-	var location_latitude = document.getElementById('lat').innerHTML;
-	var location_longitude = document.getElementById('lon').innerHTML;
-
-	
-    // https://open-meteo.com/en/docs
-
-  var url = 'https://open-meteo.com/v1/forecast';
-	  
-		var headers = {
-			"Content-Type": "application/json",
-			"Connection": "keep-alive",
-			"Access-Control-Allow-Origin": "*",
-		};
-	
-		var data = {"latitude": Number(location_latitude),
-			    "longitude": Number(location_longitude), 
-			    "forecast_days": 1, 
-			    "forecast_hours": 5
-		};
-		
-		// --------------------
-		
-		var options = {
-			method : 'POST', 
-			body : JSON.stringify(data),
-			mode: 'cors',
-			cache: "no-cache",
-			// crossorigin: 'anonymous',
-			crossorigin: '*',
-			headers: new Headers(headers),
-			redirect: "follow"
-		};
-		
-		// ------------------------------------------
-		
-		await fetch(url, options)
-			.then(res => res.json())
-			.then(res => { 
-				let output = JSON.parse(JSON.stringify(res));
-				console.log('output: ', output);
-			})
-			.catch(error => { console.error("error: ", error) });
-
-  
-  
+	await fetch(url, options)
+		.then(response => response.blob())
+		.then(async function(blob_object) { 
+			console.log('blob_object: ', blob_object);
+			// return URL.createObjectURL(blob_object); 
+		})
+		.catch(error => console.error(error));
 }
 	
+// RESULT: data:  Array []
+
 // -----------------------------------------------
 	
 function run_selection_w_JSONP() {
@@ -350,6 +330,91 @@ async function run_selection_w_CORS() {
 
 // -----------------------------------------------
 
+async function get_forecast_temperature_data() {
+
+	var location_latitude = document.getElementById('lat').innerHTML;
+	var location_longitude = document.getElementById('lon').innerHTML;
+
+	
+    // https://open-meteo.com/en/docs
+
+  var url = 'https://open-meteo.com/v1/forecast';
+	  
+		var headers = {
+			"Content-Type": "application/json",
+			"Connection": "keep-alive",
+			"Access-Control-Allow-Origin": "*",
+		};
+	
+		var data = {"latitude": Number(location_latitude),
+			    "longitude": Number(location_longitude), 
+			    "forecast_days": 1, 
+			    "forecast_hours": 5
+		};
+		
+		// --------------------
+		
+		var options = {
+			method : 'POST', 
+			body : JSON.stringify(data),
+			mode: 'cors',
+			cache: "no-cache",
+			// crossorigin: 'anonymous',
+			crossorigin: '*',
+			headers: new Headers(headers),
+			redirect: "follow"
+		};
+		
+		// ------------------------------------------
+		
+		await fetch(url, options)
+			.then(res => res.json())
+			.then(res => { 
+				let output = JSON.parse(JSON.stringify(res));
+				console.log('output: ', output);
+			})
+			.catch(error => { console.error("error: ", error) });
+
+}
+
+// Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote resource at https://open-meteo.com/v1/forecast. (Reason: CORS header ‘Access-Control-Allow-Origin’ missing). Status code: 404.
+
+// Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote resource at https://open-meteo.com/v1/forecast. (Reason: CORS request did not succeed). Status code: (null).
+
+// error:  TypeError: NetworkError when attempting to fetch resource. index2.html:224:30
+	
+// -----------------------------------------------
+
+
+// -----------------------------------------------
+
+
+// -----------------------------------------------
+
+
+// -----------------------------------------------
+
+
+// -----------------------------------------------
+
+
+// -----------------------------------------------
+
+
+// -----------------------------------------------
+
+
+// -----------------------------------------------
+
+
+// -----------------------------------------------
+
+
+// -----------------------------------------------
+
+
+// -----------------------------------------------
+	
 </script>
 
   
