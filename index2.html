@@ -52,7 +52,7 @@ async function run_fetch_CORS() {
 	var w_or_wo_proxyhandler = document.getElementById('w_or_wo_proxyhandler').value;  // w_or_wo_proxyhandler: w_proxyhandler, wo_proxyhandler
 	var return_type = document.getElementById('return_type').value;  // return_type: json, blob, blob_file_pdf, arrayBuffer, text
 
-	var data = await fetch_CORS(url, method, data, w_or_wo_proxyhandler, return_type) {
+	var data = await fetch_CORS(url, method, data, w_or_wo_proxyhandler, return_type);
 	console.log('data: ', data); 
 }
 
