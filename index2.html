@@ -33,7 +33,6 @@
 <button id="form_w_CORS_GET" onclick="form_w_CORS_GET()">form_w_CORS_GET</button>
 
 <button id="run_jQuery_CORS" onclick="run_jQuery_CORS()">run_jQuery_CORS</button>
-<button id="jQuery_w_CORS_blob_GET" onclick="jQuery_w_CORS_blob_GET()">jQuery_w_CORS_blob_GET</button>
 
 <button id="get_forecast_temperature_data" onclick="get_forecast_temperature_data()">get_forecast_temperature_data</button>
 	
@@ -568,16 +567,22 @@ async function jQuery_CORS(url, method, data, return_type) {
 		settings.xhrFields = {responseType: 'json'};
 		
 	} else if (return_type == 'blob') {
-		settings.xhrFields.responseType = 'blob';
+		// settings.xhrFields.responseType = 'blob';
+		// OR
+		settings.xhrFields = {responseType: 'blob'};
 		
 	} else if (return_type == 'blob_file_pdf') {
-		
+		settings.xhrFields = {responseType: 'blob'};
 		
 	} else if (return_type == 'arrayBuffer') {
-		settings.xhrFields.responseType = 'arrayBuffer';
+		// settings.xhrFields.responseType = 'arrayBuffer';
+		// OR
+		settings.xhrFields = {responseType: 'arrayBuffer'};
 		
 	} else if (return_type == 'text') {
-		settings.xhrFields.responseType = 'text';
+		// settings.xhrFields.responseType = 'text';
+		// OR
+		settings.xhrFields = {responseType: 'text'};
 	}
 
 	// --------------------------------
