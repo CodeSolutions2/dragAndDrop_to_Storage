@@ -33,6 +33,7 @@
 <button id="form_w_CORS_GET" onclick="form_w_CORS_GET()">form_w_CORS_GET</button>
 
 <button id="run_jQuery_CORS" onclick="run_jQuery_CORS()">run_jQuery_CORS</button>
+<button id="jQuery_w_CORS_blob_GET" onclick="jQuery_w_CORS_blob_GET()">jQuery_w_CORS_blob_GET</button>
 
 <button id="get_forecast_temperature_data" onclick="get_forecast_temperature_data()">get_forecast_temperature_data</button>
 	
@@ -624,18 +625,53 @@ async function get_forecast_temperature_data(url) {
 	return_type = 'json';  // return_type: 'json', 'blob', 'blob_file_pdf', 'arrayBuffer', 'text'
 	// out = await fetch_CORS(url, method, data, w_or_wo_proxyhandler, return_type);  // CORS error
 	// OR
-	out = await jQuery_CORS(url, method, data, return_type);
+	// out = await jQuery_CORS(url, method, data, return_type);
+	// OR
+	out = await jQuery_w_CORS_POST(url, data);
 	console.log('out: ', out);
 }
 
-// Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote resource at https://open-meteo.com/v1/forecast. (Reason: CORS header ‘Access-Control-Allow-Origin’ missing). Status code: 404.
-
-// Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote resource at https://open-meteo.com/v1/forecast. (Reason: CORS request did not succeed). Status code: (null).
-
-// error:  TypeError: NetworkError when attempting to fetch resource. index2.html:224:30
-	
 // -----------------------------------------------
 
+async function jQuery_w_CORS_blob_GET() {
+
+	var url = document.getElementById('url').value;  // url: url address
+	
+	var settings = {
+		url: url,
+		type : 'GET',
+		dataType: 'json',
+		xhrFields: {responseType: 'blob'},
+		async: true,
+		crossDomain: true,
+		success: function(response) { console.log('Success'); },
+		error: function(xhr, status, error) { console.log('Error:', error); }
+	};
+
+	$.ajax(settings).done(function(response) { console.log('response: ', response); })
+}
+
+// -----------------------------------------------
+
+	
+async function jQuery_w_CORS_POST(url, data) {
+
+  var settings = {
+		url: url,
+		type : 'POST',
+		dataType: 'json',
+	  	body : JSON.stringify(data),
+		async: true,
+		crossDomain: true,
+		success: function(response) { console.log('Success'); },
+		error: function(xhr, status, error) { console.log('Error:', error); }
+	};
+
+  return $.ajax(settings).done(function(response) { console.log('response: ', response); return response; })
+}
+
+// -----------------------------------------------
+	
 
 async function show_pdf_on_page(file_download_url_name) {
 
