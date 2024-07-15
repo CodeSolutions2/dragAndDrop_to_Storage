@@ -36,9 +36,20 @@ var url = `https://nominatim.openstreetmap.org/search?q=${document.getElementByI
 
 // -----------------------------------------------
 
+
+	
 const scriptElement = document.createElement('script');
 var data = ["start"];
 
+
+// Way 2: use an eventListener to load the src
+scriptElement.addEventListener('load', (event) => {
+	console.log('Inside eventlistener'); 
+	console.log('event: ', event); 
+	var data = event.target; 
+	console.log('data: ', data); 
+})
+	
 // This is like a template for how to use the callback with the called function
 async function script_method(url, callback) {
 
@@ -56,12 +67,8 @@ async function script_method(url, callback) {
 	};
 	scriptElement.headers = new Headers(headers);
 	
-
-	// Print the callback name
-	console.log('callback_name: ', callback);
 	
-	// callback_name should be 
-	var callback_name = 'func_callback';
+	
 	
 	
 	// [Step 1] Run/call the callback
@@ -82,9 +89,9 @@ async function script_method(url, callback) {
 	
 	// Way 0: Basic method to call a callback
 	// Problems:
-	// 0) here does response come from? response is the output of running scriptElement.src, it does not need to be defined.
+	// 0) where does response come from? response is the output of running scriptElement.src.
 	// 1) this has nothing to do with the callback that is defined in scriptElement.src? Yes, it does because running scriptElement.src caused the callback to return the output
-	
+	var response;  // response is the output of running scriptElement.src
 	var data_out = await new Promise(resolve => { var data = resolve(callback(response)); return data; });
 	console.log('data_out: ', data_out); 
 
@@ -96,20 +103,14 @@ async function script_method(url, callback) {
 	// console.log('data_out: ', data_out); 
 	
 	// Way 1: create a proxy, handler
-	// but do not understand why data is an input, where does data come from?
-	// window['callback'] = function (data) { callback.call((window), data); }
-
-
-	// Simple example
+	// Problems:
+	// 0) where does response come from? response is the output of running scriptElement.src.
+	var callback_name = callback.name;
+	window[callback_name] = function (response) { callback.call((window), response); }
+	console.log('window[callback_name]: ', window[callback_name]);
 	
 	
-	// Way 2: use an eventListener to load the src
-	// scriptElement.addEventListener('load', (event) => {
-	// 	console.log('Inside eventlistener'); 
-	// 	console.log('event: ', event); 
-	// 	var data = event.target; 
-	// 	console.log('data: ', data); 
-	// })
+	
 	
 	// Way 3: create an anonymous function
   
