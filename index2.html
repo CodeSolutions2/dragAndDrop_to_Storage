@@ -104,7 +104,7 @@ async function script_method(url, callback) {
 	// Problems:
 	// 0) where does response come from? response is the output of running scriptElement.src.
 	var callback_name = callback.name;
-	window[callback_name] = function (response) { callback.call((window), response); }
+	window[callback_name] = function(response) { callback.call((window), response); }
 	console.log('window[callback_name]: ', window[callback_name]);
 	
 	
