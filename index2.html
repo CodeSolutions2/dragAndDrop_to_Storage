@@ -9,13 +9,16 @@
 	
 <button id="fetch_CORS_GET" onclick="fetch_CORS_GET()">fetch_CORS_GET</button>
 <button id="fetch_CORS_blob_GET" onclick="fetch_CORS_blob_GET()">fetch_CORS_blob_GET</button>
-	
+<button id="fetch_CORS_GET_proxy_handler" onclick="fetch_CORS_GET_proxy_handler()">fetch_CORS_GET_proxy_handler</button>
+<button id="fetch_CORS_POST" onclick="fetch_CORS_POST()">fetch_CORS_POST</button>
+
 <button id="jQuery_w_JSONP_GET" onclick="jQuery_w_JSONP_GET()">jQuery_w_JSONP_GET</button>
 	
 <button id="form_w_CORS_GET" onclick="form_w_CORS_GET()">form_w_CORS_GET</button>
 
-<button id="jQuery_w_CORS_GET" onclick="jQuery_w_CORS_GET()">jQuery_w_CORS</button>
-<button id="jQuery_w_CORS_blob_GET" onclick="jQuery_w_CORS_blob_GET()">jQuery_w_CORS_blob</button>
+<button id="jQuery_w_CORS_GET" onclick="jQuery_w_CORS_GET()">jQuery_w_CORS_GET</button>
+<button id="jQuery_w_CORS_blob_GET" onclick="jQuery_w_CORS_blob_GET()">jQuery_w_CORS_blob_GET</button>
+<button id="jQuery_w_CORS_POST" onclick="jQuery_w_CORS_POST()">jQuery_w_CORS_POST</button>
 
 <button id="get_forecast_temperature_data" onclick="get_forecast_temperature_data()">get_forecast_temperature_data</button>
 	
@@ -37,6 +40,7 @@ window.addEventListener('beforeunload', function() {
 
 // https://nominatim.openstreetmap.org/search?q=Lyon&format=json
 // https://raw.githubusercontent.com/CodeSolutions2/pdf_to_text_webapp/main/document_imagepdf.pdf
+// https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf
 var url = document.getElementById('url').value;
 console.log('url: ', url); 
 	
@@ -180,9 +184,9 @@ async function fetch_CORS_GET() {
 		redirect: "follow"
 	};
 	
-	await fetch(url, options)
+	return await fetch(url, options)
 		.then(response => response.json())
-		.then(async function(data) { console.log('data: ', data); })
+		.then(async function(data) { console.log('data: ', data); return data; )
 		.catch(error => console.error("error: ", error));
 }
 	
@@ -218,6 +222,119 @@ async function fetch_CORS_blob_GET() {
 	
 // RESULT: data:  Array []
 
+// -----------------------------------------------
+
+async function fetch_CORS_GET_proxy_handler() {
+
+	// Parameters to influence Response Header
+	// The `handler` object defines a `apply` method that intercepts the `fetch` function calls and adds the "Access-Control-Allow-Origin" header with a value of "*" to the request options. The `new Proxy(fetch, handler)` creates a proxied version of the `fetch` function that applies the defined handler.
+
+	// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Access-Control-Allow-Headers
+	
+	const handler = {
+		apply: function(target, thisArg, args) {
+			// One needs to re-define the input arguments of the handler because a constant variable is used as a function (ie: await proxy3(url, options))
+			const [url, options] = args;
+			if (options && options.headers) {
+				options.headers['Access-Control-Allow-Origin'] = '*';
+				options.headers['Access-Control-Allow-Credentials'] = false;
+				options.headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE';
+				// options.headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept';
+				options.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization';
+				options.headers['Access-Control-Max-Age'] = 0;
+			} else {
+				args[1] = {
+					headers: { 
+						'Access-Control-Allow-Origin': '*',
+						'Access-Control-Allow-Credentials': false,
+						'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE',
+						'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+						'Access-Control-Max-Age': 0
+					}
+				};
+	 		}
+	 		console.log('args: ', args);
+	 		return Reflect.apply(target, thisArg, args);
+		}
+	};
+
+
+	// https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers
+	// "Sec-Fetch-Mode": "cors", // Indicates the request's mode to a server: cors, navigate, no-cors, same-origin, websocket
+
+	// Sec-Fetch-User:  ?0 = false, ?1 = true
+	// Sec-Fetch-Dest: audio, audioworklet, document, embed, empty, font, image, manifest, object, paintworklet, report, script, serviceworker, sharedworker, style, track, video, worker, and xslt
+	// "Sec-Fetch-Site": "cross-site", // cross-site, same-origin, same-site, none
+	// 'Cache-Control': 'max-age=0' // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security?utm_source=mozilla&utm_medium=devtools-netmonitor&utm_campaign=default - this allows one to change the preflight request, other wise the preflight request settings are set for a year
+	var headers = {
+		"Content-Type": "application/json",
+		"Referer": url,
+		"Origin": "https://codesolutions2.github.io",
+		"Connection": "keep-alive",
+		//"Sec-Fetch-Dest": "empty",
+		//"Sec-Fetch-Mode": "cors", 
+		//"Sec-Fetch-Site": "cross-site",
+		//"Sec-Fetch-User": "?1",
+		"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0",
+		"Access-Control-Allow-Origin": "*",
+		//'Access-Control-Allow-Credentials': false, 
+		//"Access-Control-Request-Method": 'GET',
+		//"Access-Control-Request-Headers": 'content-type,x-pingother',
+		//'Cache-Control': 'max-age=0',
+	};
+	var options = {
+		method : 'GET',
+		mode: 'cors',
+		cache: "no-cache",
+		credentials: 'include',
+		//crossorigin: 'anonymous',
+		crossorigin: '*',
+		headers: new Headers(headers),
+		redirect: "follow"
+	};
+
+	// Call the constant variable proxy3 as a function to resolve the promise correctly
+	const proxy3 = new Proxy(fetch, handler);
+	await proxy3(url, options)
+		.then(response => response.blob())
+		.then(async function(blob_object) { 
+			console.log('blob_object: ', blob_object);
+			// return URL.createObjectURL(blob_object); 
+		})
+		.catch(error => console.error(error));
+
+	// Proxy sturcture works! 
+	// Calls the function WITHOUT input variables to assign a proxy definition to a constant variable. 
+	// The constant variable is called as a function, where it resolves promises. 
+
+}
+
+// -----------------------------------------------
+
+async function fetch_CORS_POST(data) {
+
+	var headers = {
+		"Content-Type": "application/json",
+		"Connection": "keep-alive",
+		"Access-Control-Allow-Origin": "*",
+	};
+	var options = {
+		method : 'POST',
+		body : JSON.stringify(data),
+		mode: 'cors',
+		cache: "no-cache",
+		// crossorigin: 'anonymous',
+		crossorigin: '*',
+		headers: new Headers(headers),
+		redirect: "follow"
+	};
+	
+	return await fetch(url, options)
+		.then(response => response.json())
+		.then(async function(data) { console.log('data: ', data); return data; )
+		.catch(error => console.error("error: ", error));
+}
+	
 // -----------------------------------------------
 	
 function jQuery_w_JSONP_GET() {
@@ -330,15 +447,12 @@ async function jQuery_w_CORS_GET() {
 		dataType: 'json',
 		async: true,
 		crossDomain: true,
-		success: function(response) { console.log(response); },
+		success: function(response) { console.log('Success'); },
 		error: function(xhr, status, error) { console.log('Error:', error); }
 	};
 
-  $.ajax(settings).done(function(response) { console.log('response: ', response); })
+  return $.ajax(settings).done(function(response) { console.log('response: ', response); return response; })
 }
-
-// RESULT: data:  Array []
-
 
 // -----------------------------------------------
 
@@ -347,65 +461,66 @@ async function jQuery_w_CORS_blob_GET() {
   var settings = {
 		url: url,
 		type : 'GET',
-		dataType: 'blob',
+		dataType: 'json',
+		xhrFields: {responseType: 'blob'},
 		async: true,
 		crossDomain: true,
-		success: function(response) { console.log(response); },
+		success: function(response) { console.log('Success'); },
 		error: function(xhr, status, error) { console.log('Error:', error); }
 	};
 
   $.ajax(settings).done(function(response) { console.log('response: ', response); })
 }
 
-// RESULT: data:  Array []
+// -----------------------------------------------
 
+async function jQuery_w_CORS_POST(data) {
+
+  var settings = {
+		url: url,
+		type : 'POST',
+		dataType: 'json',
+	  	body : JSON.stringify(data),
+		async: true,
+		crossDomain: true,
+		success: function(response) { console.log('Success'); },
+		error: function(xhr, status, error) { console.log('Error:', error); }
+	};
+
+  return $.ajax(settings).done(function(response) { console.log('response: ', response); return response; })
+}
+	
 // -----------------------------------------------
 
 async function get_forecast_temperature_data() {
 
-	var location_latitude = document.getElementById('lat').innerHTML;
-	var location_longitude = document.getElementById('lon').innerHTML;
+	// [Step 0] Get latitude and longitude
+	var data = await fetch_CORS_GET();
+	// OR
+	// var data = await jQuery_w_CORS_GET();
 
-	
-    // https://open-meteo.com/en/docs
+	var location_latitude = data[0].lat;
+	var location_longitude = data[0].lon;
+	console.log("location_latitude: ", location_latitude);
+	console.log("location_longitude: ", location_longitude);
 
-  var url = 'https://open-meteo.com/v1/forecast';
-	  
-		var headers = {
-			"Content-Type": "application/json",
-			"Connection": "keep-alive",
-			"Access-Control-Allow-Origin": "*",
-		};
-	
-		var data = {"latitude": Number(location_latitude),
+	// [Step 0] Get weather data
+	// https://open-meteo.com/en/docs
+
+	var url = 'https://open-meteo.com/v1/forecast';
+
+	var data = {"latitude": Number(location_latitude),
 			    "longitude": Number(location_longitude), 
 			    "forecast_days": 1, 
 			    "forecast_hours": 5
 		};
-		
-		// --------------------
-		
-		var options = {
-			method : 'POST', 
-			body : JSON.stringify(data),
-			mode: 'cors',
-			cache: "no-cache",
-			// crossorigin: 'anonymous',
-			crossorigin: '*',
-			headers: new Headers(headers),
-			redirect: "follow"
-		};
-		
-		// ------------------------------------------
-		
-		await fetch(url, options)
-			.then(res => res.json())
-			.then(res => { 
-				let output = JSON.parse(JSON.stringify(res));
-				console.log('output: ', output);
-			})
-			.catch(error => { console.error("error: ", error) });
-
+	
+	var response0 = await fetch_CORS_POST(data);
+	console.log("response0: ", response0);
+	// OR
+	var response1 = await jQuery_w_CORS_POST(data);
+	console.log("response1: ", response1);
+	  
 }
 
 // Cross-Origin Request Blocked: The Same Origin Policy disallows reading the remote resource at https://open-meteo.com/v1/forecast. (Reason: CORS header ‘Access-Control-Allow-Origin’ missing). Status code: 404.
