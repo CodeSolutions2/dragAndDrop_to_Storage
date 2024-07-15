@@ -168,10 +168,11 @@ async function get_forecast_temperature_data() {
 		
 		// --------------------
 		
-		var options = {method : 'POST', 
-			       body : JSON.stringify(data)
-			      mode: 'cors',
-				cache: "no-cache",
+		var options = {
+			method : 'POST', 
+			body : JSON.stringify(data),
+			mode: 'cors',
+			cache: "no-cache",
 				// crossorigin: 'anonymous',
 				crossorigin: '*',
 				headers: new Headers(headers),
