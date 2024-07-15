@@ -4,11 +4,11 @@
 <body>
 
 <input id="url" type="text" value="" placeholder="url" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
-
+<input id="return_type" type="text" value="" placeholder="return_type" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
+	
 <button id="script_CORS_GET" onclick="script_CORS_GET()">script_CORS_GET</button>
 	
 <button id="fetch_CORS_GET" onclick="fetch_CORS_GET()">fetch_CORS_GET</button>
-<button id="fetch_CORS_blob_GET" onclick="fetch_CORS_blob_GET()">fetch_CORS_blob_GET</button>
 	
 <button id="fetch_CORS_blob_GET_proxy_handler" onclick="fetch_CORS_blob_GET_proxy_handler()">fetch_CORS_blob_GET_proxy_handler</button>
 	
@@ -45,6 +45,11 @@ window.addEventListener('beforeunload', function() {
 // https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf
 var url = document.getElementById('url').value;
 console.log('url: ', url); 
+
+
+// json, blob, blob_file_pdf, arraybuffer, text
+var return_type = document.getElementById('return_type').value;
+console.log('return_type: ', return_type); 
 	
 // -----------------------------------------------
 
@@ -187,6 +192,8 @@ async function fetch_CORS_GET(url, return_type) {
 		redirect: "follow"
 	};
 
+	// --------------------------------
+
 	if (return_type == 'json') {
 		return await fetch(url, options)
 			.then(response => response.json())
@@ -226,6 +233,8 @@ async function fetch_CORS_GET(url, return_type) {
 		.then(str_data => { console.log('str_data: ', str_data); return str_data; })
 		.catch(error => console.error("error: ", error));
 	}
+
+	// --------------------------------
 }
 	
 // RESULT: data:  Array []
