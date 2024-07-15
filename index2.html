@@ -402,7 +402,7 @@ function jQuery_w_JSONP_GET(url) {
 		jsonpCallback: 'myCallBackMethod',
 		async: false, // this is by default false, so not need to mention
 		crossDomain: true, // tell the browser to allow cross domain calls.
-		scriptAttrs: 'crossorigin',
+		// scriptAttrs: 'crossorigin',
 		// xhrFields: {withCredentials: true}
 		// success: successResopnse, jsonpCallback will call the successCallback
 		// error: failureFunction jsonp does not support errorCallback. So cannot use this 
@@ -514,7 +514,7 @@ async function jQuery_CORS(url, method, data, return_type) {
 		async: true,
 		crossDomain: true, // tell the browser to allow cross domain calls.
 		// xhrFields: {withCredentials: true},
-		xhrFields: {},
+		// xhrFields: {},
 		// headers: {"Access-Control-Allow-Origin": "*" },
 		success: function(response) { console.log('Success'); },
 		error: function(xhr, status, error) { console.log('Error:', error); }
@@ -531,7 +531,9 @@ async function jQuery_CORS(url, method, data, return_type) {
 	// Determine the type of output to return 
 	
 	if (return_type == 'json') {
-		settings.xhrFields.responseType = 'json';
+		// settings.xhrFields.responseType = 'json';
+		// OR
+		settings.xhrFields = {responseType: 'json'};
 		
 	} else if (return_type == 'blob') {
 		settings.xhrFields.responseType = 'blob';
