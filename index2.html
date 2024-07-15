@@ -258,6 +258,7 @@ async function fetch_CORS(url, method, data, w_or_wo_proxyhandler, return_type) 
 		
 	} else if (return_type == 'blob') {
 		if (w_or_wo_proxyhandler == 'w_proxyhandler') {
+			const proxy3 = await define_proxy_handler();
 			return await proxy3(url, options)
 				.then(response => response.blob())
 				.then(async function(blob_object) { console.log('blob_object: ', blob_object); return blob_object; })
@@ -271,6 +272,7 @@ async function fetch_CORS(url, method, data, w_or_wo_proxyhandler, return_type) 
 		
 	} else if (return_type == 'blob_file_pdf') {
 		if (w_or_wo_proxyhandler == 'w_proxyhandler') {
+			const proxy3 = await define_proxy_handler();
 			return await proxy3(url, options)
 				.then(response => response.blob())
 				.then(async function(blob_object) { 
@@ -302,6 +304,7 @@ async function fetch_CORS(url, method, data, w_or_wo_proxyhandler, return_type) 
 		
 	} else if (return_type == 'arrayBuffer') {
 		if (w_or_wo_proxyhandler == 'w_proxyhandler') {
+			const proxy3 = await define_proxy_handler();
 			return await proxy3(url, options)
 				.then(response => response.arrayBuffer())
 				.then(async function(arraybuffer) { console.log("arraybuffer:", arraybuffer); return blob_object; })
@@ -315,6 +318,7 @@ async function fetch_CORS(url, method, data, w_or_wo_proxyhandler, return_type) 
 		
 	} else if (return_type == 'text') {
 		if (w_or_wo_proxyhandler == 'w_proxyhandler') {
+			const proxy3 = await define_proxy_handler();
 			return await proxy3(url, options)
 				.then(res => res.text())
 				.then(str_data => { console.log('str_data: ', str_data); return str_data; })
