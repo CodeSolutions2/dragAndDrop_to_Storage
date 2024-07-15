@@ -9,7 +9,9 @@
 	
 <button id="fetch_CORS_GET" onclick="fetch_CORS_GET()">fetch_CORS_GET</button>
 <button id="fetch_CORS_blob_GET" onclick="fetch_CORS_blob_GET()">fetch_CORS_blob_GET</button>
-<button id="fetch_CORS_GET_proxy_handler" onclick="fetch_CORS_GET_proxy_handler()">fetch_CORS_GET_proxy_handler</button>
+	
+<button id="fetch_CORS_blob_GET_proxy_handler" onclick="fetch_CORS_blob_GET_proxy_handler()">fetch_CORS_blob_GET_proxy_handler</button>
+	
 <button id="fetch_CORS_POST" onclick="fetch_CORS_POST()">fetch_CORS_POST</button>
 
 <button id="jQuery_w_JSONP_GET" onclick="jQuery_w_JSONP_GET()">jQuery_w_JSONP_GET</button>
@@ -105,7 +107,7 @@ async function script_method(url, callback) {
 	// var data_out = await new Promise(resolve => { var data = resolve(callback(response)); return data; });
 	// console.log('data_out: ', data_out); 
 	
-	// RESULT: scriptElement.src does not return the response to the callback
+	// RESULT: gives an error because scriptElement.src does not return the response to the callback
 	
 
 	// Way 0b: Add a pause before resolving the callback
@@ -123,18 +125,20 @@ async function script_method(url, callback) {
 	var callback_name = callback.name;
 	window[callback_name] = function(response) { 
 		console.log('response: ', response);
-		callback.call((window), response);
+		return new Promise(resolve => { var data = resolve(callback.call((window), response); return data; });
 	}
+	console.log('window[callback_name]: ', window[callback_name]);
 	
 	// --------------------------------
 	
-	
 	// Way 3: create an anonymous function
-  
 
+
+	// --------------------------------
+	
 	// Looks like one needs to append the script to the document to make it run
-	// document.getElementsByTagName('body')[0].appendChild(scriptElement);
-	// return data_out;
+	document.getElementsByTagName('body')[0].appendChild(scriptElement);
+	return window[callback_name];
 }
 
 
@@ -143,13 +147,10 @@ async function script_method(url, callback) {
 function func_callback(response) {
 	var meta = response.meta;
 	var data = response.data;
-	console.log(meta);
-	console.log(data);
-
-	// Looks like one needs to append the script to the document to make it run
-	// document.getElementsByTagName('body')[0].appendChild(scriptElement);
-  
-  return data;
+	console.log('meta: ', meta);
+	console.log('data: ', data);
+	
+	return data;
 }
 
 
@@ -157,19 +158,19 @@ function func_callback(response) {
 
 document.getElementById('script_CORS_GET').onclick = async function() {
 	await script_method(url, func_callback)
-		// .then(function(data) {
-			// console.log("data: ", data);
+		.then(function(data) {
+			console.log("data: ", data);
 
 			// Looks like one needs to remove the script from the document to make it stop
-			// document.getElementsByTagName('body')[0].removeChild(scriptElement);
-		// });
+			document.getElementsByTagName('body')[0].removeChild(scriptElement);
+		});
 };
 
 // RESULT: no response
 	
 // -----------------------------------------------
 
-async function fetch_CORS_GET(url) {
+async function fetch_CORS_GET(url, return_type) {
 
 	var headers = {
 		"Content-Type": "application/json",
@@ -185,48 +186,53 @@ async function fetch_CORS_GET(url) {
 		headers: new Headers(headers),
 		redirect: "follow"
 	};
-	
-	return await fetch(url, options)
-		.then(response => response.json())
-		.then(async function(data) { console.log('data: ', data); return data; })
+
+	if (return_type == 'json') {
+		return await fetch(url, options)
+			.then(response => response.json())
+			.then(async function(data) { console.log('data: ', data); return data; })
+			.catch(error => console.error("error: ", error));
+		
+	} else if (return_type == 'blob') {
+		return await fetch(url, options)
+		.then(response => response.blob())
+		.then(async function(blob_object) { console.log('blob_object: ', blob_object); return blob_object; })
 		.catch(error => console.error("error: ", error));
-}
-	
-// RESULT: data:  Array []
-
-// -----------------------------------------------
-
-async function fetch_CORS_blob_GET(url) {
-
-	var headers = {
-		"Content-Type": "application/json",
-		"Connection": "keep-alive",
-		"Access-Control-Allow-Origin": "*",
-	};
-	var options = {
-		method : 'GET',
-		mode: 'cors',
-		cache: "no-cache",
-		// crossorigin: 'anonymous',
-		crossorigin: '*',
-		headers: new Headers(headers),
-		redirect: "follow"
-	};
-	
-	await fetch(url, options)
+		
+	} else if (return_type == 'blob_file_pdf') {
+		return await fetch(url, options)
 		.then(response => response.blob())
 		.then(async function(blob_object) { 
 			console.log('blob_object: ', blob_object);
-			// return URL.createObjectURL(blob_object); 
+			return new File ([blob_object], "file_download", {type: "application/pdf"});
 		})
-		.catch(error => console.error(error));
+		.then(async function(file_blob_object) {
+			console.log('file_blob_object: ', file_blob_object);
+			let github_url_of_externally_downloaded_data = URL.createObjectURL(file_blob_object);
+			console.log('github_url_of_externally_downloaded_data: ', github_url_of_externally_downloaded_data);
+			await show_pdf_on_page(github_url_of_externally_downloaded_data);
+		})
+		.catch(error => console.error("error: ", error));
+		
+	} else if (return_type == 'arraybuffer') {
+		return await fetch(url, options)
+		.then(response => response.arrayBuffer())
+		.then(async function(arraybuffer) { console.log("arraybuffer:", arraybuffer); return blob_object; })
+		.catch(error => console.error("error: ", error));
+		
+	} else if (return_type == 'text') {
+		return await fetch(url, options)
+		.then(res => res.text())
+		.then(str_data => { console.log('str_data: ', str_data); return str_data; })
+		.catch(error => console.error("error: ", error));
+	}
 }
 	
 // RESULT: data:  Array []
 
 // -----------------------------------------------
 
-async function fetch_CORS_GET_proxy_handler(url) {
+async function fetch_CORS_blob_GET_proxy_handler(url) {
 
 	// Parameters to influence Response Header
 	// The `handler` object defines a `apply` method that intercepts the `fetch` function calls and adds the "Access-Control-Allow-Origin" header with a value of "*" to the request options. The `new Proxy(fetch, handler)` creates a proxied version of the `fetch` function that applies the defined handler.
@@ -496,6 +502,8 @@ async function jQuery_w_CORS_POST(url, data) {
 
 async function get_forecast_temperature_data(url) {
 
+	var url = 'https://nominatim.openstreetmap.org/search?q=Lyon&format=json';
+	
 	// [Step 0] Get latitude and longitude
 	var data = await fetch_CORS_GET(url);
 	// OR
@@ -533,6 +541,17 @@ async function get_forecast_temperature_data(url) {
 	
 // -----------------------------------------------
 
+
+async function show_pdf_on_page(file_download_url_name) {
+
+ 	var objectElement = document.createElement('object');
+  	objectElement.setAttribute("id", "pdf_object_element");
+  	objectElement.setAttribute("type", "application/pdf");
+  	objectElement.setAttribute("width", 800);
+  	objectElement.setAttribute("height", 1200);
+  	objectElement.setAttribute("data", file_download_url_name);
+  	document.getElementById('pdf_viewer_output').appendChild(objectElement);
+}
 
 // -----------------------------------------------
 
