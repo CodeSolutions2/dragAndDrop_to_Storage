@@ -259,7 +259,7 @@ async function fetch_CORS(url, method, data, w_or_wo_proxyhandler, return_type) 
 		// Calls the function WITHOUT input variables to assign a proxy definition to a constant variable. 
 		// The constant variable is called as a function, where it resolves promises. 
 		// Call the constant variable proxy3 as a function to resolve the promise correctly
-		const proxy3 = new Proxy(fetch, handler);
+		const proxy3 = await new Proxy(fetch, handler);
 
 		// --------------------------------
 		
@@ -294,7 +294,7 @@ async function fetch_CORS(url, method, data, w_or_wo_proxyhandler, return_type) 
 		};
 	}
 
-	options.headers = new Headers(headers);
+	options.headers = await new Headers(headers);
 
 	// --------------------------------
 
