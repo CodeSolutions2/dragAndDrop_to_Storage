@@ -453,8 +453,25 @@ async function form_w_CORS_GET(url) {
 
   // The form submission result will open in a new tab or window, depending on the user's browser settings.
   // form.setAttribute('target', "_blank");
+
+	var headers = {
+		"Content-Type": "application/json",
+		"Referer": url,
+		"Origin": "https://codesolutions2.github.io",
+		"Connection": "keep-alive",
+		//"Sec-Fetch-Dest": "empty",
+		//"Sec-Fetch-Mode": "cors", 
+		//"Sec-Fetch-Site": "cross-site",
+		//"Sec-Fetch-User": "?1",
+		"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0",
+		"Access-Control-Allow-Origin": "*",
+		//'Access-Control-Allow-Credentials': false, 
+		//"Access-Control-Request-Method": method,
+		//"Access-Control-Request-Headers": 'content-type,x-pingother',
+		//'Cache-Control': 'max-age=0',
+	};
 	
-  form.setAttribute('headers', {"Content-Type": "application/json", "Access-Control-Allow-Origin": "*"});
+  form.setAttribute('headers', headers);
   
   // Just use arrays: each column is a form variable
   let type_parameters = ['text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'text', 'submit'];
@@ -506,6 +523,22 @@ async function jQuery_CORS(url, method, data, return_type) {
 	// data: required data format for url address
 	// return_type: json, blob, blob_file_pdf, arrayBuffer, text
 
+	var headers = {
+		// "Content-Type": "application/json",
+		"Referer": url,
+		"Origin": "https://codesolutions2.github.io",
+		"Connection": "keep-alive",
+		//"Sec-Fetch-Dest": "empty",
+		//"Sec-Fetch-Mode": "cors", 
+		//"Sec-Fetch-Site": "cross-site",
+		//"Sec-Fetch-User": "?1",
+		"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0",
+		"Access-Control-Allow-Origin": "*",
+		//'Access-Control-Allow-Credentials': false, 
+		//"Access-Control-Request-Method": method,
+		//"Access-Control-Request-Headers": 'content-type,x-pingother',
+		//'Cache-Control': 'max-age=0',
+	};
 	
 	var settings = {
 		url: url,
@@ -515,7 +548,7 @@ async function jQuery_CORS(url, method, data, return_type) {
 		crossDomain: true, // tell the browser to allow cross domain calls.
 		// xhrFields: {withCredentials: true},
 		// xhrFields: {},
-		// headers: {"Access-Control-Allow-Origin": "*" },
+		headers: new Headers(headers),
 		success: function(response) { console.log('Success'); },
 		error: function(xhr, status, error) { console.log('Error:', error); }
 	};
