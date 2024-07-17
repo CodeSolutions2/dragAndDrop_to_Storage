@@ -219,6 +219,11 @@ async function fetch_CORS(url, method, data, w_or_wo_proxyhandler, return_type) 
 					let github_url_of_externally_downloaded_data = URL.createObjectURL(file_blob_object);
 					console.log('github_url_of_externally_downloaded_data: ', github_url_of_externally_downloaded_data);
 					await show_pdf_on_page(github_url_of_externally_downloaded_data);
+
+					// a file was loaded before, so remove the blob URL from memory to use resources effectively
+					URL.revokeObjectURL(github_url_of_externally_downloaded_data);
+					
+					return "File blob loaded with success";
 				})
 				.catch(error => console.error("error: ", error));
 		}
@@ -362,6 +367,10 @@ async function jQuery_CORS(url, method, data, return_type) {
 			.done(function(text_pdf) { console.log('text_pdf: ', text_pdf); 
 						  return new Blob([text_pdf]);
 			})
+			.then(async function(blob_object) { 
+				console.log('blob_object: ', blob_object);
+				return blob_object;
+			})
 		
 	} else if (return_type == 'blob_file_pdf') {
 		settings.xhrFields = {responseType: 'blob'};
@@ -379,6 +388,11 @@ async function jQuery_CORS(url, method, data, return_type) {
 				let github_url_of_externally_downloaded_data = URL.createObjectURL(file_blob_object);
 				console.log('github_url_of_externally_downloaded_data: ', github_url_of_externally_downloaded_data);
 				await show_pdf_on_page(github_url_of_externally_downloaded_data);
+			
+				// a file was loaded before, so remove the blob URL from memory to use resources effectively
+				URL.revokeObjectURL(github_url_of_externally_downloaded_data);
+				
+				return "File blob loaded with success";
 			})
 			.catch(error => console.error("error: ", error));
 		
