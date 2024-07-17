@@ -369,11 +369,9 @@ async function jQuery_CORS(url, method, data, return_type) {
 
 		var text_pdf = await $.ajax(url, [,settings]).done(function(response) { console.log('response: ', response); return response; });
 
-		return await new Blob([text_pdf], {type:"application/pdf"})
-			.then(async function(blob_object) { 
-				console.log('blob_object: ', blob_object);
-				return blob_object;
-			})
+		var blob_object = new Blob([text_pdf], {type:"application/pdf"});
+		console.log('blob_object: ', blob_object);
+		return blob_object;
 		
 	} else if (return_type == 'blob_file_pdf') {
 		settings.xhrFields = {responseType: 'blob'};
