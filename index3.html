@@ -205,6 +205,11 @@ async function fetch_CORS(url, method, data, w_or_wo_proxyhandler, return_type) 
 					let github_url_of_externally_downloaded_data = URL.createObjectURL(file_blob_object);
 					console.log('github_url_of_externally_downloaded_data: ', github_url_of_externally_downloaded_data);
 					await show_pdf_on_page(github_url_of_externally_downloaded_data);
+
+					// a file was loaded before, so remove the blob URL from memory to use resources effectively
+					URL.revokeObjectURL(github_url_of_externally_downloaded_data);
+					
+					return "File blob loaded with success";
 				})
 				.catch(error => console.error("error: ", error));
 		} else {
@@ -221,7 +226,7 @@ async function fetch_CORS(url, method, data, w_or_wo_proxyhandler, return_type) 
 					await show_pdf_on_page(github_url_of_externally_downloaded_data);
 
 					// a file was loaded before, so remove the blob URL from memory to use resources effectively
-					// URL.revokeObjectURL(github_url_of_externally_downloaded_data);
+					URL.revokeObjectURL(github_url_of_externally_downloaded_data);
 					
 					return "File blob loaded with success";
 				})
@@ -364,7 +369,7 @@ async function jQuery_CORS(url, method, data, return_type) {
 
 		var text_pdf = await $.ajax(url, [,settings]).done(function(response) { console.log('response: ', response); return response; });
 
-		return await new Blob([text_pdf])
+		return await new Blob([text_pdf], {type:"application/pdf"})
 			.then(async function(blob_object) { 
 				console.log('blob_object: ', blob_object);
 				return blob_object;
@@ -375,7 +380,7 @@ async function jQuery_CORS(url, method, data, return_type) {
 
 		var text_pdf = await $.ajax(url, [,settings]).done(function(response) { console.log('response: ', response); return response; });
 		
-		return await new Blob([text_pdf])
+		return await new Blob([text_pdf], {type:"application/pdf"})
 			.then(async function(blob_object) { 
 				console.log('blob_object: ', blob_object);
 				return new File ([blob_object], "file_download", {type: "application/pdf"});
