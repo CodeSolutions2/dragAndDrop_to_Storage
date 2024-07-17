@@ -10,6 +10,7 @@
 		<li>https://nominatim.openstreetmap.org/search?q=LOCATION_NAME&format=json</li>
 		<li>https://api.open-meteo.com/v1/forecast?latitude=LATITUDE&longitude=LONGITUDE&hourly=temperature_2m</li>
 		<li>https://raw.githubusercontent.com/CodeSolutions2/pdf_to_text_webapp/main/document_imagepdf.pdf</li>
+		<!-- <li>https://s3-us-west-2.amazonaws.com/openai-assets/research-covers/language-unsupervised/language_understanding_paper.pdf</li> -->
 	</ul>
 	<li>method: 'GET', 'POST'</li>
 	<li>data: {}</li>
@@ -340,7 +341,7 @@ async function jQuery_CORS(url, method, data, return_type) {
 		dataType: 'json', // data type response format: 'xml', html, script, json, jsonp, text
 		async: true,
 		crossDomain: true,
-    beforeSend: function(xhr) {xhr.withCredentials = true;},
+		beforeSend: function(xhr) {xhr.withCredentials = true;},
 		// headers: new Headers(headers),
 		success: function(response) { console.log('Success'); },
 		error: function(xhr, status, error) { console.log('Error:', error); }
@@ -379,7 +380,16 @@ async function jQuery_CORS(url, method, data, return_type) {
 	} else if (return_type == 'blob_file_pdf') {
 		settings.xhrFields = {responseType: 'blob'};
 
-		var text_pdf = await $.ajax(url, [,settings]).done(function(response) { console.log('response: ', response); return response; });
+		var text_pdf = await $.ajax(url, [,settings])
+			.done(function(response) { console.log('response: ', response); return response; })
+			.then(jquery_blob => jquery_blob.text())
+			.then(text_pdf => { 
+				// Convert the jquery_blob to a string
+				console.log('text_pdf: ', text_pdf);
+				return text_pdf;
+			})
+			.catch(error => console.error("error: ", error));
+
 		
 		var blob_object = new Blob([text_pdf], {type:"application/pdf"});
 		// var blob_object = new Blob([text_pdf], { type: 'application/octet-stream' });
