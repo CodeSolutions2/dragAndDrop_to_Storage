@@ -358,13 +358,18 @@ async function jQuery_CORS(url, method, data, return_type) {
 		settings.xhrFields = {responseType: 'blob'};
 
 		return $.ajax(url, [,settings])
-			.done(function(response) { console.log('response: ', response); return response; });
+			//.done(function(response) { console.log('response: ', response); return response; });
+			.done(function(text_pdf) { console.log('text_pdf: ', text_pdf); 
+						  return new Blob([text_pdf]);
+			})
 		
 	} else if (return_type == 'blob_file_pdf') {
 		settings.xhrFields = {responseType: 'blob'};
 
 		return $.ajax(settings)
-			.then(response => response.blob())
+			.done(function(text_pdf) { console.log('text_pdf: ', text_pdf); 
+						  return new Blob([text_pdf]);
+			})
 			.then(async function(blob_object) { 
 				console.log('blob_object: ', blob_object);
 				return new File ([blob_object], "file_download", {type: "application/pdf"});
