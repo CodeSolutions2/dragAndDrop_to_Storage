@@ -378,23 +378,18 @@ async function jQuery_CORS(url, method, data, return_type) {
 
 		var text_pdf = await $.ajax(url, [,settings]).done(function(response) { console.log('response: ', response); return response; });
 		
-		return await new Blob([text_pdf], {type:"application/pdf"})
-			.then(async function(blob_object) { 
-				console.log('blob_object: ', blob_object);
-				return new File ([blob_object], "file_download", {type: "application/pdf"});
-			})
-			.then(async function(file_blob_object) {
-				console.log('file_blob_object: ', file_blob_object);
-				let github_url_of_externally_downloaded_data = URL.createObjectURL(file_blob_object);
-				console.log('github_url_of_externally_downloaded_data: ', github_url_of_externally_downloaded_data);
-				await show_pdf_on_page(github_url_of_externally_downloaded_data);
-			
-				// a file was loaded before, so remove the blob URL from memory to use resources effectively
-				// URL.revokeObjectURL(github_url_of_externally_downloaded_data);
-				
-				return "File blob loaded with success";
-			})
-			.catch(error => console.error("error: ", error));
+		var blob_object = new Blob([text_pdf], {type:"application/pdf"});
+		console.log('blob_object: ', blob_object);
+		var file_blob_object = new File ([blob_object], "file_download", {type: "application/pdf"});
+		console.log('file_blob_object: ', file_blob_object);
+		let github_url_of_externally_downloaded_data = URL.createObjectURL(file_blob_object);
+		console.log('github_url_of_externally_downloaded_data: ', github_url_of_externally_downloaded_data);
+		await show_pdf_on_page(github_url_of_externally_downloaded_data);
+	
+		// a file was loaded before, so remove the blob URL from memory to use resources effectively
+		await setTimeout(function() { URL.revokeObjectURL(github_url_of_externally_downloaded_data); }, 100);
+		
+		return "File blob loaded with success";
 		
 	} else if (return_type == 'arrayBuffer') {
 		// settings.xhrFields.responseType = 'arrayBuffer';
@@ -434,6 +429,15 @@ async function show_pdf_on_page(file_download_url_name) {
 
 // -----------------------------------------------
 
+async function automatically_download(file_download_url_name) {
+
+ 	var link = document.createElement('a');
+ 	link.href = file_download_url_name;
+ 	// link.download = options.name;
+ 	link.click();
+}
+
+// -----------------------------------------------
 	
 </script>
 
