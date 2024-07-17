@@ -387,7 +387,8 @@ async function jQuery_CORS(url, method, data, return_type) {
 		await show_pdf_on_page(github_url_of_externally_downloaded_data);
 	
 		// a file was loaded before, so remove the blob URL from memory to use resources effectively
-		await setTimeout(function() { URL.revokeObjectURL(github_url_of_externally_downloaded_data); }, 100);
+		// await setTimeout(function() { URL.revokeObjectURL(github_url_of_externally_downloaded_data); }, 100);
+		//URL.revokeObjectURL(github_url_of_externally_downloaded_data);
 		
 		return "File blob loaded with success";
 		
