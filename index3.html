@@ -348,37 +348,56 @@ async function jQuery_CORS(url, method, data, return_type) {
 		// settings.xhrFields.responseType = 'json';
 		// OR
 		settings.xhrFields = {responseType: 'json'};
+
+		return $.ajax(url, [,settings])
+			.done(function(response) { console.log('response: ', response); return response; });
 		
 	} else if (return_type == 'blob') {
 		// settings.xhrFields.responseType = 'blob';
 		// OR
 		settings.xhrFields = {responseType: 'blob'};
+
+		return $.ajax(url, [,settings])
+			.done(function(response) { console.log('response: ', response); return response; });
 		
 	} else if (return_type == 'blob_file_pdf') {
 		settings.xhrFields = {responseType: 'blob'};
+
+		return $.ajax(settings)
+			.then(response => response.blob())
+			.then(async function(blob_object) { 
+				console.log('blob_object: ', blob_object);
+				return new File ([blob_object], "file_download", {type: "application/pdf"});
+			})
+			.then(async function(file_blob_object) {
+				console.log('file_blob_object: ', file_blob_object);
+				let github_url_of_externally_downloaded_data = URL.createObjectURL(file_blob_object);
+				console.log('github_url_of_externally_downloaded_data: ', github_url_of_externally_downloaded_data);
+				await show_pdf_on_page(github_url_of_externally_downloaded_data);
+			})
+			.catch(error => console.error("error: ", error));
 		
 	} else if (return_type == 'arrayBuffer') {
 		// settings.xhrFields.responseType = 'arrayBuffer';
 		// OR
 		settings.xhrFields = {responseType: 'arrayBuffer'};
+
+		return $.ajax(url, [,settings])
+			.done(function(response) { console.log('response: ', response); return response; });
 		
 	} else if (return_type == 'text') {
 		// settings.xhrFields.responseType = 'text';
 		// OR
 		settings.xhrFields = {responseType: 'text'};
+
+		return $.ajax(url, [,settings])
+			.done(function(response) { console.log('response: ', response); return response; });
 	}
 
 	// --------------------------------
 	
   	// return $.ajax(settings).done(function(response) { console.log('response: ', response); return response; });
-
-	// OR
-
-	// return $.ajax(settings).then(function(response) { console.log('response: ', response); return response; });
-
-	// OR
-
-	return $.ajax(url, [,settings]).done(function(response) { console.log('response: ', response); return response; });
+	
 }
 
 // -----------------------------------------------
