@@ -11,6 +11,7 @@
 		<li>https://api.open-meteo.com/v1/forecast?latitude=LATITUDE&longitude=LONGITUDE&hourly=temperature_2m</li>
 		<li>https://raw.githubusercontent.com/CodeSolutions2/pdf_to_text_webapp/main/document_imagepdf.pdf</li>
 		<!-- <li>https://s3-us-west-2.amazonaws.com/openai-assets/research-covers/language-unsupervised/language_understanding_paper.pdf</li> -->
+		<li>https://storage.googleapis.com/on-the-way2selfrespect/yellow.png</li>
 	</ul>
 	<li>method: 'GET', 'POST'</li>
 	<li>data: {}</li>
@@ -25,10 +26,13 @@
 <input id="w_or_wo_proxyhandler" type="text" value="" placeholder="w_or_wo_proxyhandler" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
 <input id="return_type" type="text" value="" placeholder="return_type" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
 
+<button id="script_CORS_GET" onclick="script_CORS_GET()">script_CORS_GET</button>
 	
 <button id="run_fetch_CORS" onclick="run_fetch_CORS()">run_fetch_CORS</button>
 	
 <button id="run_jQuery_CORS" onclick="run_jQuery_CORS()">run_jQuery_CORS</button>
+
+<button id="run_Image_CORS" onclick="run_Image_CORS()">run_Image_CORS</button>
 
 <button id="get_forecast_temperature_data" onclick="get_forecast_temperature_data()">get_forecast_temperature_data</button>
 	
@@ -76,6 +80,27 @@ async function run_jQuery_CORS() {
 
 // -----------------------------------------------
 
+async function run_Image_CORS() {
+	var canvasElement = document.createElement('canvas');
+	var ctx = canvasElement.getContext("2d");
+	var canvasElement_width = 150;
+	var canvasElement_height = canvasElement_width;
+	
+	const imageElement = new Image();  // image is 'HTMLImageElement'
+	imageElement.setAttribute('crossOrigin', "");
+	imageElement.setAttribute('headers', {"Content-Type": "application/json", "Access-Control-Allow-Origin": "*"});
+	imageElement.src = url;
+	imageElement.onload = async () => { ctx.drawImage(image, 0, 0, canvasElement_width, canvasElement_height); };
+
+	const imageData = ctx.getImageData(0, 0, canvasElement_width, canvasElement_height);
+	const pixelData = Array.from(imageData.data);
+	
+	console.log('image: ', image); 
+	document.getElementsByTagName('body')[0].appendChild(canvasElement);
+}
+	
+// -----------------------------------------------
+	
 async function get_forecast_temperature_data(url) {
 	
 	// [Step 0] Get latitude and longitude
@@ -111,11 +136,133 @@ async function get_forecast_temperature_data(url) {
 // -----------------------------------------------
 	
 
-// -----------------------------------------------
 	
 
 // -----------------------------------------------
 // SUBFUNCTIONS
+// -----------------------------------------------
+
+
+// [Step 0] create the script element
+const scriptElement = document.createElement('script');
+scriptElement.type="application/json"; // "text/javascript";
+scriptElement.crossorigin="*";
+scriptElement.redirect="follow";
+scriptElement.mode='cors';
+
+var headers = {
+	"Content-Type": "application/json",
+	"Connection": "keep-alive",
+	"Access-Control-Allow-Origin": "*",
+};
+scriptElement.headers = new Headers(headers);
+console.log('[Step 0] create the script element');
+
+	
+var response;  // response is the output of running scriptElement.src
+
+
+// Way 2: use an eventListener to load the src
+scriptElement.addEventListener('load', (event) => {
+	console.log('Inside eventlistener'); 
+	console.log('event: ', event); 
+	var data = event.target; 
+	console.log('data: ', data); 
+})
+	
+// This is like a template for how to use the callback with the called function
+async function script_method(url, callback) {
+	
+	// [Step 1] Run/call the script with a callback
+	console.log('[Step 1] Run/call the script with a callback');
+	// This does not run/call the callback, it just assigns the callback to run the function func_callback
+	// The ? starts a query, and should only be used once; there is already a ? in the url so we add callback on using &
+	// The & separates value-pairs
+	scriptElement.src = `${url}&callback=${callback}`;
+	
+	// The robot says that the assignment of scriptElement.src = `${url}&callback=callback`; causes the callback to run.
+
+	// Where is the output of the ran command 'scriptElement.src'?
+
+	// after the assignment of scriptElement.src = `${url}&callback=callback` such that the callback runs, how does 
+
+
+	
+	// [Step 2] Get the output from running scriptElement.src
+	console.log('[Step 2] Get the output from running scriptElement.src')
+
+	// --------------------------------
+	
+	// Way 0: Basic method to call a callback
+	// Problems:
+	// 0) where does response come from? response is the output of running scriptElement.src.
+	// 1) this has nothing to do with the callback that is defined in scriptElement.src? Yes, it does because running scriptElement.src caused the callback to return the output
+	
+	// var data_out = await new Promise(resolve => { var data = resolve(callback(response)); return data; });
+	// console.log('data_out: ', data_out); 
+	
+	// RESULT: gives an error because scriptElement.src does not return the response to the callback
+	
+
+	// Way 0b: Add a pause before resolving the callback
+	// Problems:
+	// 0) here does data come from?
+	// 1) this has nothing to do with the callback that is defined in scriptElement.src
+	// var data_out = new Promise(resolve => { setTimeout(resolve, 2000); resolve(callback(data)); });
+	// console.log('data_out: ', data_out); 
+
+	// --------------------------------
+	
+	// Way 1: create a proxy, handler
+	// Problems:
+	// 0) where does response come from? response is the output of running scriptElement.src.
+	var callback_name = callback.name;
+	window[callback_name] = function(response) { 
+		document.body.appendChild(scriptElement);
+		console.log('response: ', response);
+		return new Promise(resolve => { var data = resolve(callback.call((window), response)); return data; });
+	}
+	console.log('window[callback_name]: ', window[callback_name]);
+
+	console.log('callback_name: ', callback_name);
+	
+	// --------------------------------
+	
+	// Way 3: create an anonymous function
+
+
+	// --------------------------------
+	
+	
+	return window[callback_name];
+}
+
+
+  
+// This is the callback function that manipulates the response
+function func_callback(response) {
+	var meta = response.meta;
+	var data = response.data;
+	console.log('meta: ', meta);
+	console.log('data: ', data);
+	return data;
+}
+
+
+  
+
+document.getElementById('script_CORS_GET').onclick = async function() {
+	await script_method(url, func_callback)
+		.then(function(data) {
+			console.log("data: ", data);
+
+			// document.getElementsByTagName('body')[0].removeChild(scriptElement);
+			document.body.removeChild(scriptElement);
+		});
+};
+
+// RESULT: no response
+
 // -----------------------------------------------
 
 async function fetch_CORS(url, method, data, w_or_wo_proxyhandler, return_type) {
@@ -372,6 +519,8 @@ async function jQuery_CORS(url, method, data, return_type) {
 
 		var text_pdf = await $.ajax(url, [,settings]).done(function(response) { console.log('response: ', response); return response; });
 
+		text_pdf.split()
+										       
 		var blob_object = new Blob([text_pdf], {type:"application/pdf"});
 		// var blob_object = new Blob([text_pdf], { type: 'application/octet-stream' });
 		console.log('blob_object: ', blob_object);
@@ -444,8 +593,8 @@ async function show_pdf_on_page(file_download_url_name) {
 async function automatically_download(file_download_url_name) {
 
  	var link = document.createElement('a');
- 	link.href = file_download_url_name;
- 	// link.download = options.name;
+ 	link.href = file_download_url_name;  // link.href = canvas.toDataURL("image/png");
+ 	link.download = file_download_url_name.split('/').pop();
  	link.click();
 }
 
