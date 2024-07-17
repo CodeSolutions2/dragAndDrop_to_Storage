@@ -380,16 +380,11 @@ async function jQuery_CORS(url, method, data, return_type) {
 	} else if (return_type == 'blob_file_pdf') {
 		settings.xhrFields = {responseType: 'blob'};
 
-		var text_pdf = await $.ajax(url, [,settings])
-			.done(function(response) { console.log('response: ', response); return response; })
-			.then(jquery_blob => jquery_blob.text())
-			.then(text_pdf => { 
-				// Convert the jquery_blob to a string
-				console.log('text_pdf: ', text_pdf);
-				return text_pdf;
-			})
-			.catch(error => console.error("error: ", error));
+		var jquery_blob = await $.ajax(url, [,settings]).done(function(response) { console.log('response: ', response); return response; });
 
+		// Convert the jquery_blob to a string
+		var text_pdf = jquery_blob.toString();
+		console.log('text_pdf: ', text_pdf);
 		
 		var blob_object = new Blob([text_pdf], {type:"application/pdf"});
 		// var blob_object = new Blob([text_pdf], { type: 'application/octet-stream' });
