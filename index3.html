@@ -372,6 +372,7 @@ async function jQuery_CORS(url, method, data, return_type) {
 		var text_pdf = await $.ajax(url, [,settings]).done(function(response) { console.log('response: ', response); return response; });
 
 		var blob_object = new Blob([text_pdf], {type:"application/pdf"});
+		// var blob_object = new Blob([text_pdf], { type: 'application/octet-stream' });
 		console.log('blob_object: ', blob_object);
 		return blob_object;
 		
@@ -380,13 +381,16 @@ async function jQuery_CORS(url, method, data, return_type) {
 
 		var text_pdf = await $.ajax(url, [,settings]).done(function(response) { console.log('response: ', response); return response; });
 		
-		// var blob_object = new Blob([text_pdf], {type:"application/pdf"});
-		var blob_object = new Blob([text_pdf], { type: 'application/octet-stream' });
+		var blob_object = new Blob([text_pdf], {type:"application/pdf"});
+		// var blob_object = new Blob([text_pdf], { type: 'application/octet-stream' });
 		console.log('blob_object: ', blob_object);
-		var file_blob_object = new File ([blob_object], "file_download", {type: "application/pdf"});
-		console.log('file_blob_object: ', file_blob_object);
-		let github_url_of_externally_downloaded_data = URL.createObjectURL(file_blob_object);
+		
+		// var file_blob_object = new File ([blob_object], "file_download", {type: "application/pdf"});
+		// console.log('file_blob_object: ', file_blob_object);
+		// let github_url_of_externally_downloaded_data = URL.createObjectURL(file_blob_object);
+		let github_url_of_externally_downloaded_data = URL.createObjectURL(blob_object);
 		console.log('github_url_of_externally_downloaded_data: ', github_url_of_externally_downloaded_data);
+		
 		await show_pdf_on_page(github_url_of_externally_downloaded_data);
 	
 		// a file was loaded before, so remove the blob URL from memory to use resources effectively
