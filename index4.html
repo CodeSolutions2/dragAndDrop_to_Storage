@@ -502,7 +502,7 @@ async function jQuery_CORS(url, method, data, return_type) {
 	var settings = {
 		// url: url,
 		type : method,
-		dataType: 'json', // data type response format: 'xml', html, script, json, jsonp, text
+		dataType: 'json', // data type response format: 'xml', html, script, json, jsonp, text, binary
 		async: true,
 		crossDomain: true,
 		beforeSend: function(xhr) {xhr.withCredentials = true;},
@@ -533,6 +533,7 @@ async function jQuery_CORS(url, method, data, return_type) {
 		// settings.xhrFields.responseType = 'blob';
 		// OR
 		settings.xhrFields = {responseType: 'blob'};
+		settings.dataType = 'binary'; // change from json to [binary or text]
 
 		var text_pdf = await $.ajax(url, [,settings]).done(function(response) { console.log('response: ', response); return response; });
 
@@ -545,6 +546,7 @@ async function jQuery_CORS(url, method, data, return_type) {
 		
 	} else if (return_type == 'blob_file_pdf') {
 		settings.xhrFields = {responseType: 'blob'};
+		settings.dataType = 'binary'; // change from json to [binary or text]
 
 		var jquery_blob = await $.ajax(url, [,settings]).done(function(response) { console.log('response: ', response); return response; });
 
@@ -573,6 +575,7 @@ async function jQuery_CORS(url, method, data, return_type) {
 		// settings.xhrFields.responseType = 'arrayBuffer';
 		// OR
 		settings.xhrFields = {responseType: 'arrayBuffer'};
+		settings.dataType = 'binary'; // change from json to [binary or text]
 
 		return $.ajax(url, [,settings])
 			.done(function(response) { console.log('response: ', response); return response; });
@@ -581,6 +584,7 @@ async function jQuery_CORS(url, method, data, return_type) {
 		// settings.xhrFields.responseType = 'text';
 		// OR
 		settings.xhrFields = {responseType: 'text'};
+		settings.dataType = 'text';
 
 		return $.ajax(url, [,settings])
 			.done(function(response) { console.log('response: ', response); return response; });
