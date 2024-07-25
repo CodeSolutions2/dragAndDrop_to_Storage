@@ -33,22 +33,26 @@ var urls2try = ['https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/d
 
 
 async function way0a() {
-  
-  // Way 0: make the loop depend on a flag if statement
-  console.log('Way 0: make the loop depend on a flag if statement');
-  var val = [1, 2, 3, 4, 5];
-  var i = 0;
-  var flag = "run";
-  while (flag == "run" && i < val.length) {
-    if (val[i] == 3) {
-       flag = "stop";
-    }
-    i += 1;
-    console.log('i: ', i);
-  }
-  console.log('val[i]: ', val[i]);
-  console.log('flag: ', flag);
-  
+	
+	// Way 0: make the loop depend on a flag if statement
+	console.log('Way 0: make the loop depend on a flag if statement');
+	var val = [1, 2, 3, 4, 5];
+	var i = 0;
+	var flag = "run";
+	while (flag == "run" && i < val.length) {
+		if (val[i] == 3) {
+			flag = "stop";
+		}
+		
+		if (flag != "stop") {
+			i += 1;
+		}
+		
+		console.log('i: ', i);
+	}
+	
+	console.log('val[i]: ', val[i]);
+	console.log('flag: ', flag);
 }
 
 // ----------------------------------------------------
@@ -179,7 +183,7 @@ async function fetch_CORS(url) {
 	// To do - loop over headers and append to headers_final
 	
 	var options = { 
-		method : method,
+		method : 'GET',
 		mode: 'cors',
 		headers: new Headers(headers_final),
 		cache: "no-cache",
