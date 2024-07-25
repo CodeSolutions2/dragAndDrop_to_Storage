@@ -71,7 +71,7 @@ async function way1() {
 	
 	var blob_object = {};
 	var i = 0;
-	while (blob_object != {} && i < urls2try.length) {
+	while (blob_object == {} && i < urls2try.length) {
 		try {
 			console.log('url to try to fetch: ', urls2try.at(i));
 			blob_object = await fetch_CORS(urls2try.at(i));
@@ -95,7 +95,7 @@ async function way2() {
 	var blob_object = {};
 	var i = 0;
 	
-	while (blob_object == null && i < urls2try.length) {
+	while (blob_object != null && i < urls2try.length) {
 		try {
 			console.log('url to try to fetch: ', urls2try.at(i));
 			blob_object = await fetch_CORS(urls2try.at(i));
@@ -156,6 +156,7 @@ function createSignal(initialValue) {
 async function way3() {
 
 	const signal = createSignal({});
+	console.log('signal.getValue(): ', signal.getValue());
 	
 	var i = 0;
 	while (signal.getValue() == {} && i < urls2try.length) {
