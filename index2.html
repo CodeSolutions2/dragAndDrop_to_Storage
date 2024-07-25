@@ -88,6 +88,7 @@ async function way1() {
 		
 		if (blob_object == undefined) { blob_object = {}; } 
 		console.log('blob_object: ', blob_object);
+		console.log('Object.keys(blob_object).length: ', Object.keys(blob_object).length);
 		
 		console.log('i: ', i);
 	}
@@ -120,6 +121,8 @@ async function way2() {
 		
 		if (blob_object == undefined) { blob_object = {}; } 
 		console.log('blob_object: ', blob_object);
+
+		console.log('Object.keys(blob_object).length: ', Object.keys(blob_object).length);
 		
 		if (Object.keys(blob_object).length > 0) {
 			var out = blob_object;
@@ -178,10 +181,14 @@ async function way3() {
 		try {
 			console.log('url to try to fetch: ', urls2try.at(i));
 			signal.setValue(await fetch_CORS(urls2try.at(i)));
+			// if there is a fetch error signal = undefined
+			
 			i += 1;
 		} catch (error) {
 			console.log('error: ', error);
 		}
+
+		if (signal.getValue() == undefined) { signal.setValue({}); } 
 		console.log('signal.getValue(): ', signal.getValue());
 		console.log('i: ', i);
 	}
