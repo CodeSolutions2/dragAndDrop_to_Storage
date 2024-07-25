@@ -69,13 +69,12 @@ async function way1() {
 	
 	// Way 1: make the loop depend on the value of a variable
 	
-	var blob_object = {};
-
-	console.log('Object.keys(blob_object): ', Object.keys(blob_object));
-	console.log('Object.keys(blob_object).length: ', Object.keys(blob_object).length);
+	var blob_object = undefined;
+	// blob_object = undefined means that blob_object = null
+	// blob_object = {} is not blob_object = null
 	
 	var i = 0;
-	while (Object.keys(blob_object).length == 0 && i < urls2try.length) {
+	while (blob_object == undefined && i < urls2try.length) {
 		try {
 			console.log('url to try to fetch: ', urls2try.at(i));
 			blob_object = await fetch_CORS(urls2try.at(i));
@@ -86,9 +85,7 @@ async function way1() {
 			console.log('error: ', error);
 		}
 		
-		if (blob_object == undefined) { blob_object = {}; } 
 		console.log('blob_object: ', blob_object);
-		console.log('Object.keys(blob_object).length: ', Object.keys(blob_object).length);
 		
 		console.log('i: ', i);
 	}
@@ -102,13 +99,13 @@ async function way1() {
 // Way 2: make the loop depend on the existence of variables
 async function way2() {
 	
-	var blob_object = {};
-	var i = 0;
-
+	var blob_object = null;
 	// blob_object = undefined means that blob_object = null
 	// blob_object = {} is not blob_object = null
 	
-	while (blob_object != null && i < urls2try.length) {
+	var i = 0;
+	
+	while (blob_object == null && i < urls2try.length) {
 		try {
 			console.log('url to try to fetch: ', urls2try.at(i));
 			blob_object = await fetch_CORS(urls2try.at(i));
@@ -119,12 +116,10 @@ async function way2() {
 			console.log('error: ', error);
 		}
 		
-		if (blob_object == undefined) { blob_object = {}; } 
+		// if (blob_object == undefined) { blob_object = {}; } 
 		console.log('blob_object: ', blob_object);
-
-		console.log('Object.keys(blob_object).length: ', Object.keys(blob_object).length);
 		
-		if (Object.keys(blob_object).length > 0) {
+		if (blob_object != null) {
 			var out = blob_object;
 			delete blob_object;
 		}
@@ -173,11 +168,10 @@ function createSignal(initialValue) {
   
 async function way3() {
 
-	const signal = createSignal({});
-	console.log('Object.keys(signal.getValue()).length: ', Object.keys(signal.getValue()).length);
+	const signal = createSignal(undefined);
 	
 	var i = 0;
-	while (Object.keys(signal.getValue()).length == 0 && i < urls2try.length) {
+	while (signal.getValue() == undefined && i < urls2try.length) {
 		try {
 			console.log('url to try to fetch: ', urls2try.at(i));
 			signal.setValue(await fetch_CORS(urls2try.at(i)));
@@ -187,8 +181,7 @@ async function way3() {
 		} catch (error) {
 			console.log('error: ', error);
 		}
-
-		if (signal.getValue() == undefined) { signal.setValue({}); } 
+		
 		console.log('signal.getValue(): ', signal.getValue());
 		console.log('i: ', i);
 	}
