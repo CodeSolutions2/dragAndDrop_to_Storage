@@ -59,24 +59,32 @@ async function way0a() {
 
 
 async function way0b() {
-  // Way 0b: make the loop depend on a flag in try catch
-  console.log('Way 0b: make the loop depend on a flag in try catch');
-  
-    // if it has no error, it should stop immediately, so it should stop at i = 1
-  var i = 0;
-  var flag = "run";
-  while (flag == "run" && i < urls2try.length) {
-    try {
-      var blob_object = await fetch_CORS(urls2try.at(i));
-      console.log('blob_object: ', blob_object);
-      flag = "stop";
-      i += 1;
-      console.log('i: ', i);
-    } catch (error) {
-      console.log('error: ', error);
-    }
-  }
-  console.log('flag: ', flag);
+	
+	// Way 0b: make the loop depend on a flag in try catch
+	console.log('Way 0b: make the loop depend on a flag in try catch');
+	
+	// if it has no error, it should stop immediately, so it should stop at i = 1
+	var i = 0;
+	var flag = "run";
+	while (flag == "run" && i < urls2try.length) {
+		try {
+			var blob_object = await fetch_CORS(urls2try.at(i));
+			// if there is an error, it run everything in the try
+			console.log('blob_object: ', blob_object);
+		} catch (error) {
+			console.log('error: ', error);
+		}
+		
+		if (blob_object != undefined) {
+			flag = "stop";
+		}
+		
+		if (flag != "stop") {
+			i += 1;
+		}
+	}
+	
+	console.log('flag: ', flag);
 }
   
 // ----------------------------------------------------
@@ -87,7 +95,7 @@ async function way1() {
   
   var blob_object = {};
   var i = 0;
-  while (blob_object != {} && i < val.length) {
+  while (blob_object != {} && i < urls2try.length) {
     try {
         blob_object = await fetch_CORS(urls2try.at(i));
         console.log('blob_object: ', blob_object)
@@ -105,21 +113,25 @@ async function way1() {
 // This method allows for the loop to stop quickly, however it may run additional processes like a REST API call
 // Way 2: make the loop depend on the existence of variables
 async function way2() {
-  
-  var blob_object = {};
-  var i = 0;
-  while (blob_object != null && i < urls2try.length) {
-    try {
-        blob_object = await fetch_CORS(urls2try.at(i));
-        console.log('blob_object: ', blob_object);
-        var out = blob_object;
-        delete val;
-        i += 1;
-        console.log('i: ', i);
-      } catch (error) {
-        console.log('error: ', error);
-      }
-  }
+	
+	var blob_object = {};
+	var i = 0;
+	
+	while (blob_object != null && i < urls2try.length) {
+		try {
+			blob_object = await fetch_CORS(urls2try.at(i));
+			console.log('blob_object: ', blob_object);
+			i += 1;
+			console.log('i: ', i);
+		} catch (error) {
+			console.log('error: ', error);
+		}
+		
+		if (blob_object != {}) {
+			var out = blob_object;
+			delete blob_object;
+		}
+	}
 
 }
 
