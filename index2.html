@@ -21,7 +21,9 @@ window.addEventListener('beforeunload', function() {
 	
 // ----------------------------------------------------
 
-var urls2try = ['https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf', 'https://s3-us-west-2.amazonaws.com/openai-assets/research-covers/language-unsupervised/language_understanding_paper.pdf', 'https://storage.googleapis.com/on-the-way2selfrespect/yellow.png'];
+var urls2try = ['https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf', 
+		'https://s3-us-west-2.amazonaws.com/openai-assets/research-covers/language-unsupervised/language_understanding_paper.pdf',
+		'https://storage.googleapis.com/on-the-way2selfrespect/yellow.png'];
 
 // ----------------------------------------------------
 
@@ -35,7 +37,7 @@ var urls2try = ['https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/d
 async function way0() {
 	
 	// Way 0: make the loop depend on a flag in try catch
-	console.log('Way 0b: make the loop depend on a flag in try catch');
+	console.log('Way 0: make the loop depend on a flag in try catch');
 	
 	// if it has no error, it should stop immediately, so it should stop at i = 1
 	var i = 0;
@@ -68,6 +70,7 @@ async function way0() {
 async function way1() {
 	
 	// Way 1: make the loop depend on the value of a variable
+	console.log('Way 1: make the loop depend on the value of a variable');
 	
 	var blob_object = undefined;
 	// blob_object = undefined means that blob_object = null
@@ -96,8 +99,10 @@ async function way1() {
 
 // This method allows for the loop to stop quickly, however it may run additional processes like a REST API call
 
-// Way 2: make the loop depend on the existence of variables
 async function way2() {
+
+	// Way 2: make the loop depend on the existence of variables
+	console.log('Way 2: make the loop depend on the existence of variables');
 	
 	var blob_object = null;
 	// blob_object = undefined means that blob_object = null
@@ -116,7 +121,6 @@ async function way2() {
 			console.log('error: ', error);
 		}
 		
-		// if (blob_object == undefined) { blob_object = {}; } 
 		console.log('blob_object: ', blob_object);
 		
 		if (blob_object != null) {
@@ -133,41 +137,40 @@ async function way2() {
 
 // ----------------------------------------------------
   
-// Way 3: make the loop depend on the value of eventListeners (called a Signal)
+
 
 function createSignal(initialValue) {
-  let value = initialValue;
-  const listeners = [];
-
-  function setValue(newValue) {
-    value = newValue;
-    listeners.forEach(listener => listener(value));
-  }
-
-  function getValue() {
-    return value;
-  }
-
+	let value = initialValue;
+	const listeners = [];
 	
-  function subscribe(listener) {
-    listeners.push(listener);
-    return () => {
-      const index = listeners.indexOf(listener);
-      if (index !== -1) {
-        listeners.splice(index, 1);
-      }
-    };
-  }
-
-  return {
-    setValue,
-    getValue,
-    subscribe,
-  };
+	function setValue(newValue) {
+		value = newValue;
+		listeners.forEach(listener => listener(value));
+	}
+	
+	function getValue() {
+		return value;
+	}
+	
+	function subscribe(listener) {
+		listeners.push(listener);
+		return () => {
+			const index = listeners.indexOf(listener);
+			if (index !== -1) {
+				listeners.splice(index, 1);
+			}
+		};
+	}
+	
+	return { setValue, getValue, subscribe, };
 }
-  
+
+
 async function way3() {
 
+	// Way 3: make the loop depend on the value of functions mimiking Signals
+	console.log('Way 3: make the loop depend on the value of functions mimiking Signals');
+	
 	const signal = createSignal(undefined);
 	
 	var i = 0;
