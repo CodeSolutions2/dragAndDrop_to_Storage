@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head></head>
+    
+
+<body>
+
+<button id="way0a" onclick="way0a()" style="display:block;" class="UsebuttonClass">way0a</button>
+<button id="way0b" onclick="way0b()" style="display:block;" class="UsebuttonClass">way0b</button>
+<button id="way1" onclick="way1()" style="display:block;" class="UsebuttonClass">way1</button>
+<button id="way2" onclick="way2()" style="display:block;" class="UsebuttonClass">way2</button>
+
+<script>
+
+// ----------------------------------------------------
+
+// Force the page to refresh the cached webpage
+window.addEventListener('beforeunload', function() {
+ 	window.location.href = window.location.href + '?nocache=' + new Date().getTime();
+});
+	
+// ----------------------------------------------------
+
+var urls2try = ['https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf', 'https://storage.googleapis.com/on-the-way2selfrespect/yellow.png', 'https://s3-us-west-2.amazonaws.com/openai-assets/research-covers/language-unsupervised/language_understanding_paper.pdf'];
+
+// ----------------------------------------------------
+
+// How to make a webpage wait for a result 
+// Use a while loop instead of a for loop, a while loop will run the processes inside the loop in sequential order whereas a the processes inside the for loop may not be run in sequential order (asynchronously). 
+
+// How to make a while loop stop responsively
+// When running repetitive processes in a while loop, like querying a REST API endpoint followed by a pause several times, it is important to make the loop stop after the REST API endpoint returns an OK (200 or 201) status to prevent "spamming" an endpoint. 
+
+
+async function way0a() {
+  
+  // Way 0: make the loop depend on a flag if statement
+  console.log('Way 0: make the loop depend on a flag if statement');
+  var val = [1, 2, 3, 4, 5];
+  var i = 0;
+  var flag = "run";
+  while (flag == "run" && i < val.length) {
+    if (val[i] == 3) {
+       flag = "stop";
+    }
+    i += 1;
+    console.log('i: ', i);
+  }
+  console.log('val[i]: ', val[i]);
+  console.log('flag: ', flag);
+  
+}
+
+// ----------------------------------------------------
+
+
+async function way0b() {
+  // Way 0b: make the loop depend on a flag in try catch
+  console.log('Way 0b: make the loop depend on a flag in try catch');
+  
+    // if it has no error, it should stop immediately, so it should stop at i = 1
+  var i = 0;
+  var flag = "run";
+  while (flag == "run" && i < urls2try.length) {
+    try {
+      var blob_object = await fetch_CORS(urls2try.at(i));
+      console.log('blob_object: ', blob_object);
+      flag = "stop";
+      i += 1;
+      console.log('i: ', i);
+    } catch (error) {
+      console.log('error: ', error);
+    }
+  }
+  console.log('flag: ', flag);
+}
+  
+// ----------------------------------------------------
+  
+async function way1() {
+
+  // Way 1: make the loop depend on the value of a variable
+  
+  var blob_object = {};
+  var i = 0;
+  while (blob_object != {} && i < val.length) {
+    try {
+        blob_object = await fetch_CORS(urls2try.at(i));
+        console.log('blob_object: ', blob_object)
+        i += 1;
+        console.log('i: ', i);
+      } catch (error) {
+        console.log('error: ', error);
+      }
+  }
+
+}
+
+// ----------------------------------------------------
+
+// This method allows for the loop to stop quickly, however it may run additional processes like a REST API call
+// Way 2: make the loop depend on the existence of variables
+async function way2() {
+  
+  var blob_object = {};
+  var i = 0;
+  while (blob_object != null && i < urls2try.length) {
+    try {
+        blob_object = await fetch_CORS(urls2try.at(i));
+        console.log('blob_object: ', blob_object);
+        var out = blob_object;
+        delete val;
+        i += 1;
+        console.log('i: ', i);
+      } catch (error) {
+        console.log('error: ', error);
+      }
+  }
+
+}
+
+
+// ----------------------------------------------------
+
+
+// I found that removing the variable from memory makes the loop stop quickest, without additional unwanted processes. 
+
+
+  
+// Way 3: make the loop depend on the value of eventListeners (called a Signal)
+
+// let max_loop_val = obj_env.arr_auth.length;
+
+//    while (regexp.test(obj_temp.status) == false && obj_env.arr_auth != null && i < max_loop_val) {
+//      if (obj_temp.file_download_url == "No file found") {
+//      // Option 0: create a new file
+//       obj_temp = await functionName0(obj_env.arr_auth[i], 'run GitHub Action', input_text, "temp")
+//        .then(async function(out) { obj_temp.status = out.status; await new Promise(r => setTimeout(r, 2000)); return obj_temp; })
+//      } else {
+//       // Option 1: modify an existing file
+//      let desired_path = obj_temp.file_download_url[0].split('main/').pop();
+//      
+//       obj_temp = await functionName1(obj_env.arr_auth[i], 'run GitHub Action', input_text, "temp", obj_temp.sha_arr)
+//        .then(async function(out) { obj_temp.status = out.status; await new Promise(r => setTimeout(r, 2000)); return obj_temp; })
+//      }
+//     
+//     if (regexp.test(obj_temp.status) == true) {
+//      obj_env.auth = obj_env.arr_auth[i];
+//      console.log('[3] obj_env.auth: ', obj_env.auth);
+//      delete obj_env.arr_auth;
+//     }
+//      i += 1;
+//     }
+
+
+// -------------------------------------------------
+
+async function fetch_CORS(url) {
+
+	// Determine request method
+	var headers_final = {
+		"Content-Type": "application/json",
+		"Referer": url,
+		"Origin": "https://codesolutions2.github.io",
+		"Connection": "keep-alive",
+		//"Sec-Fetch-Dest": "empty",
+		//"Sec-Fetch-Mode": "cors", 
+		//"Sec-Fetch-Site": "cross-site",
+		//"Sec-Fetch-User": "?1",
+		"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0",
+		"Access-Control-Allow-Origin": "*",
+		//'Access-Control-Allow-Credentials': false, 
+		//"Access-Control-Request-Method": method,
+		//"Access-Control-Request-Headers": 'content-type,x-pingother',
+		//'Cache-Control': 'max-age=0',
+	};
+
+	// Need to check if headers are in headers_final
+	// To do - loop over headers and append to headers_final
+	
+	var options = { 
+		method : method,
+		mode: 'cors',
+		headers: new Headers(headers_final),
+		cache: "no-cache",
+		// crossorigin: 'anonymous',
+		crossorigin: '*',
+		redirect: "follow"
+	};
+
+  return await fetch(url, options)
+				.then(response => response.blob())
+				.then(async function(blob_object) { return blob_object; })
+				.catch(error => console.error("error: ", error));
+
+}
+	
+</script>
+</body>
+</html>
