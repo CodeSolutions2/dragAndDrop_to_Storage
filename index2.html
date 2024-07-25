@@ -70,8 +70,11 @@ async function way1() {
 	// Way 1: make the loop depend on the value of a variable
 	
 	var blob_object = {};
+
+	console.log('blob_object.length: ', blob_object.length);
+	
 	var i = 0;
-	while (blob_object == {} && i < urls2try.length) {
+	while (blob_object.length == 0 && i < urls2try.length) {
 		try {
 			console.log('url to try to fetch: ', urls2try.at(i));
 			blob_object = await fetch_CORS(urls2try.at(i));
@@ -94,16 +97,22 @@ async function way2() {
 	
 	var blob_object = {};
 	var i = 0;
+
+	// blob_object = undefined means that blob_object = null
 	
 	while (blob_object != null && i < urls2try.length) {
 		try {
 			console.log('url to try to fetch: ', urls2try.at(i));
 			blob_object = await fetch_CORS(urls2try.at(i));
+			// if there is a fetch error blob_object = undefined
+			
 			i += 1;
 		} catch (error) {
 			console.log('error: ', error);
 		}
+		console.log('blob_object: ', blob_object);
 		
+		if (blob_object == undefined) { blob_object = {}; } 
 		console.log('blob_object: ', blob_object);
 		
 		if (blob_object != {}) {
@@ -156,10 +165,10 @@ function createSignal(initialValue) {
 async function way3() {
 
 	const signal = createSignal({});
-	console.log('signal.getValue(): ', signal.getValue());
+	console.log('signal.getValue().length: ', signal.getValue().length);
 	
 	var i = 0;
-	while (signal.getValue() == {} && i < urls2try.length) {
+	while (signal.getValue().length == 0 && i < urls2try.length) {
 		try {
 			console.log('url to try to fetch: ', urls2try.at(i));
 			signal.setValue(await fetch_CORS(urls2try.at(i)));
