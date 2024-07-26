@@ -85,13 +85,13 @@ async function view_fetched_data() {
 		var Lat_lon_arr = await GET_LATITUDE_LONGITUDE(LOCATION);
 		var latitude = Lat_lon_arr.shift();
 		
-		var obj = await GET_weather_timeseries_data(latitude, Lat_lon_arr)
+		var obj = await GET_weather_timeseries_data(latitude, Lat_lon_arr);
 		
 	} else if (timeseries_data_source == 'Custom_URL_endpoint') {
-		document.getElementById('notification').innerHTML = "In progress.");
+		document.getElementById('notification').innerHTML = "In progress.";
 		
 	} else {
-		document.getElementById('notification').innerHTML = "Please select a timeseries data source."); 
+		document.getElementById('notification').innerHTML = "Please select a timeseries data source."; 
 	}
 
 	// -----------------------------------------------
@@ -100,16 +100,16 @@ async function view_fetched_data() {
 	var model_type = document.getElementById("model_type").value;
 
 	if (model_type == 'LSTM') {
-		document.getElementById('notification').innerHTML += "model_type In progress.");
+		document.getElementById('notification').innerHTML += "model_type In progress.";
 		
 	} else if (model_type == 'Forecasting') {
-		document.getElementById('notification').innerHTML += "model_type In progress.");
+		document.getElementById('notification').innerHTML += "model_type In progress.";
 		
 	} else if (model_type == 'Transformer_based') {
-		document.getElementById('notification').innerHTML += "model_type In progress.");
+		document.getElementById('notification').innerHTML += "model_type In progress.";
 		
 	} else {
-		document.getElementById('notification').innerHTML = "Please select a model type for timeseries prediction."); 
+		document.getElementById('notification').innerHTML = "Please select a model type for timeseries prediction."; 
 	}
 
 	// -----------------------------------------------
