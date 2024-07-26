@@ -62,16 +62,17 @@ window.addEventListener('beforeunload', function() {
   
 // -----------------------------------------------
 
-async function processEvent_Weather_prediction(event) {
-	document.getElementById("LOCATION").style.display = 'block';
+async function processEvent_timeseries_data_source(event) {
+
+	if (this.getAttribute("value") == "Weather_prediction") {
+		document.getElementById("LOCATION").style.display = 'block';
+	} else {
+		document.getElementById("LOCATION").style.display = 'none';
+	}
 }
 
-async function processEvent_Custom_URL_endpoint(event) {
-	document.getElementById("LOCATION").style.display = 'none';
-}
 
-document.getElementById("Weather_prediction").addEventListener("click", processEvent_Weather_prediction, false);
-document.getElementById("Custom_URL_endpoint").addEventListener("click", processEvent_Custom_URL_endpoint, false);
+document.getElementById("timeseries_data_source").addEventListener("click", processEvent_timeseries_data_source, false);
 
 // -----------------------------------------------
 	
