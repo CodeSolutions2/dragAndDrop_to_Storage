@@ -23,9 +23,9 @@
 <!-- LSTM, Forecasting, Transformer_based -->
 <label for="select_model_type">Select a desired model:</label>
 <select name="model_type" id="model_type" style="display:block">
-  <option value="LSTM">256x256</option>
-  <option value="Forecasting">512x512</option>
-  <option value="Transformer_based">1024x1024</option>
+  <option value="LSTM">LSTM</option>
+  <option value="Forecasting">Forecasting</option>
+  <option value="Transformer_based">Transformer_based</option>
 </select>
   
 <button id="predict" onclick="predict()">Predict</button>
@@ -42,14 +42,21 @@ window.addEventListener('beforeunload', function() {
 });
   
 // -----------------------------------------------
+
+async function view_fetched_data() {
+
+	
+	
+}
+
 	
 async function get_lat_long() {
 
 	// https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${GCP_API_KEY}
 	// OR
-
 	// https://nominatim.org/release-docs/latest/api/Search/
-	var url = `https://nominatim.openstreetmap.org/search?q=${document.getElementById('location_name').innerHTML}`;
+	var url = `https://nominatim.openstreetmap.org/search?q=${document.getElementById('LOCATION').value}&format=json`;
+	
 	var headers = {"Content-Type": "application/json"}
 	var options = {method : 'GET', headers: headers,  mode: 'cors'};
 		
