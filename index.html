@@ -64,7 +64,7 @@ window.addEventListener('beforeunload', function() {
 
 async function processEvent_timeseries_data_source(event) {
 
-	if (this.getAttribute("value") == "Weather_prediction") {
+	if (document.getElementById("timeseries_data_source").value == "Weather_prediction") {
 		document.getElementById("LOCATION").style.display = 'block';
 	} else {
 		document.getElementById("LOCATION").style.display = 'none';
