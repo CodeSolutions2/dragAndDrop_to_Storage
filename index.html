@@ -16,6 +16,7 @@
 <!-- Drop down menu -->
 <label for="select_timeseries_data_source">Select a timeseries data source:</label>
 <select name="timeseries_data_source" id="timeseries_data_source" style="display:block">
+  <option value="---">Select an option</option>
   <option value="Weather_prediction">Weather prediction</option>
   <option value="Custom_URL_endpoint">Custom prediction</option>
 </select>
@@ -64,7 +65,7 @@ window.addEventListener('beforeunload', function() {
 
 async function processEvent_timeseries_data_source(event) {
 	
-	if (document.getElementById("timeseries_data_source").selectedIndex == 0) {
+	if (document.getElementById("timeseries_data_source").selectedIndex == 1) {
 		document.getElementById("LOCATION").style.display = 'block';
 	} else {
 		document.getElementById("LOCATION").style.display = 'none';
