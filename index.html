@@ -65,6 +65,12 @@ window.addEventListener('beforeunload', function() {
 async function processEvent_timeseries_data_source(event) {
 
 	console.log('event: ', event);
+
+	const element = document.getElementById("timeseries_data_source");
+	
+	console.log('element: ', element);
+	console.log('element.selectedIndex: ', element.selectedIndex);
+	console.log('element.options: ', element.options);
 	
 	if (document.getElementById("timeseries_data_source").value == "Weather_prediction") {
 		document.getElementById("LOCATION").style.display = 'block';
@@ -75,9 +81,10 @@ async function processEvent_timeseries_data_source(event) {
 }
 
 
-// document.getElementById("timeseries_data_source").addEventListener("change", processEvent_timeseries_data_source, false);
-document.getElementById("timeseries_data_source").addEventListener("click", processEvent_timeseries_data_source, false);
+document.getElementById("timeseries_data_source").addEventListener("change", processEvent_timeseries_data_source, false);
 
+console.log('element onchange: ', document.getElementById("timeseries_data_source").onchange);
+	
 // -----------------------------------------------
 	
 async function view_fetched_data() {
