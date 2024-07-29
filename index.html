@@ -63,22 +63,12 @@ window.addEventListener('beforeunload', function() {
 // -----------------------------------------------
 
 async function processEvent_timeseries_data_source(event) {
-
-	console.log('event: ', event);
-
-	const element = document.getElementById("timeseries_data_source");
-	
-	console.log('element.selectedIndex: ', element.selectedIndex);
-	console.log('element.options.selectedIndex: ', element.options.selectedIndex);
-
-	console.log('selectedIndex : ', this.getAttribute("selectedIndex"));
 	
 	if (document.getElementById("timeseries_data_source").selectedIndex == 0) {
 		document.getElementById("LOCATION").style.display = 'block';
 	} else {
 		document.getElementById("LOCATION").style.display = 'none';
 	}
-	
 }
 
 
@@ -90,9 +80,12 @@ async function view_fetched_data() {
 
 	// Obtain timeseries data
 	var timeseries_data_source = document.getElementById("timeseries_data_source").value;
+	console.log('timeseries_data_source: ', timeseries_data_source);
 
 	if (timeseries_data_source == 'Weather_prediction') {
 		var LOCATION = document.getElementById("LOCATION").value;
+		console.log('LOCATION: ', LOCATION);
+		
 		var Lat_lon_arr = await GET_LATITUDE_LONGITUDE(LOCATION);
 		var latitude = Lat_lon_arr.shift();
 		
@@ -143,6 +136,7 @@ async function GET_LATITUDE_LONGITUDE(LOCATION) {
 	var url = `https://nominatim.openstreetmap.org/search?q=${LOCATION}&format=json`;
 	var method = 'GET';  // method: 'GET', 'POST'
 	var data = [];  // data: required data format for url address
+	var headers = {};
 	var return_type = 'json';  // return_type: 'json', 'blob', 'blob_file_pdf', 'arrayBuffer', 'text'
 	var out = await fetch_CORS(url, method, data, headers, return_type);
 	console.log('out: ', out); 
