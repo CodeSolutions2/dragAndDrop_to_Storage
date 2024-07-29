@@ -71,10 +71,12 @@ async function processEvent_timeseries_data_source(event) {
 	} else {
 		document.getElementById("LOCATION").style.display = 'none';
 	}
+	
 }
 
 
-document.getElementById("timeseries_data_source").addEventListener("change", processEvent_timeseries_data_source, false);
+// document.getElementById("timeseries_data_source").addEventListener("change", processEvent_timeseries_data_source, false);
+document.getElementById("timeseries_data_source").addEventListener("click", processEvent_timeseries_data_source, false);
 
 // -----------------------------------------------
 	
