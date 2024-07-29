@@ -207,8 +207,8 @@ async function fetch_CORS(url, method, data, headers, return_type) {
 		//'Cache-Control': 'max-age=0',
 	};
 
-	// Need to check if headers are in headers_final
-	// To do - loop over headers and append to headers_final
+	
+	headers_final = Object.assign({}, headers_final, headers);
 	
 	var options = { 
 		method : method,
