@@ -70,6 +70,8 @@ async function processEvent_timeseries_data_source(event) {
 	
 	console.log('element.selectedIndex: ', element.selectedIndex);
 	console.log('element.options.selectedIndex: ', element.options.selectedIndex);
+
+	console.log('selectedIndex : ', this.getAttribute("selectedIndex"));
 	
 	if (document.getElementById("timeseries_data_source").selectedIndex == 0) {
 		document.getElementById("LOCATION").style.display = 'block';
