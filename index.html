@@ -68,11 +68,10 @@ async function processEvent_timeseries_data_source(event) {
 
 	const element = document.getElementById("timeseries_data_source");
 	
-	console.log('element: ', element);
 	console.log('element.selectedIndex: ', element.selectedIndex);
-	console.log('element.options: ', element.options);
+	console.log('element.options.selectedIndex: ', element.options.selectedIndex);
 	
-	if (document.getElementById("timeseries_data_source").value == "Weather_prediction") {
+	if (document.getElementById("timeseries_data_source").selectedIndex == 0) {
 		document.getElementById("LOCATION").style.display = 'block';
 	} else {
 		document.getElementById("LOCATION").style.display = 'none';
@@ -82,8 +81,6 @@ async function processEvent_timeseries_data_source(event) {
 
 
 document.getElementById("timeseries_data_source").addEventListener("change", processEvent_timeseries_data_source, false);
-
-console.log('element onchange: ', document.getElementById("timeseries_data_source").onchange);
 	
 // -----------------------------------------------
 	
