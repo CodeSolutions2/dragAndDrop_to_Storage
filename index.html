@@ -95,16 +95,19 @@ async function plot_line_graph() {
 	const bar_width = Math.floor((w/dataArray.length)/2);
 	console.log("bar_width: ", bar_width);
 
-	const buffer = Math.floor(0.1*bar_width);   // 10 percent of bar_width
+	const x_buffer = Math.floor(0.1*bar_width);   // The x-axis space between each bar, 10 percent of bar_width
+	console.log("x_buffer: ", x_buffer);
+
+	const y_scale_max = 4*max_val; // The maximum height of a bar, 
 	
 	svg.selectAll('rect')
 		.data(dataArray)
 		.enter()
 		.append('rect')
 		.attr('width', bar_width)	// bar_width
-		.attr('height', d => d)		// bar_height
-		.attr('y', (d,i) => 0)		// the (y-location) of each bar
+		.attr('height', d => d)		// bar_height, the dataArray values
 		.attr('x', (d,i) => i * (bar_width + buffer))	// the (x-location) of each bar
+		.attr('y', (d,i) => y_scale_max-d)	// the (y-location) of each bar
 		.attr("fill", "steelblue");
 	
 	// document.getElementById('data_display').appendChild(svgElement);
