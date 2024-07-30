@@ -84,7 +84,8 @@ async function plot_line_graph() {
 	const scale = d3.scaleLinear().domain([0, dataArray.length]).range([min_val, max_val]);
 	console.log("scale: ", scale);
 	
-	const svg = d3.select('.chart').append("svg").attr('width', 400).attr('height', 200);
+	const svg = d3.select('svg');
+		//.append("svg").attr('width', 400).attr('height', 200);
 	console.log("svg: ", svg);
 	
 	// Plot data on chart, Add bars to the chart
