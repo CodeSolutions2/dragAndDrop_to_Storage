@@ -8,12 +8,9 @@
 
 <div id="data_display" style="display:block; text-align: left; width: 600px;"></div>
 
-<svg class="chart"></svg>
+<svg class="chart" style="display:block; margin:auto;"></svg>
 	
-<style>
-	.chart{ display:block; margin:auto; }
-</style>
-	
+
 <script src='https://d3js.org/d3.v7.min.js'></script>
 
 
@@ -38,7 +35,7 @@ async function plot_data_bar_graph() {
 	// const svgElement = document.createElement('svg');
 	
 	// Verify the contents of the frequency data
-	const svg = d3.select(".chart").append(svgElement).attr("width", 400).attr("height", 200);
+	const svg = d3.select(".chart").append("svg").attr("width", 400).attr("height", 200);
 
 	// Create a histogram generator
 	var histogram = d3.histogram().domain([0, dataArray.length]).thresholds(d3.range(min_val, max_val));
