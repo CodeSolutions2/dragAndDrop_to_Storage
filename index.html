@@ -92,12 +92,15 @@ async function plot_line_graph() {
 	console.log("svg: ", svg);
 	
 	// Plot data on chart, Add bars to the chart
+	const bar_width = Math.floor(w/dataArray.length);
+	console.log("bar_width: ", bar_width);
+	
 	svg.selectAll('rect')
 		.data(dataArray)
 		.enter()
 		.append('rect')
-		.attr('width', w)
-		.attr('height', d => d)
+		.attr('width', bar_width)	// bar_width
+		.attr('height', d => d)		// bar_height
 		.attr('y', (d,i) => d)
 		.attr('x', (d,i) => i)
 		.attr("fill", "steelblue");
