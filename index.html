@@ -8,6 +8,11 @@
 
 <div id="data_display" style="display:block; text-align: left; width: 600px;"></div>
 
+
+<style>
+	.chart{ display:block; margin:auto; }
+</style>
+	
 <script src='https://d3js.org/d3.v7.min.js'></script>
 
 
@@ -75,12 +80,13 @@ async function plot_line_graph() {
 	// ---------------------------------------------------
 	
 	var svgElement = document.createElement('svg');
+	svgElement.setAttribute("class", "chart");
 	console.log("svgElement: ", svgElement);
 	
 	const scale = d3.scaleLinear().domain([0, dataArray.length]).range([min_val, max_val]);
 	console.log("scale: ", scale);
 	
-	const svg = d3.select('svgElement').append("svg").attr('width', 400).attr('height', 200);
+	const svg = d3.select('.chart').append("svg").attr('width', 400).attr('height', 200);
 	console.log("svg: ", svg);
 	
 	// Plot data on chart, Add bars to the chart
