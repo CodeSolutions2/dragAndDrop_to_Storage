@@ -92,8 +92,7 @@ async function plot_bar_graph() {
 
 	// domain = the y-value range of the bars
 	const y_scale = d3.scaleLinear()
-		.domain([min_val, max_val])
-		.nice()
+		.domain([0, max_val])
 		.range([h, 0]);
 	
 	// ---------------------------------------------------
@@ -106,13 +105,16 @@ async function plot_bar_graph() {
 	// height = bar_height, the dataArray values
 	// x = the (x-location) of each bar
 	// y = the (y-location) of each bar
-	svg.selectAll('mybar')
+	svg.selectAll('rect')
 		.data(dataArray)
 		.enter()
 		.append('rect')
 		.attr('width', bar_width)
-		.attr('height', d => h-d)
-		.attr('x', (d,i) => x_scale(i * (bar_width + x_buffer)))
+		//.attr('height', d => h-d)
+		//.attr('x', (d,i) => i * (bar_width + x_buffer))
+		//.attr('y', (d,i) => d)
+		.attr('height', d => y_scale(h-d))
+		.attr('x', (d,i) => x_scale(i))
 		.attr('y', (d,i) => y_scale(d))
 		.attr("fill", "steelblue");
 }
