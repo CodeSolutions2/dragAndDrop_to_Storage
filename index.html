@@ -8,7 +8,8 @@
 
 <div id="data_display" style="display:block; text-align: left; width: 600px;"></div>
 
-
+<svg class="chart"></svg>
+	
 <style>
 	.chart{ display:block; margin:auto; }
 </style>
@@ -34,10 +35,10 @@ async function plot_data_bar_graph() {
 	
 	// ---------------------------------------------------
 	
-	const svgElement = document.createElement('svg');
+	// const svgElement = document.createElement('svg');
 	
 	// Verify the contents of the frequency data
-	const svg = d3.select("body").append(svgElement).attr("width", 400).attr("height", 200);
+	const svg = d3.select(".chart").append(svgElement).attr("width", 400).attr("height", 200);
 
 	// Create a histogram generator
 	var histogram = d3.histogram().domain([0, dataArray.length]).thresholds(d3.range(min_val, max_val));
@@ -56,7 +57,7 @@ async function plot_data_bar_graph() {
 	//     .attr("height", function(d) { return d.length * 5; })
 	//     .attr("fill", "steelblue");
 
-	document.getElementById('data_display').appendChild(svgElement);
+	// document.getElementById('data_display').appendChild(svgElement);
 }
 
 
@@ -79,9 +80,9 @@ async function plot_line_graph() {
 
 	// ---------------------------------------------------
 	
-	var svgElement = document.createElement('svg');
-	svgElement.setAttribute("class", "chart");
-	console.log("svgElement: ", svgElement);
+	// var svgElement = document.createElement('svg');
+	// svgElement.setAttribute("class", "chart");
+	// console.log("svgElement: ", svgElement);
 	
 	const scale = d3.scaleLinear().domain([0, dataArray.length]).range([min_val, max_val]);
 	console.log("scale: ", scale);
@@ -95,7 +96,7 @@ async function plot_line_graph() {
 		.enter()
 		.append('rect').attr('width', d => scale(d)).attr('height', 20).attr('y', (d,i) => d).attr('x', (d,i) => i);
 	
-	document.getElementById('data_display').appendChild(svgElement);
+	// document.getElementById('data_display').appendChild(svgElement);
 }
 
 
