@@ -76,7 +76,9 @@ async function plot_bar_graph() {
 	const w = 400;
 	const h = 400;
 	
-	//const scale = d3.scaleLinear().domain([0, dataArray.length]).range([min_val, max_val]);
+	const scale = d3.scaleLinear()
+		.domain([min_val, max_val])  // the value range of the bars 
+		.range([h, 0]);
 	//console.log("scale: ", scale);
 	
 	const svg = d3.select("#data_display").append("svg");
@@ -90,7 +92,7 @@ async function plot_bar_graph() {
 	const x_buffer = Math.floor(0.05*bar_width);   // The x-axis space between each bar, 10 percent of bar_width
 	console.log("x_buffer: ", x_buffer); 
 	
-	svg.selectAll('rect')
+	svg.selectAll('mybar')
 		.data(dataArray)
 		.enter()
 		.append('rect')
