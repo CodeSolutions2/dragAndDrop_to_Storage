@@ -80,19 +80,27 @@ async function plot_line_graph() {
 	// var svgElement = document.createElement('svg');
 	// svgElement.setAttribute("class", "chart");
 	// console.log("svgElement: ", svgElement);
+
+	const w = 400;
+	const h = 400;
 	
 	const scale = d3.scaleLinear().domain([0, dataArray.length]).range([min_val, max_val]);
 	console.log("scale: ", scale);
 	
 	const svg = d3.select('svg');
-		//.append("svg").attr('width', 400).attr('height', 200);
+	//.append("svg").attr('width', w).attr('height', h);
 	console.log("svg: ", svg);
 	
 	// Plot data on chart, Add bars to the chart
 	svg.selectAll('rect')
 		.data(dataArray)
 		.enter()
-		.append('rect').attr('width', d => scale(d)).attr('height', 20).attr('y', (d,i) => d).attr('x', (d,i) => i);
+		.append('rect')
+		.attr('width', w)
+		.attr('height', d => d)
+		.attr('y', (d,i) => d)
+		.attr('x', (d,i) => i)
+		.attr("fill", "steelblue");
 	
 	// document.getElementById('data_display').appendChild(svgElement);
 }
