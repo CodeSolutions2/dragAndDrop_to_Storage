@@ -17,19 +17,25 @@
 
   
 async function plot_data_bar_graph() {
+	
+	const dataArray = [30, 50, 80, 120, 200];
 
+	// ---------------------------------------------------
 
-  const dataArray = [30, 50, 80, 120, 200];
-  
-const svgElement = document.createElement('svg');
+	// Obtain information about data
+	const [min_val, max_val] = await min_max_of_array(dataArray);
+	console.log("min_val: ", min_val);
+	console.log("max_val: ", max_val);
+	
+	// ---------------------------------------------------
+	
+	const svgElement = document.createElement('svg');
 	
 	// Verify the contents of the frequency data
 	const svg = d3.select("body").append(svgElement).attr("width", 400).attr("height", 200);
-	
+
 	// Create a histogram generator
-	var histogram = d3.histogram()
-		.domain([0, analyser.frequencyBinCount])
-		.thresholds(d3.range(0, analyser.maxDecibels, analyser.minDecibels));
+	var histogram = d3.histogram().domain([0, dataArray.length]).thresholds(d3.range(min_val, max_val));
 
 	// Generate the histogram bins
 	var bins = histogram(dataArray);
@@ -57,14 +63,16 @@ async function min_max_of_array(arr) {
 
   
 async function plot_line_graph() {
-
-  const dataArray = [30, 50, 80, 120, 200];
-
-  const [min_val, max_val] = await min_max_of_array(dataArray);
-
-  var svgElement = document.createElement('svg');
 	
-  const scale = d3.scaleLinear().domain([0, dataArray.length]).range([min_val, max_val]);
+	const dataArray = [30, 50, 80, 120, 200];
+	
+	const [min_val, max_val] = await min_max_of_array(dataArray);
+	console.log("min_val: ", min_val);
+	console.log("max_val: ", max_val);
+	
+	var svgElement = document.createElement('svg');
+	
+	const scale = d3.scaleLinear().domain([0, dataArray.length]).range([min_val, max_val]);
   
 	const svg = d3.select('body').append(svgElement).attr('width', 400).attr('height', 200);
 	
