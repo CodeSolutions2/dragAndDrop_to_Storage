@@ -105,7 +105,7 @@ async function plot_bar_graph() {
 		.enter()
 		.append('rect')
 		.attr('width', bar_width)	// bar_width
-		.attr('height', d => d)		// bar_height, the dataArray values
+		.attr('height', d => h-d)	// bar_height, the dataArray values
 		.attr('x', (d,i) => i * (bar_width + x_buffer))	// the (x-location) of each bar
 		.attr('y', (d,i) => d)	// the (y-location) of each bar
 		.attr("fill", "steelblue");
