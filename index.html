@@ -103,8 +103,8 @@ async function plot_line_graph() {
 		.append('rect')
 		.attr('width', bar_width)	// bar_width
 		.attr('height', d => d)		// bar_height
-		.attr('y', (d,i) => d)		// the height (y-location) of each bar
-		.attr('x', (d,i) => i * (bar_width + buffer))	// the (x-location of each bar)
+		.attr('y', (d,i) => 0)		// the (y-location) of each bar
+		.attr('x', (d,i) => i * (bar_width + buffer))	// the (x-location) of each bar
 		.attr("fill", "steelblue");
 	
 	// document.getElementById('data_display').appendChild(svgElement);
