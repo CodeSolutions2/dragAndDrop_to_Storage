@@ -75,31 +75,45 @@ async function plot_bar_graph() {
 
 	const w = 400;
 	const h = 400;
-	
-	const scale = d3.scaleLinear()
-		.domain([min_val, max_val])  // the value range of the bars 
-		.range([h, 0]);
-	//console.log("scale: ", scale);
-	
-	const svg = d3.select("#data_display").append("svg");
-	//.attr('width', w).attr('height', h);
-	console.log("svg: ", svg);
-	
+
 	// Plot data on chart, Add bars to the chart
 	const bar_width = Math.floor((w/dataArray.length)/2);
 	console.log("bar_width: ", bar_width);
 
 	const x_buffer = Math.floor(0.05*bar_width);   // The x-axis space between each bar, 10 percent of bar_width
 	console.log("x_buffer: ", x_buffer); 
+
+	// ---------------------------------------------------
 	
+	const x_scale = d3.scaleBand()
+		.domain(dataArray.map((d,i) => i))
+		.range([0, w])
+		.padding(x_buffer);
+
+	// domain = the y-value range of the bars
+	const y_scale = d3.scaleLinear()
+		.domain([min_val, max_val])
+		.nice()
+		.range([h, 0]);
+	
+	// ---------------------------------------------------
+	
+	const svg = d3.select("#data_display").append("svg");
+	//.attr('width', w).attr('height', h);
+	console.log("svg: ", svg);
+	
+	// width = bar_width
+	// height = bar_height, the dataArray values
+	// x = the (x-location) of each bar
+	// y = the (y-location) of each bar
 	svg.selectAll('mybar')
 		.data(dataArray)
 		.enter()
 		.append('rect')
-		.attr('width', bar_width)	// bar_width
-		.attr('height', d => h-d)	// bar_height, the dataArray values
-		.attr('x', (d,i) => i * (bar_width + x_buffer))	// the (x-location) of each bar
-		.attr('y', (d,i) => d)	// the (y-location) of each bar
+		.attr('width', bar_width)
+		.attr('height', d => h-d)
+		.attr('x', (d,i) => x_scale(i * (bar_width + x_buffer)))
+		.attr('y', (d,i) => y_scale(d))
 		.attr("fill", "steelblue");
 }
 
