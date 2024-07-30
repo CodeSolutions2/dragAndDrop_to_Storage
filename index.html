@@ -92,8 +92,10 @@ async function plot_line_graph() {
 	console.log("svg: ", svg);
 	
 	// Plot data on chart, Add bars to the chart
-	const bar_width = Math.floor(w/dataArray.length);
+	const bar_width = Math.floor((w/dataArray.length)/2);
 	console.log("bar_width: ", bar_width);
+
+	const buffer = Math.floor(0.1*bar_width);   // 10 percent of bar_width
 	
 	svg.selectAll('rect')
 		.data(dataArray)
@@ -101,8 +103,8 @@ async function plot_line_graph() {
 		.append('rect')
 		.attr('width', bar_width)	// bar_width
 		.attr('height', d => d)		// bar_height
-		.attr('y', (d,i) => d)
-		.attr('x', (d,i) => i)
+		.attr('y', (d,i) => d)		// the height (y-location) of each bar
+		.attr('x', (d,i) => i * (bar_width + buffer))	// the (x-location of each bar)
 		.attr("fill", "steelblue");
 	
 	// document.getElementById('data_display').appendChild(svgElement);
