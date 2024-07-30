@@ -3,8 +3,8 @@
 <head></head>
 <body>
 
-<button id="plot_data_bar_graph" onclick="plot_data_bar_graph()" style="display:block;">plot_data_bar_graph</button>
-<button id="plot_line_graph" onclick="plot_line_graph()" style="display:block;">plot_line_graph</button>
+<button id="plot_histogram_graph" onclick="plot_histogram_graph()" style="display:block;">plot_histogram_graph</button>
+<button id="plot_bar_graph" onclick="plot_bar_graph()" style="display:block;">plot_bar_graph</button>
 
 <div id="data_display" style="display:block; text-align: left; width: 600px;"></div>
 
@@ -19,7 +19,7 @@
 
 
   
-async function plot_data_bar_graph() {
+async function plot_histogram_graph() {
 	
 	const dataArray = [30, 50, 80, 120, 200];
 
@@ -65,7 +65,7 @@ async function min_max_of_array(arr) {
 }
 
   
-async function plot_line_graph() {
+async function plot_bar_graph() {
 	
 	const dataArray = [30, 50, 80, 120, 200];
 
@@ -106,8 +106,8 @@ async function plot_line_graph() {
 		.append('rect')
 		.attr('width', bar_width)	// bar_width
 		.attr('height', d => d)		// bar_height, the dataArray values
-		.attr('x', (d,i) => i * (bar_width + buffer))	// the (x-location) of each bar
-		.attr('y', (d,i) => y_scale_max-d)	// the (y-location) of each bar
+		.attr('x', (d,i) => i * (bar_width + x_buffer))	// the (x-location) of each bar
+		.attr('y', (d,i) => d)	// the (y-location) of each bar
 		.attr("fill", "steelblue");
 	
 	// document.getElementById('data_display').appendChild(svgElement);
