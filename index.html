@@ -77,8 +77,10 @@ async function plot_line_graph() {
 	var svgElement = document.createElement('svg');
 	
 	const scale = d3.scaleLinear().domain([0, dataArray.length]).range([min_val, max_val]);
-  
+	console.log("scale: ", scale);
+	
 	const svg = d3.select('body').append(svgElement).attr('width', 400).attr('height', 200);
+	console.log("svg: ", svg);
 	
 	// Plot data on chart, Add bars to the chart
 	svg.selectAll('rect')
