@@ -30,10 +30,8 @@ async function plot_histogram_graph() {
 	
 	// ---------------------------------------------------
 	
-	// const svgElement = document.createElement('svg');
-	
 	// Verify the contents of the frequency data
-	const svg = d3.select("#data_display");
+	const svg = d3.select("#data_display").append("svg");
 	// const svg = d3.select(".chart").append("svg").attr("width", 400).attr("height", 200);
 
 	// Create a histogram generator
@@ -53,7 +51,6 @@ async function plot_histogram_graph() {
 	//     .attr("height", function(d) { return d.length * 5; })
 	//     .attr("fill", "steelblue");
 
-	// document.getElementById('data_display').appendChild(svgElement);
 }
 
 
@@ -75,10 +72,6 @@ async function plot_bar_graph() {
 	console.log("max_val: ", max_val);
 
 	// ---------------------------------------------------
-	
-	// var svgElement = document.createElement('svg');
-	// svgElement.setAttribute("class", "chart");
-	// console.log("svgElement: ", svgElement);
 
 	const w = 400;
 	const h = 400;
@@ -106,8 +99,6 @@ async function plot_bar_graph() {
 		.attr('x', (d,i) => i * (bar_width + x_buffer))	// the (x-location) of each bar
 		.attr('y', (d,i) => d)	// the (y-location) of each bar
 		.attr("fill", "steelblue");
-	
-	// document.getElementById('data_display').appendChild(svgElement);
 }
 
 
