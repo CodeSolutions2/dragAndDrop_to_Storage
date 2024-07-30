@@ -110,12 +110,12 @@ async function plot_bar_graph() {
 		.enter()
 		.append('rect')
 		.attr('width', bar_width)
-		//.attr('height', d => h-d)
-		//.attr('x', (d,i) => i * (bar_width + x_buffer))
-		//.attr('y', (d,i) => d)
-		.attr('height', d => y_scale(h-d))
-		.attr('x', (d,i) => x_scale(i))
-		.attr('y', (d,i) => y_scale(d))
+		.attr('height', d => h-d)
+		.attr('x', (d,i) => i * (bar_width + x_buffer))
+		.attr('y', (d,i) => d)
+		//.attr('height', d => y_scale(h-d))
+		//.attr('x', (d,i) => x_scale(i))
+		//.attr('y', (d,i) => y_scale(d))
 		.attr("fill", "steelblue");
 }
 
