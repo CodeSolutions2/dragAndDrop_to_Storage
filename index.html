@@ -7,8 +7,6 @@
 <button id="plot_bar_graph" onclick="plot_bar_graph()" style="display:block;">plot_bar_graph</button>
 
 <div id="data_display" style="display:block; text-align: left; width: 600px;"></div>
-
-<svg class="chart" style="display:block; margin:auto;"></svg>
 	
 
 <script src='https://d3js.org/d3.v7.min.js'></script>
@@ -35,7 +33,8 @@ async function plot_histogram_graph() {
 	// const svgElement = document.createElement('svg');
 	
 	// Verify the contents of the frequency data
-	const svg = d3.select(".chart").append("svg").attr("width", 400).attr("height", 200);
+	const svg = d3.select("#data_display");
+	// const svg = d3.select(".chart").append("svg").attr("width", 400).attr("height", 200);
 
 	// Create a histogram generator
 	var histogram = d3.histogram().domain([0, dataArray.length]).thresholds(d3.range(min_val, max_val));
@@ -87,7 +86,7 @@ async function plot_bar_graph() {
 	//const scale = d3.scaleLinear().domain([0, dataArray.length]).range([min_val, max_val]);
 	//console.log("scale: ", scale);
 	
-	const svg = d3.select('svg');
+	const svg = d3.select("#data_display");
 	//.append("svg").attr('width', w).attr('height', h);
 	console.log("svg: ", svg);
 	
@@ -95,10 +94,8 @@ async function plot_bar_graph() {
 	const bar_width = Math.floor((w/dataArray.length)/2);
 	console.log("bar_width: ", bar_width);
 
-	const x_buffer = Math.floor(0.1*bar_width);   // The x-axis space between each bar, 10 percent of bar_width
-	console.log("x_buffer: ", x_buffer);
-
-	const y_scale_max = 4*max_val; // The maximum height of a bar, 
+	const x_buffer = Math.floor(0.02*bar_width);   // The x-axis space between each bar, 10 percent of bar_width
+	console.log("x_buffer: ", x_buffer); 
 	
 	svg.selectAll('rect')
 		.data(dataArray)
