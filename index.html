@@ -94,7 +94,7 @@ async function plot_bar_graph() {
 	const bar_width = Math.floor((w/dataArray.length)/2);
 	console.log("bar_width: ", bar_width);
 
-	const x_buffer = Math.floor(0.02*bar_width);   // The x-axis space between each bar, 10 percent of bar_width
+	const x_buffer = Math.floor(0.05*bar_width);   // The x-axis space between each bar, 10 percent of bar_width
 	console.log("x_buffer: ", x_buffer); 
 	
 	svg.selectAll('rect')
