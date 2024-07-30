@@ -75,6 +75,7 @@ async function plot_line_graph() {
 	// ---------------------------------------------------
 	
 	var svgElement = document.createElement('svg');
+	console.log("svgElement: ", svgElement);
 	
 	const scale = d3.scaleLinear().domain([0, dataArray.length]).range([min_val, max_val]);
 	console.log("scale: ", scale);
@@ -88,7 +89,7 @@ async function plot_line_graph() {
 		.enter()
 		.append('rect').attr('width', d => scale(d)).attr('height', 20).attr('y', (d,i) => d).attr('x', (d,i) => i);
 	
-	document.getElementById('data_display').appendChild(svgElement);
+	document.getElementById('data_display').appendChild(svg);
 }
 
 
