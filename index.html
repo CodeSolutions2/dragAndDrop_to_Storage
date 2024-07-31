@@ -90,11 +90,11 @@ async function plot_line_graph() {
 	
 	// Append a path for the line
 	svg.append("path")
-		.datum(dataArray)
+		//.datum(dataArray)
 		.attr("fill", "none")
 		.attr("stroke", "steelblue")
 		.attr("stroke-width", 1.5)
-		.attr("d", line);
+		.attr("d", line(dataArray));
 
 }
 
