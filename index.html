@@ -156,11 +156,11 @@ async function plot_line_graph_dataArray() {
 		.attr("width", width)
 		.attr("height", height);
 
-        const xScale = d3.scaleLinear()
+        const x_scale = d3.scaleLinear()
             .domain([0, d3.max(dataArray, (d,i) => i)])
             .range([0, width]);
 
-        const yScale = d3.scaleLinear()
+        const y_scale = d3.scaleLinear()
             .domain([0, d3.max(dataArray, d => d)])
             .range([height, 0]);
 
