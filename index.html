@@ -70,11 +70,7 @@ async function plot_line_graph() {
 
 	// ---------------------------------------------------
 	
-	// Add the x-axis
-	svg.append("g")
-		.attr('class', 'x-axis')
-		.attr("transform", `translate(0,${height - marginBottom})`)
-		.call(d3.axisBottom(x_scale).ticks(width / 80).tickSizeOuter(0));
+	
 	
 	// Add the y-axis, remove the domain line, add grid lines and a label.
 	svg.append("g")
@@ -115,7 +111,8 @@ async function plot_line_graph_dataObject() {
 
 	const width = 928;
 	const height = 500;
-
+	// const margin = {top: 20, right: 20, bottom: 20, left: 20};
+	
         const svg = d3.select("#data_display")
 		.append("svg")
 		.attr("class", 'line')
@@ -140,6 +137,16 @@ async function plot_line_graph_dataObject() {
             .attr("stroke", "steelblue")
             .attr("stroke-width", 2)
             .attr("d", line);
+
+	// Add the x-axis
+	svg.append("g")
+		.attr('class', 'x-axis')
+		.call(d3.axisBottom(x_scale));
+
+	// Add the y-axis
+	svg.append("g")
+		.attr('class', 'y-axis')
+		.call(d3.axisLeft(y_scale));
 	
 }
 
@@ -174,7 +181,16 @@ async function plot_line_graph_dataArray() {
             .attr("stroke", "steelblue")
             .attr("stroke-width", 2)
             .attr("d", line);
-	
+
+	// Add the x-axis
+	svg.append("g")
+		.attr('class', 'x-axis')
+		.call(d3.axisBottom(x_scale));
+
+	// Add the y-axis
+	svg.append("g")
+		.attr('class', 'y-axis')
+		.call(d3.axisLeft(y_scale));
 }
 
 
