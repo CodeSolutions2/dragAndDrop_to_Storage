@@ -3,7 +3,6 @@
 <head></head>
 <body>
 
-<button id="plot_line_graph" onclick="plot_line_graph()" style="display:block;">plot_line_graph</button>
 <button id="plot_line_graph_dataObject" onclick="plot_line_graph_dataObject()" style="display:block;">plot_line_graph_dataObject</button>
 <button id="plot_line_graph_dataArray" onclick="plot_line_graph_dataArray()" style="display:block;">plot_line_graph_dataArray</button>
 <button id="plot_bar_graph" onclick="plot_bar_graph()" style="display:block;">plot_bar_graph</button>
@@ -16,89 +15,6 @@
 
 <script>
 	
-
-
-  
-async function plot_line_graph() {
-	
-	const dataArray = [30, 50, 80, 120, 200];
-	
-	// ---------------------------------------------------
-	
-	// Declare the chart dimensions and margins
-	const width = 928;
-	const height = 500;
-	const marginTop = 20;
-	const marginRight = 30;
-	const marginBottom = 30;
-	const marginLeft = 40;
-
-	// ---------------------------------------------------
-
-	// Obtain information about data
-	const [min_val, max_val] = await min_max_of_array(dataArray);
-	console.log("min_val: ", min_val);
-	console.log("max_val: ", max_val);
-	
-	// ---------------------------------------------------
-	
-	// x, y scaling variables
-	// Declare the x (horizontal position) scale.
-	const x_scale = d3.scaleLinear([0, dataArray.length], [marginLeft, width - marginRight]);
-
-	// Declare the y (vertical position) scale.
-	const y_scale = d3.scaleLinear([min_val, max_val], [height - marginBottom, marginTop]);
-  
-	// ---------------------------------------------------
-
-	// Declare the line generator
-	const line = d3.line()
-		.x((d, i) => x_scale(i))
-		.y(d => y_scale(d));
-
-	// ---------------------------------------------------
-
-	// Create the SVG container
-	const svg = d3.select("#data_display")
-		.append("svg")
-		//.create("svg")
-		.attr("class", 'line')
-		.attr("width", width)
-		.attr("height", height)
-		.attr("viewBox", [0, 0, width, height])
-		.attr("style", "max-width: 100%; height: auto; height: intrinsic;");
-
-	// ---------------------------------------------------
-	
-	
-	
-	// Add the y-axis, remove the domain line, add grid lines and a label.
-	svg.append("g")
-		.attr('class', 'y-axis')
-		.attr("transform", `translate(${marginLeft},0)`)
-	 	.call(d3.axisLeft(y_scale).ticks(height / 40))
-		.call(g => g.select(".domain").remove())
-		.call(g => g.selectAll(".tick line").clone()
-			.attr("x2", width - marginLeft - marginRight)
-			.attr("stroke-opacity", 0.1))
-	 	.call(g => g.append("text")
-			.attr("x", -marginLeft)
-	 		.attr("y", 10)
-	 		.attr("fill", "currentColor")
-	 		.attr("text-anchor", "start")
-	 		.text("Title"));
-	
-	// Append a path for the line
-	svg.append("path")
-		// .datum(dataArray)
-		.attr("fill", "none")
-		.attr("stroke", "steelblue")
-		.attr("stroke-width", 3)
-		.attr("d", line(dataArray));
-
-}
-
-
 async function plot_line_graph_dataObject() {
 
 	const data = [
@@ -119,17 +35,17 @@ async function plot_line_graph_dataObject() {
 		.attr("width", width)
 		.attr("height", height);
 
-        const xScale = d3.scaleLinear()
+        const x_scale = d3.scaleLinear()
             .domain([0, d3.max(data, d => d.x)])
             .range([0, width]);
 
-        const yScale = d3.scaleLinear()
+        const y_scale = d3.scaleLinear()
             .domain([0, d3.max(data, d => d.y)])
             .range([height, 0]);
 
         const line = d3.line()
-            .x(d => xScale(d.x))
-            .y(d => yScale(d.y));
+            .x(d => x_scale(d.x))
+            .y(d => y_scale(d.y));
 
         svg.append("path")
             .datum(data)
