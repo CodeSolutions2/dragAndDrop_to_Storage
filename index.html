@@ -4,7 +4,8 @@
 <body>
 
 <button id="plot_line_graph" onclick="plot_line_graph()" style="display:block;">plot_line_graph</button>
-<button id="plot_line_graph2" onclick="plot_line_graph2()" style="display:block;">plot_line_graph2</button>
+<button id="plot_line_graph_dataObject" onclick="plot_line_graph_dataObject()" style="display:block;">plot_line_graph_dataObject</button>
+<button id="plot_line_graph_dataArray" onclick="plot_line_graph_dataArray()" style="display:block;">plot_line_graph_dataArray</button>
 <button id="plot_bar_graph" onclick="plot_bar_graph()" style="display:block;">plot_bar_graph</button>
 
 <div id="data_display" style="display:block; text-align: left; width: 600px;"></div>
@@ -102,7 +103,7 @@ async function plot_line_graph() {
 }
 
 
-async function plot_line_graph2() {
+async function plot_line_graph_dataObject() {
 
 	const data = [
             { x: 0, y: 10 },
@@ -117,7 +118,6 @@ async function plot_line_graph2() {
 
         const svg = d3.select("#data_display")
 		.append("svg")
-		//.create("svg")
 		.attr("class", 'line')
 		.attr("width", width)
 		.attr("height", height);
@@ -136,6 +136,40 @@ async function plot_line_graph2() {
 
         svg.append("path")
             .datum(data)
+            .attr("fill", "none")
+            .attr("stroke", "steelblue")
+            .attr("stroke-width", 2)
+            .attr("d", line);
+	
+}
+
+async function plot_line_graph_dataArray() {
+
+	const dataArray = [30, 50, 80, 120, 200];
+
+	const width = 928;
+	const height = 500;
+
+        const svg = d3.select("#data_display")
+		.append("svg")
+		.attr("class", 'line')
+		.attr("width", width)
+		.attr("height", height);
+
+        const xScale = d3.scaleLinear()
+            .domain([0, d3.max(dataArray, (d,i) => i)])
+            .range([0, width]);
+
+        const yScale = d3.scaleLinear()
+            .domain([0, d3.max(dataArray, d => d)])
+            .range([height, 0]);
+
+        const line = d3.line()
+		.x((d, i) => x_scale(i))
+		.y(d => y_scale(d));
+
+        svg.append("path")
+            .datum(dataArray)
             .attr("fill", "none")
             .attr("stroke", "steelblue")
             .attr("stroke-width", 2)
