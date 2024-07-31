@@ -60,8 +60,11 @@ async function plot_line_graph() {
 	const svg = d3.select("#data_display")
 		.append("svg")
 		//.create("svg")
+		.attr("class", 'line')
 		.attr("width", width)
 		.attr("height", height)
+		.attr('x', (d, i) => x_scale(i))
+		.attr('y', d => y_scale(d))
 		.attr("viewBox", [0, 0, width, height])
 		.attr("style", "max-width: 100%; height: auto; height: intrinsic;");
 
@@ -92,7 +95,7 @@ async function plot_line_graph() {
 	
 	// Append a path for the line
 	svg.append("path")
-		//.datum(dataArray)
+		// .datum(dataArray)
 		.attr("fill", "none")
 		.attr("stroke", "steelblue")
 		.attr("stroke-width", 1.5)
