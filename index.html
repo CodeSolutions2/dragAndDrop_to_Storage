@@ -112,9 +112,15 @@ async function plot_line_graph2() {
             { x: 4, y: 18 }
         ];
 
-        const svg = d3.select("#data_display");
-        const width = +svg.attr("width");
-        const height = +svg.attr("height");
+	const width = 928;
+	const height = 500;
+
+        const svg = d3.select("#data_display")
+		.append("svg")
+		//.create("svg")
+		.attr("class", 'line')
+		.attr("width", width)
+		.attr("height", height);
 
         const xScale = d3.scaleLinear()
             .domain([0, d3.max(data, d => d.x)])
