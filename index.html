@@ -5,6 +5,8 @@
 
 <button id="plot_line_graph_dataObject" onclick="plot_line_graph_dataObject()" style="display:block;">plot_line_graph_dataObject</button>
 <button id="plot_line_graph_dataArray" onclick="plot_line_graph_dataArray()" style="display:block;">plot_line_graph_dataArray</button>
+<button id="plot_timeseries_data" onclick="plot_timeseries_data()" style="display:block;">plot_timeseries_data</button>
+
 
 <div id="data_display" style="display:block; text-align: left; width: 600px;"></div>
 	
@@ -108,7 +110,102 @@ async function plot_line_graph_dataArray() {
 		.call(d3.axisLeft(y_scale));
 }
 
+// -----------------------------------------------
+	
+async function plot_timeseries_data() {
+
+	const dataArray = [30, 50, 80, 120, 200];
+
+	// [Step 0] Verify timeseries signal characteristics
+	const arr_char_ts = await obtain_array_characteristics(dataArray);
+	console.log('arr_char_ts: ', arr_char_ts);
+	
+	// [Step 1] Create a canvas to plot timeseries data on
+	const ctx = await create_dynamic_canvasElement(w);
+	
+	ctx.fillStyle = "rgb(200 200 200)"; 	// gray background
+	const WIDTH = w;
+	const HEIGHT = w;  // height of the canvas
+	ctx.fillRect(0, 0, WIDTH, HEIGHT);
+	ctx.lineWidth = 2;
+	ctx.strokeStyle = "rgb(0 0 0)"; 	// black waveform line
+	ctx.fillStyle = 'black';
+	
+	const time_step = WIDTH/dataArray.length;
+	console.log('time_step: ', time_step);
+	
+	var x_scaled = 0;
+	var y_normalized = 0;
+	var y_scaled = 0;
+	
+	ctx.beginPath();
+	for (let i = 0; i < dataArray.length; i++) {
+
+		if (arr_char_ts.sigma == 0) {
+			y_normalized = 0;
+		} else {
+			y_normalized = (dataArray_ts.at(i) - arr_char_ts.mu) / arr_char_ts.sigma; // [-1, 1]
+		}
+		// console.log('y_normalized:', y_normalized);
+		
+		y_scaled = y_normalized*(HEIGHT/2); // To make the line centered
+		// console.log('y_scaled:', y_scaled);
+		// console.log('x_scaled:', x_scaled);
+		
+		if (i === 0) {
+			ctx.moveTo(x_scaled, y_scaled);
+		} else {
+			ctx.lineTo(x_scaled, y_scaled);
+		}
+		x_scaled = x_scaled + time_step;
+	}
+	ctx.stroke();
+	
+}
+
+// -----------------------------------------------
+
+async function obtain_array_characteristics(arr) {
+
+	var arr_char = {};
+	
+	arr_char.mu = await mean(arr);
+	arr_char.sigma = await std(arr);
+
+	const arr_sort = arr.sort();
+	arr_char.max_val = arr_sort.at(arr.length-1);
+	arr_char.min_val = arr_sort.at(0);
+	
+	return arr_char;
+}
+	
+// -----------------------------------------------
+
+async function sum(arr) {
+	return arr.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+}
+
+// -----------------------------------------------
   
+async function mean(arr) {
+	return await sum(arr)/arr.length;
+}
+
+// -----------------------------------------------
+
+async function std(arr) {
+	const mu =  await mean(arr);
+	console.log('mu: ', mu);
+
+	var arr1 = arr.map((x) => { return x-mu; });
+	const summ = await sum(arr1);
+	console.log('summ: ', summ);
+
+	const out = Math.sqrt( Math.pow(summ, 2)/arr.length );
+	console.log('out: ', out);
+	
+	return out;
+}
 
 
 </script>
