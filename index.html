@@ -63,8 +63,6 @@ async function plot_line_graph() {
 		.attr("class", 'line')
 		.attr("width", width)
 		.attr("height", height)
-		.attr('x', (d, i) => x_scale(i))
-		.attr('y', d => y_scale(d))
 		.attr("viewBox", [0, 0, width, height])
 		.attr("style", "max-width: 100%; height: auto; height: intrinsic;");
 
@@ -74,18 +72,18 @@ async function plot_line_graph() {
 	svg.append("g")
 		.attr('class', 'x-axis')
 		.attr("transform", `translate(0,${height - marginBottom})`)
-		.call(d3.axisBottom(x));
+		.call(d3.axisBottom(x_scale));
 	
 	// Add the y-axis, remove the domain line, add grid lines and a label.
 	svg.append("g")
 		.attr('class', 'y-axis')
 		.attr("transform", `translate(${marginLeft},0)`)
-	 	.call(d3.axisLeft(y))
-	// 	.call(g => g.select(".domain").remove())
-	// 	.call(g => g.selectAll(".tick line")
-	// 		.clone()
-	// 		.attr("x2", width - marginLeft - marginRight)
-	// 		.attr("stroke-opacity", 0.1))
+	 	.call(d3.axisLeft(y_scale))
+		.call(g => g.select(".domain").remove())
+		.call(g => g.selectAll(".tick line")
+			.clone()
+			.attr("x2", width - marginLeft - marginRight)
+			.attr("stroke-opacity", 0.1))
 	 	.call(g => g.append("text")
 			.attr("x", -marginLeft)
 	 		.attr("y", 10)
