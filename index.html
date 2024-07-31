@@ -42,17 +42,17 @@ async function plot_line_graph() {
 	
 	// x, y scaling variables
 	// Declare the x (horizontal position) scale.
-	const x = d3.scaleLinear([0, dataArray.length], [marginLeft, width - marginRight]);
+	const x_scale = d3.scaleLinear([0, dataArray.length], [marginLeft, width - marginRight]);
 
 	// Declare the y (vertical position) scale.
-	const y = d3.scaleLinear([min_val, max_val], [height - marginBottom, marginTop]);
+	const y_scale = d3.scaleLinear([min_val, max_val], [height - marginBottom, marginTop]);
   
 	// ---------------------------------------------------
 
 	// Declare the line generator
 	const line = d3.line()
-		.x((d, i) => i)
-		.y(d => d);
+		.x((d, i) => x_scale(i))
+		.y(d => y_scale(d));
 
 	// ---------------------------------------------------
 
@@ -90,10 +90,11 @@ async function plot_line_graph() {
 	
 	// Append a path for the line
 	svg.append("path")
+		.datum(dataArray)
 		.attr("fill", "none")
 		.attr("stroke", "steelblue")
 		.attr("stroke-width", 1.5)
-		.attr("d", line(dataArray));
+		.attr("d", line);
 
 }
 
