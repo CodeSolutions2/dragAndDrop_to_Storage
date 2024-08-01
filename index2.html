@@ -3,44 +3,304 @@
 <head></head>
 <body>
 
+<button id="play_sound_from_a_url" onclick="play_sound_from_a_url()" style="display:block;">play_sound_from_a_url</button>
+ 
+<button id="view_timeseries_from_audio" onclick="view_timeseries_from_audio()" style="display:block;">view_timeseries_from_audio</button>
+
+ 
 <div id="data_display" style="display:block; text-align: left; width: 600px;">
 
+
+ 
+<!-- --------------------------------------------------- -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script src='https://d3js.org/d3.v7.min.js'></script>
+ 
 <script>
 
 var url = "https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3";
 
-// Create an AudioElement
-const audioElement = document.createElement('audio');
+
+async function play_sound_from_a_url(url) {
+  
+ // Create an AudioElement
+ const audioElement = document.createElement('audio');
+  
+ audioElement.setAttribute("controls", true);
+ audioElement.setAttribute('crossOrigin', "anonymous");
+ audioElement.setAttribute('autoplay', true);
+ audioElement.setAttribute('preload', "auto");
+ // OR
+ // audioElement.setAttribute('src', url);
  
-audioElement.setAttribute("controls", true);
-audioElement.setAttribute('crossOrigin', "anonymous");
-audioElement.setAttribute('autoplay', true);
-audioElement.setAttribute('preload', "auto");
-// OR
-// audioElement.setAttribute('src', url);
+ // -----------------------------------------------
+ 
+ // Create an AudioContext
+ // var audioContext = new (window.AudioContext || window.webkitAudioContext)();
+ // audioContext = new AudioContext();
+ // OR
+ var audioContext = new AudioContext();
+ 
+ // -----------------------------------------------
+ 
+ // Create an SourceElement (audioSourceNode)
+ var sourceElement = document.createElement('source');
+  
+ sourceElement.setAttribute("src", url);
+ console.log('sourceElement: ', sourceElement);
+ 
+ // -----------------------------------------------
+  
+ audioElement.appendChild(sourceElement);
+  
+ document.getElementById('data_display').appendChild(audioElement);
+
+}
+
+
+async function view_timeseries_from_audio(url) {
+
+ // Create an AudioElement
+ const audioElement = document.createElement('audio');
+  
+ audioElement.setAttribute("controls", true);
+ audioElement.setAttribute('crossOrigin', "anonymous");
+ audioElement.setAttribute('autoplay', true);
+ audioElement.setAttribute('preload', "auto");
+ // OR
+ // audioElement.setAttribute('src', url);
+ 
+ // -----------------------------------------------
+ 
+ // Create an AudioContext
+ // var audioContext = new (window.AudioContext || window.webkitAudioContext)();
+ // audioContext = new AudioContext();
+ // OR
+ var audioContext = new AudioContext();
+ 
+ // -----------------------------------------------
+ 
+ // Create an SourceElement (audioSourceNode)
+ var sourceElement = document.createElement('source');
+  
+ sourceElement.setAttribute("src", url);
+ console.log('sourceElement: ', sourceElement);
+ 
+ // -----------------------------------------------
+
+ // Create an AnalyserNode
+	var analyserNode = audioContext.createAnalyser();
+	console.log('analyserNode: ', analyserNode);
+
+	let channels = analyserNode.channelCount;     // 2
+	console.log('channels: ', channels);
+	
+	let time_length = analyserNode.context.currentTime;   // 354.976
+	console.log('time_length: ', time_length);
+	
+	let fs = analyserNode.context.sampleRate; // 48000
+	console.log('fs: ', fs);
+	
+	var time_period = (1/fs) * 1000; // every time_period there is a data point, 0.020833333333333333
+	console.log('time_period: ', time_period);
+	
+	// -----------------------------------------------
 
 // -----------------------------------------------
+	// [Way A]: Obtain the audio data from the audioElement/sourceElement and NOT the URL directly
+	// -----------------------------------------------
+	// Way 0: Set up audio node network
+	// sourceElement.connect(analyserNode);  // *** returns an error ***
+	// analyserNode.connect(audioContext.destination);	// *** returns an error ***
 
-// Create an AudioContext
-// var audioContext = new (window.AudioContext || window.webkitAudioContext)();
-// audioContext = new AudioContext();
-// OR
-var audioContext = new AudioContext();
+	// -----------------------------------------------
 
-// -----------------------------------------------
+	// Way 1
+	// *** returns an error ***
+	// sourceElement.connect(audioContext.destination);
 
-// Create an SourceElement (audioSourceNode)
-var sourceElement = document.createElement('source');
+	// -----------------------------------------------
+	
+	// Way 2
+	// *** returns an error ***
+	// audioElement.connect(audioContext.destination);
+
+	// -----------------------------------------------
+	
+
+	// -----------------------------------------------
+	// [Way B]: Obtain the audio data using the URL, transform the fetched data to an Array
+	// -----------------------------------------------
+	// Way 0: fetch on URL -> output audiobuffer
+
+  // --------------------
+  
+	// [Step 0] Fetch binaryString of audio data
+ var settings = {
+		type : 'GET',
+		async: true,
+		crossDomain: true,
+  xhrFields: {responseType: 'arrayBuffer'},
+  dataType: 'binary',
+		beforeSend: function(xhr) {xhr.withCredentials = true;},
+		success: function(response) { console.log('Success'); },
+		error: function(xhr, status, error) { console.log('Error:', error); }
+	};
  
-sourceElement.setAttribute("src", url);
-console.log('sourceElement: ', sourceElement);
+	var binaryString = await $.ajax(url, [,settings]).done(function(response) { return response; });
+	console.log('binaryString: ', binaryString);
 
-// -----------------------------------------------
- 
-audioElement.appendChild(sourceElement);
- 
-document.getElementById('data_display').appendChild(audioElement);
+	// --------------------
+  
+	// [Step 1] Determine the [channels, frameCount, sampleRate] from the audioContext and analyserNode
+	var channels_from_audioContext = audioContext.channelCount;
+	console.log('channels_from_audioContext: ', channels_from_audioContext);
+	if (channels_from_audioContext == undefined) { 
+		channels_from_audioContext = analyserNode.channelCount;
+	}
+	console.log('channels_from_audioContext: ', channels_from_audioContext);
 
+	const frameCount_from_audioContext = audioContext.sampleRate * 2.0;
+	console.log('frameCount_from_audioContext: ', frameCount_from_audioContext);
+
+	const sampleRate_from_audioContext = audioContext.sampleRate; // 48000
+	console.log('sampleRate_from_audioContext: ', sampleRate_from_audioContext);
+
+
+// [Step 2] 
+	// const all_channels_in_an_arrayBuffer = decoded_audiobuffer.getChannelData(channels_from_audioContext);
+	// console.log('all_channels_in_an_arrayBuffer: ', all_channels_in_an_arrayBuffer);
+	// *** returns an error because [sourceElement.connect(analyser); analyser.connect(audioContext.destination);] does not function ***
+	// OR
+	const normalArray_normalized = await decodeAudioData_from_binaryString_to_uint8Array(binaryString);
+  
+	// --------------------
+
+	// Obtain the start and stop index for each channel
+	const length_of_channels = normalArray_normalized.length / channels_from_audioContext;
+	console.log('length_of_channels: ', length_of_channels);
+
+	var start_index = [0];
+	var stop_index = [];
+	var ind = 0;
+	for (var i=0; i<channels_from_audioContext; i++) {
+		ind = ind + length_of_channels-1;
+		stop_index.push(ind);
+		if (normalArray_normalized.length-1 > ind+1) {
+			start_index.push(ind+1);
+		}
+	}
+	console.log('start_index: ', start_index);
+	console.log('stop_index: ', stop_index);
+  
+	// --------------------
+
+
+await plot_line_graph_dataArray(normalArray_normalized);
+ 
+
+}
+
+
+async function decodeAudioData_from_binaryString_to_uint8Array(binaryString) {
+	
+	// -----------------------------------------------
+	// Decode the binaryString response
+	// -----------------------------------------------
+	var character_array = binaryString.split('');
+	console.log("character_array: ", character_array);
+	// Array(38190) [ "�", "�", "�", "d", "\u0000", "\u0000", "\u0000", "\u0000", "\u0000", "\u0000", … ]
+			
+	// Map each [binary string character; a subset of binary string characters is UTF-8] as an [ASCII number; a number from 0 to number_of_characters]
+	var byteArray = character_array.map((character) => { return character.charCodeAt(0); });
+	console.log("byteArray: ", byteArray);
+	// byteArray:  Array(38190) [ 65533, 65533, 65533, 100, 0, 0, 0, 0, 0, 0, … ]
+
+	// The importance of this mapping is to limit the array values from 0 to 255.
+	var uint8Array = new Uint8Array(byteArray);
+	console.log('uint8Array: ', uint8Array);
+	// uint8Array:  Uint8Array(38190) [ 253, 253, 253, 100, 0, 0, 0, 0, 0, 0, … ]
+
+	// In some ways a uint8Array is an arrayBuffer because the size is "fixed" meaning that no more data will be appended to the array after the UTF-8 characters. And, it is a "fixed" array because the values of the array are limited to a certain range of numbers, from 0 to 255. 
+
+	// Convert UTF-8 array [non-fixed length array] to a binary arrayBuffer [fixed-length array]
+	const arrayBuffer = uint8Array.buffer;
+	console.log('arrayBuffer: ', arrayBuffer);
+
+	// Determine the length of the typedArray_arrayBuffer
+	console.log('arrayBuffer.byteLength: ', arrayBuffer.byteLength);
+
+	// --------------------
+  
+	// Convert the TypedArray into a normal array
+	const normalArray = await Array.from(uint8Array);
+	console.log('normalArray: ', normalArray);
+
+	// Determine the length of the normalArray.length
+	console.log('normalArray.length: ', normalArray.length);
+
+	var arr_char = await obtain_array_characteristics(normalArray);
+	console.log('arr_char: ', arr_char);
+
+	// --------------------
+
+	// Normalize the audio data in arrayBuffer from [-1, 1]
+	// audio needs to be in [-1.0; 1.0]
+	var normalArray_normalized = await normalArray.map((val, ind) => { return val/arr_char.max_amp; });
+
+	var arr_char_normalized = await obtain_array_characteristics(normalArray_normalized);
+	console.log('arr_char_normalized: ', arr_char_normalized);
+	
+	// --------------------
+
+	return normalArray_normalized;
+}
+
+async function plot_line_graph_dataArray(dataArray) {
+
+	const width = 928;
+	const height = 500;
+
+        const svg = d3.select("#data_display")
+		.append("svg")
+		.attr("class", 'line')
+		.attr("width", width)
+		.attr("height", height);
+
+        const x_scale = d3.scaleLinear()
+            .domain([0, d3.max(dataArray, (d,i) => i)])
+            .range([0, width]);
+
+        const y_scale = d3.scaleLinear()
+            .domain([0, d3.max(dataArray, d => d)])
+            .range([height, 0]);
+
+        const line = d3.line()
+		.x((d, i) => x_scale(i))
+		.y(d => y_scale(d));
+
+        svg.append("path")
+            .datum(dataArray)
+            .attr("fill", "none")
+            .attr("stroke", "steelblue")
+            .attr("stroke-width", 2)
+            .attr("d", line);
+
+	// Add the x-axis
+	svg.append("g")
+		.attr('class', 'x-axis')
+		.call(d3.axisBottom(x_scale));
+
+	// Add the y-axis
+	svg.append("g")
+		.attr('class', 'y-axis')
+		.call(d3.axisLeft(y_scale));
+}
+
+ 
+ 
 </script>
 
 </body>
