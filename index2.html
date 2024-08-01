@@ -178,35 +178,24 @@ async function view_timeseries_from_audio() {
 	// *** returns an error because [sourceElement.connect(analyser); analyser.connect(audioContext.destination);] does not function ***
 	// OR
 	const normalArray_normalized = await decodeAudioData_from_binaryString_to_uint8Array(binaryString);
-  
-	// --------------------
 
-	// Obtain the start and stop index for each channel
-	const length_of_channels = normalArray_normalized.length / channels_from_audioContext;
-	console.log('length_of_channels: ', length_of_channels);
+	var uint8Array = new Uint8Array(normalArray_normalized);
+	// Convert UTF-8 array [non-fixed length array] to a binary arrayBuffer [fixed-length array]
+	const arrayBuffer = uint8Array.buffer;
+	console.log('arrayBuffer: ', arrayBuffer);
 
-	var start_index = [0];
-	var stop_index = [];
-	var ind = 0;
-	for (var i=0; i<channels_from_audioContext; i++) {
-		ind = ind + length_of_channels-1;
-		stop_index.push(ind);
-		if (normalArray_normalized.length-1 > ind+1) {
-			start_index.push(ind+1);
-		}
-	}
-	console.log('start_index: ', start_index);
-	console.log('stop_index: ', stop_index);
+	// Determine the length of the typedArray_arrayBuffer
+	console.log('arrayBuffer.byteLength: ', arrayBuffer.byteLength);
   
 	// --------------------
 
 	const bytesPerSample = 1; // Assuming 8-bit audio
 
-	const dataView = new DataView(normalArray_normalized);
-	const channel1 = new ArrayBuffer(normalArray_normalized.length / channels_from_audioContext);
-	const channel2 = new ArrayBuffer(normalArray_normalized.length / channels_from_audioContext);
+	const dataView = new DataView(arrayBuffer);
+	const channel1 = new ArrayBuffer(arrayBuffer.byteLength / channels_from_audioContext);
+	const channel2 = new ArrayBuffer(arrayBuffer.byteLength / channels_from_audioContext);
 	
-	for (let i = 0; i < normalArray_normalized.length; i += bytesPerSample * channels_from_audioContext) {
+	for (let i = 0; i < arrayBuffer.byteLength; i += bytesPerSample * channels_from_audioContext) {
 		const sample1 = dataView.getInt8(i, true); // Little-endian
 		const sample2 = dataView.getInt8(i + bytesPerSample, true);
 
