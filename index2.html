@@ -204,9 +204,15 @@ async function view_timeseries_from_audio() {
   		new DataView(channel2).setInt8(i / channels_from_audioContext, sample2, true);
 	}
 
+	console.log('dataView: ', dataView);
+	console.log('channel1: ', channel1);
+	console.log('channel2: ', channel2);
+
 	// --------------------
 
 	await plot_line_graph_dataArray(normalArray_normalized);
+	await plot_line_graph_dataArray(channel1);
+	await plot_line_graph_dataArray(channel2);
  
 
 }
