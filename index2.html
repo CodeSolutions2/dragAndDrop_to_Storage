@@ -25,38 +25,38 @@
 async function play_sound_from_a_url() {
 	
 	var url = "https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3";
+	
+	// Create an AudioElement
+	const audioElement = document.createElement('audio');
   
- // Create an AudioElement
- const audioElement = document.createElement('audio');
+	audioElement.setAttribute("controls", true);
+	audioElement.setAttribute('crossOrigin', "anonymous");
+	audioElement.setAttribute('autoplay', true);
+	audioElement.setAttribute('preload', "auto");
+	// OR
+	// audioElement.setAttribute('src', url);
+ 
+	// -----------------------------------------------
+ 
+	// Create an AudioContext
+	// var audioContext = new (window.AudioContext || window.webkitAudioContext)();
+	// audioContext = new AudioContext();
+	// OR
+	var audioContext = new AudioContext();
+ 
+	// -----------------------------------------------
+ 
+	// Create an SourceElement (audioSourceNode)
+	var sourceElement = document.createElement('source');
   
- audioElement.setAttribute("controls", true);
- audioElement.setAttribute('crossOrigin', "anonymous");
- audioElement.setAttribute('autoplay', true);
- audioElement.setAttribute('preload', "auto");
- // OR
- // audioElement.setAttribute('src', url);
+	sourceElement.setAttribute("src", url);
+	console.log('sourceElement: ', sourceElement);
  
- // -----------------------------------------------
- 
- // Create an AudioContext
- // var audioContext = new (window.AudioContext || window.webkitAudioContext)();
- // audioContext = new AudioContext();
- // OR
- var audioContext = new AudioContext();
- 
- // -----------------------------------------------
- 
- // Create an SourceElement (audioSourceNode)
- var sourceElement = document.createElement('source');
+	// -----------------------------------------------
   
- sourceElement.setAttribute("src", url);
- console.log('sourceElement: ', sourceElement);
- 
- // -----------------------------------------------
+	audioElement.appendChild(sourceElement);
   
- audioElement.appendChild(sourceElement);
-  
- document.getElementById('data_display').appendChild(audioElement);
+	document.getElementById('data_display').appendChild(audioElement);
 
 }
 
@@ -65,15 +65,15 @@ async function view_timeseries_from_audio() {
 	
 	var url = "https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3";
 
- // Create an AudioElement
- const audioElement = document.createElement('audio');
+	// Create an AudioElement
+	const audioElement = document.createElement('audio');
   
- audioElement.setAttribute("controls", true);
- audioElement.setAttribute('crossOrigin', "anonymous");
- audioElement.setAttribute('autoplay', true);
- audioElement.setAttribute('preload', "auto");
- // OR
- // audioElement.setAttribute('src', url);
+	audioElement.setAttribute("controls", true);
+	audioElement.setAttribute('crossOrigin', "anonymous");
+	audioElement.setAttribute('autoplay', true);
+	audioElement.setAttribute('preload', "auto");
+	// OR
+	// audioElement.setAttribute('src', url);
  
  // -----------------------------------------------
  
@@ -200,8 +200,24 @@ async function view_timeseries_from_audio() {
   
 	// --------------------
 
+	const bytesPerSample = 1; // Assuming 8-bit audio
 
-await plot_line_graph_dataArray(normalArray_normalized);
+	const dataView = new DataView(normalArray_normalized);
+	const channel1 = new ArrayBuffer(normalArray_normalized.length / channels_from_audioContext);
+	const channel2 = new ArrayBuffer(normalArray_normalized.length / channels_from_audioContext);
+	
+	for (let i = 0; i < normalArray_normalized.length; i += bytesPerSample * channels_from_audioContext) {
+		const sample1 = dataView.getInt8(i, true); // Little-endian
+		const sample2 = dataView.getInt8(i + bytesPerSample, true);
+
+  		// Store samples in separate channels
+  		new DataView(channel1).setInt8(i / channels_from_audioContext, sample1, true);
+  		new DataView(channel2).setInt8(i / channels_from_audioContext, sample2, true);
+	}
+
+	// --------------------
+
+	await plot_line_graph_dataArray(normalArray_normalized);
  
 
 }
@@ -302,7 +318,52 @@ async function plot_line_graph_dataArray(dataArray) {
 		.call(d3.axisLeft(y_scale));
 }
 
- 
+// -----------------------------------------------
+
+async function obtain_array_characteristics(arr) {
+
+	var arr_char = {};
+	
+	arr_char.mu = await mean(arr);
+	arr_char.sigma = await std(arr);
+
+	const arr_sort = arr.sort();
+	arr_char.max_val = arr_sort.at(arr.length-1);
+	arr_char.min_val = arr_sort.at(0);
+
+	// Maximum amplitude
+	arr_char.max_amp = [Math.abs(arr_char.min_val), arr_char.max_val].sort().pop();
+	
+	return arr_char;
+}
+	
+// -----------------------------------------------
+
+async function sum(arr) {
+	return arr.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+}
+
+// -----------------------------------------------
+  
+async function mean(arr) {
+	return await sum(arr)/arr.length;
+}
+
+// -----------------------------------------------
+
+async function std(arr) {
+	const mu =  await mean(arr);
+	// console.log('mu: ', mu);
+
+	var arr1 = arr.map((x) => { return x-mu; });
+	const summ = await sum(arr1);
+	// console.log('summ: ', summ);
+
+	const out = Math.sqrt( Math.pow(summ, 2)/arr.length );
+	// console.log('out: ', out);
+	
+	return out;
+}
  
 </script>
 
