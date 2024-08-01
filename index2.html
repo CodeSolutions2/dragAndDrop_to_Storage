@@ -211,8 +211,12 @@ async function view_timeseries_from_audio() {
 	// --------------------
 
 	await plot_line_graph_dataArray(normalArray_normalized);
+	
+	const normalArray_channel1 = await Array.from(channel1);
 	await plot_line_graph_dataArray(channel1);
-	await plot_line_graph_dataArray(channel2);
+
+	const normalArray_channel2 = await Array.from(channel2);
+	await plot_line_graph_dataArray(normalArray_channel2);
  
 
 }
