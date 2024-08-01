@@ -74,26 +74,23 @@ async function view_timeseries_from_audio() {
 	audioElement.setAttribute('preload', "auto");
 	// OR
 	// audioElement.setAttribute('src', url);
+	
+	// -----------------------------------------------
  
- // -----------------------------------------------
+	// Create an AudioContext
+	var audioContext = new AudioContext();
  
- // Create an AudioContext
- // var audioContext = new (window.AudioContext || window.webkitAudioContext)();
- // audioContext = new AudioContext();
- // OR
- var audioContext = new AudioContext();
+	// -----------------------------------------------
  
- // -----------------------------------------------
- 
- // Create an SourceElement (audioSourceNode)
- var sourceElement = document.createElement('source');
+	// Create an SourceElement (audioSourceNode)
+	var sourceElement = document.createElement('source');
   
- sourceElement.setAttribute("src", url);
- console.log('sourceElement: ', sourceElement);
+	sourceElement.setAttribute("src", url);
+	console.log('sourceElement: ', sourceElement);
  
- // -----------------------------------------------
+	// -----------------------------------------------
 
- // Create an AnalyserNode
+	// Create an AnalyserNode
 	var analyserNode = audioContext.createAnalyser();
 	console.log('analyserNode: ', analyserNode);
 
@@ -111,7 +108,7 @@ async function view_timeseries_from_audio() {
 	
 	// -----------------------------------------------
 
-// -----------------------------------------------
+	// -----------------------------------------------
 	// [Way A]: Obtain the audio data from the audioElement/sourceElement and NOT the URL directly
 	// -----------------------------------------------
 	// Way 0: Set up audio node network
@@ -138,15 +135,15 @@ async function view_timeseries_from_audio() {
 	// -----------------------------------------------
 	// Way 0: fetch on URL -> output audiobuffer
 
-  // --------------------
+	// --------------------
   
 	// [Step 0] Fetch binaryString of audio data
- var settings = {
+	var settings = {
 		type : 'GET',
 		async: true,
 		crossDomain: true,
-  xhrFields: {responseType: 'arrayBuffer'},
-  dataType: 'binary',
+		xhrFields: {responseType: 'arrayBuffer'},
+		dataType: 'binary',
 		beforeSend: function(xhr) {xhr.withCredentials = true;},
 		success: function(response) { console.log('Success'); },
 		error: function(xhr, status, error) { console.log('Error:', error); }
@@ -172,7 +169,7 @@ async function view_timeseries_from_audio() {
 	console.log('sampleRate_from_audioContext: ', sampleRate_from_audioContext);
 
 
-// [Step 2] 
+	// [Step 2] 
 	// const all_channels_in_an_arrayBuffer = decoded_audiobuffer.getChannelData(channels_from_audioContext);
 	// console.log('all_channels_in_an_arrayBuffer: ', all_channels_in_an_arrayBuffer);
 	// *** returns an error because [sourceElement.connect(analyser); analyser.connect(audioContext.destination);] does not function ***
@@ -213,9 +210,11 @@ async function view_timeseries_from_audio() {
 	await plot_line_graph_dataArray(normalArray_normalized);
 	
 	const normalArray_channel1 = await Array.from(channel1);
-	await plot_line_graph_dataArray(channel1);
+	console.log('normalArray_channel1: ', normalArray_channel1);
+	await plot_line_graph_dataArray(normalArray_channel1);
 
 	const normalArray_channel2 = await Array.from(channel2);
+	console.log('normalArray_channel2: ', normalArray_channel2);
 	await plot_line_graph_dataArray(normalArray_channel2);
  
 
