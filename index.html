@@ -260,7 +260,13 @@ async function decodeAudioData_from_binaryString_to_uint8Array(binaryString) {
 	console.log('arrayBuffer.byteLength: ', arrayBuffer.byteLength);
 
 	// --------------------
-  
+
+	const max_amp = Math.max([uint8Array.sort().shift(), uint8Array.sort().pop()]);
+	var uint8Array_normalized = await uint8Array.map((val, ind) => { return val/max_amp; });
+	console.log('uint8Array max min: ', [uint8Array_normalized.sort().shift(), uint8Array_normalized.sort().pop()])
+	
+	// --------------------
+	
 	// Convert the TypedArray into a normal array
 	const normalArray = await Array.from(uint8Array);
 	console.log('normalArray: ', normalArray);
@@ -276,7 +282,9 @@ async function decodeAudioData_from_binaryString_to_uint8Array(binaryString) {
 	// Normalize the audio data in arrayBuffer from [-1, 1]
 	// audio needs to be in [-1.0; 1.0]
 	var normalArray_normalized = await normalArray.map((val, ind) => { return val/arr_char.max_amp; });
-
+	console.log('normalArray max min: ', [normalArray_normalized.sort().shift(), normalArray_normalized.sort().pop()])
+	// RESULT: it gives a value from 0 to 2.5656... not exactly what was expected, is it because it is not a TypedArray...
+	
 	var arr_char_normalized = await obtain_array_characteristics(normalArray_normalized);
 	console.log('arr_char_normalized: ', arr_char_normalized);
 	
@@ -367,7 +375,7 @@ async function plot_line_graph_dataObject(x, y) {
             .y(d => y_scale(d.y));
 
         svg.append("path")
-            .datum(data)
+            .datum(dataObject)
             .attr("fill", "none")
             .attr("stroke", "steelblue")
             .attr("stroke-width", 2)
