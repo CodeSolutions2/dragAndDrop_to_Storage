@@ -457,7 +457,7 @@ async function plot_line_graph_dataObject(x, y, title_text) {
 	svg.append("g")
 		.attr('class', 'y-axis')
 		.attr("transform", `translate(${margin.left}, 0)`)
-		.call(d3.axisLeft(y_scale));
+		.call(d3.axisLeft(y_scale))
 		// Add title
 		.call(g => g.append("text")
 			.attr("x", -margin.left)
