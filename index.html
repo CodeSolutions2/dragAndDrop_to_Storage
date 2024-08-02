@@ -103,32 +103,11 @@ async function view_timeseries_from_audio() {
 	let fs = analyserNode.context.sampleRate; // 48000
 	console.log('fs: ', fs);
 	
-	var time_period = (1/fs) * 1000; // every time_period there is a data point, 0.020833333333333333
-	console.log('time_period: ', time_period);
+	var time_sample_rate_OR_timePeriod = (1/fs) * 1000; // every time_sample_rate there is a data point, 0.020833333333333333
+	console.log('time_sample_rate_OR_timePeriod: ', time_sample_rate_OR_timePeriod);
 	
 	// -----------------------------------------------
 
-	// -----------------------------------------------
-	// [Way A]: Obtain the audio data from the audioElement/sourceElement and NOT the URL directly
-	// -----------------------------------------------
-	// Way 0: Set up audio node network
-	// sourceElement.connect(analyserNode);  // *** returns an error ***
-	// analyserNode.connect(audioContext.destination);	// *** returns an error ***
-
-	// -----------------------------------------------
-
-	// Way 1
-	// *** returns an error ***
-	// sourceElement.connect(audioContext.destination);
-
-	// -----------------------------------------------
-	
-	// Way 2
-	// *** returns an error ***
-	// audioElement.connect(audioContext.destination);
-
-	// -----------------------------------------------
-	
 
 	// -----------------------------------------------
 	// [Way B]: Obtain the audio data using the URL, transform the fetched data to an Array
@@ -175,36 +154,82 @@ async function view_timeseries_from_audio() {
 	// *** returns an error because [sourceElement.connect(analyser); analyser.connect(audioContext.destination);] does not function ***
 	// OR
 	const normalArray_normalized = await decodeAudioData_from_binaryString_to_uint8Array(binaryString);
+	const t0 = Array.from({ length: normalArray_normalized.length }, (_, i) => i * time_sample_rate_OR_timePeriod);
+	
+	await plot_line_graph_dataObject(t0, normalArray_normalized);
+	
+	// --------------------
 
-  await plot_line_graph_dataArray(normalArray_normalized);
-
-  // --------------------
-
-  var channel1 = [];
-  var channel2 = normalArray_normalized.map((val, ind) => {
-    if (ind % 2 == 0) {
-      channel1.push(val);
-      return '';
-    } else {
-      return val;
-    }
-  });
-  const NonEmptyVals_toKeep = (x) => x.length != 0;
-  channel2 = channel2.filter(NonEmptyVals_toKeep);
+	var channel1 = [];
+	var channel2 = normalArray_normalized.map((val, ind) => {
+		if (ind % 2 == 0) {
+			channel1.push(val);
+			return '';
+		} else {
+			return val;
+		}
+	});
+	const NonEmptyVals_toKeep = (x) => x.length != 0;
+	channel2 = channel2.filter(NonEmptyVals_toKeep);
 
 	console.log('channel1.length : ', channel1.length);
 	console.log('channel2.length : ', channel2.length);
-  
-	await plot_line_graph_dataArray(channel1);
-	await plot_line_graph_dataArray(channel2);
 
-  // --------------------
+	const t1 = Array.from({ length: normalArray_normalized.length }, (_, i) => i * time_sample_rate_OR_timePeriod);
 
+	await plot_line_graph_dataObject(t1, channel1);
+	await plot_line_graph_dataObject(t1, channel2);
 
+	// --------------------
+
+	// Average the channel data
+	var x = channel1 + channel2;
+	var x_avg = x.map((val, ind) => { return val/2; });
+
+	await plot_line_graph_dataObject(t1, x_avg);
+
+	// --------------------
+
+	// Compute frequency domain
+	var freq_response = await DFT(x_avg);
+
+	f = Array.from({ length: freq_response.length }, (_, i) => i * 2 * Math.PI * 1/time_sample_rate_OR_timePeriod);
+	await plot_line_graph_dataObject(f, freq_response);
+
+	// --------------------
+	
+	var freq_response_db = 20 * Math.log10(freq_response);
+	await plot_line_graph_dataObject(f, freq_response_db);
+	
+	// --------------------
+	
   
 
 }
 
+
+// Downsample time series to a [desired_sampleRate]
+
+
+
+async function DFT(x) {
+
+	// Discrete Fourier Transform:  1/sqrt(N) * sum_{0}^{N-1}(x(t) exp^{-j * omega * t}), where omega = 2 * pi * k/N for k=0...N-1
+	const N = x.length;
+	
+	var x_jomega = [];
+	for (var k=0; k<N; k++) {
+		var arr_at_jomega = [];
+		for (var t=0; t<N; t++) {
+			var omega = 2 * Math.PI * k/N;
+			arr_at_jomega.push(x.at(t)*Math.exp(-Math.i * omega * t));
+		}
+		// sum across t
+		x_jomega.push(1/Math.sqrt(N) * await sum(arr_at_jomega));
+	}
+	return x_jomega;
+}
+	
 
 async function decodeAudioData_from_binaryString_to_uint8Array(binaryString) {
 	
@@ -260,9 +285,11 @@ async function decodeAudioData_from_binaryString_to_uint8Array(binaryString) {
 	return normalArray_normalized;
 }
 
+// -----------------------------------------------
+	
 async function plot_line_graph_dataArray(dataArray) {
 
-	const width = 928;
+	const width = 1000;
 	const height = 500;
 
         const svg = d3.select("#data_display")
@@ -285,6 +312,62 @@ async function plot_line_graph_dataArray(dataArray) {
 
         svg.append("path")
             .datum(dataArray)
+            .attr("fill", "none")
+            .attr("stroke", "steelblue")
+            .attr("stroke-width", 2)
+            .attr("d", line);
+
+	// Add the x-axis
+	svg.append("g")
+		.attr('class', 'x-axis')
+		.call(d3.axisBottom(x_scale));
+
+	// Add the y-axis
+	svg.append("g")
+		.attr('class', 'y-axis')
+		.call(d3.axisLeft(y_scale));
+}
+
+// -----------------------------------------------
+	
+async function plot_line_graph_dataObject(x, y) {
+
+	// const dataObject = [
+        //     { x: 0, y: 10 },
+        //     { x: 1, y: 20 },
+        //     { x: 2, y: 15 },
+        //     { x: 3, y: 25 },
+        //     { x: 4, y: 18 }
+        // ];
+	var dataObject = [];
+	for (var i=0; i<x.length; i++) {
+		var obj = { x: x.at(i), y: y.at(i) };
+		dataObject.push(obj);
+	}
+	
+	const width = 1000;
+	const height = 500;
+	
+        const svg = d3.select("#data_display")
+		.append("svg")
+		.attr("class", 'line')
+		.attr("width", width)
+		.attr("height", height);
+
+        const x_scale = d3.scaleLinear()
+            .domain([0, d3.max(dataObject, d => d.x)])
+            .range([0, width]);
+
+        const y_scale = d3.scaleLinear()
+            .domain([0, d3.max(dataObject, d => d.y)])
+            .range([height, 0]);
+
+        const line = d3.line()
+            .x(d => x_scale(d.x))
+            .y(d => y_scale(d.y));
+
+        svg.append("path")
+            .datum(data)
             .attr("fill", "none")
             .attr("stroke", "steelblue")
             .attr("stroke-width", 2)
