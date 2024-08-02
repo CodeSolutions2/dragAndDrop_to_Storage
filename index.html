@@ -149,10 +149,6 @@ async function view_timeseries_from_audio() {
 
 
 	// [Step 2] 
-	// const all_channels_in_an_arrayBuffer = decoded_audiobuffer.getChannelData(channels_from_audioContext);
-	// console.log('all_channels_in_an_arrayBuffer: ', all_channels_in_an_arrayBuffer);
-	// *** returns an error because [sourceElement.connect(analyser); analyser.connect(audioContext.destination);] does not function ***
-	// OR
 	const normalArray_normalized = await decodeAudioData_from_binaryString_to_uint8Array(binaryString);
 	const t0 = Array.from({ length: normalArray_normalized.length }, (_, i) => i * time_sample_rate_OR_timePeriod);
 	
@@ -184,7 +180,8 @@ async function view_timeseries_from_audio() {
 
 	// Average the channel data
 	var x = channel1 + channel2;
-	var x_avg = x.map((val, ind) => { return val/2; });
+	console.log('x.length : ', x.length);
+	var x_avg = await (channel1 + channel2).map((val, ind) => { return val/2; });
 
 	await plot_line_graph_dataObject(t1, x_avg);
 
@@ -274,10 +271,10 @@ async function decodeAudioData_from_binaryString_to_uint8Array(binaryString) {
 	// --------------------
 
 	// Normalize the audio data in arrayBuffer from [-1, 1]
-	// audio needs to be in [-1.0; 1.0]
-	var normalArray_normalized = await normalArray.map((val, ind) => { return val/arr_char.max_amp; });
+	// var normalArray_normalized = await normalArray.map((val, ind) => { return val/arr_char.max_amp; });
+	var normalArray_normalized = await normalArray.map((val, ind) => { return val/99; });
 	console.log('normalArray max min: ', [normalArray_normalized.sort().shift(), normalArray_normalized.sort().pop()])
-	// RESULT: it gives a value from 0 to 2.5656... not exactly what was expected, is it because it is not a TypedArray...
+	// RESULT: it gives a value from 0 to 2.5656... not exactly what was expected
 	
 	var arr_char_normalized = await obtain_array_characteristics(normalArray_normalized);
 	console.log('arr_char_normalized: ', arr_char_normalized);
@@ -289,50 +286,7 @@ async function decodeAudioData_from_binaryString_to_uint8Array(binaryString) {
 
 // -----------------------------------------------
 	
-async function plot_line_graph_dataArray(dataArray) {
-
-	const width = 1000;
-	const height = 500;
-
-        const svg = d3.select("#data_display")
-		.append("svg")
-		.attr("class", 'line')
-		.attr("width", width)
-		.attr("height", height);
-
-        const x_scale = d3.scaleLinear()
-            .domain([0, d3.max(dataArray, (d,i) => i)])
-            .range([0, width]);
-
-        const y_scale = d3.scaleLinear()
-            .domain([0, d3.max(dataArray, d => d)])
-            .range([height, 0]);
-
-        const line = d3.line()
-		.x((d, i) => x_scale(i))
-		.y(d => y_scale(d));
-
-        svg.append("path")
-            .datum(dataArray)
-            .attr("fill", "none")
-            .attr("stroke", "steelblue")
-            .attr("stroke-width", 2)
-            .attr("d", line);
-
-	// Add the x-axis
-	svg.append("g")
-		.attr('class', 'x-axis')
-		.call(d3.axisBottom(x_scale));
-
-	// Add the y-axis
-	svg.append("g")
-		.attr('class', 'y-axis')
-		.call(d3.axisLeft(y_scale));
-}
-
-// -----------------------------------------------
-	
-async function plot_line_graph_dataObject(x, y) {
+async function plot_line_graph_dataObject(x, y, title_text) {
 
 	// const dataObject = [
         //     { x: 0, y: 10 },
@@ -349,6 +303,8 @@ async function plot_line_graph_dataObject(x, y) {
 	
 	const width = 1000;
 	const height = 500;
+
+	const margin = {top: 20, right: 30, bottom: 30, left: 40};
 	
         const svg = d3.select("#data_display")
 		.append("svg")
@@ -375,15 +331,41 @@ async function plot_line_graph_dataObject(x, y) {
             .attr("stroke-width", 2)
             .attr("d", line);
 
+	// --------------------
+	
 	// Add the x-axis
+	var xAxis = d3.svg.axis()
+		.scale(x_scale)
+		.orient("bottom");
+	
 	svg.append("g")
 		.attr('class', 'x-axis')
-		.call(d3.axisBottom(x_scale));
+		//.call(d3.axisBottom(x_scale));
+		.attr("transform", "translate(0," + height + ")")
+		.call(xAxis);
 
+	// --------------------
+	
 	// Add the y-axis
+	var yAxis = d3.svg.axis()
+		.scale(y_scale)
+		.orient("left");
+	
 	svg.append("g")
 		.attr('class', 'y-axis')
-		.call(d3.axisLeft(y_scale));
+		//.call(d3.axisLeft(y_scale))
+		.call(yAxis);
+
+	// --------------------
+	
+	// Add title
+	svg.append("text")
+	    .attr("x", (width / 2))
+	    .attr("y", 0 - (margin.top / 2))
+	    .attr("text-anchor", "middle")
+	    .style("font-size", "16px")
+	    .text(title_text);
+
 }
 
 // -----------------------------------------------
