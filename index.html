@@ -302,14 +302,20 @@ async function view_frequency_response_from_audio() {
 
 	// Compute frequency domain
 	var freq_response = await DFT(x_avg);
+	console.log('freq_response.length : ', freq_response.length);
 
+	var freq_arr_char = await obtain_array_characteristics(freq_response);
+	console.log('freq_arr_char: ', freq_arr_char);
+	
 	f = Array.from({ length: freq_response.length }, (_, i) => i * 2 * Math.PI * 1/time_sample_rate_OR_timePeriod);
-	await plot_line_graph_dataObject(f, freq_response, "Frequency response: Hz");
+	console.log('f.length : ', f.length);
+	
+	// await plot_line_graph_dataObject(f, freq_response, "Frequency response: Hz");
 
 	// --------------------
 	
-	var freq_response_db = 20 * Math.log10(freq_response);
-	await plot_line_graph_dataObject(f, freq_response_db, "Frequency response: decibels");
+	// var freq_response_db = 20 * Math.log10(freq_response);
+	// await plot_line_graph_dataObject(f, freq_response_db, "Frequency response: decibels");
 	
 	// --------------------
 	
@@ -324,6 +330,8 @@ async function DFT(x) {
 
 	// Discrete Fourier Transform:  1/sqrt(N) * sum_{0}^{N-1}(x(t) exp^{-j * omega * t}), where omega = 2 * pi * k/N for k=0...N-1
 	const N = x.length;
+
+	console.log("Math.i: ", Math.i)
 	
 	var x_jomega = [];
 	for (var k=0; k<N; k++) {
@@ -337,7 +345,8 @@ async function DFT(x) {
 	}
 	return x_jomega;
 }
-	
+
+// -----------------------------------------------
 
 async function decodeAudioData_from_binaryString_to_uint8Array(binaryString) {
 	
@@ -460,7 +469,7 @@ async function plot_line_graph_dataObject(x, y, title_text) {
 		.call(d3.axisLeft(y_scale))
 		// Add title
 		.call(g => g.append("text")
-			.attr("x", -margin.left)
+			.attr("x", d3.max(dataObject, d => d.x)/4 )
 			.attr("y", 10)
 			.attr("fill", "currentColor")
 			.attr("text-anchor", "middle")
