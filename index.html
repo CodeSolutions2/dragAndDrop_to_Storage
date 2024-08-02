@@ -258,12 +258,6 @@ async function decodeAudioData_from_binaryString_to_uint8Array(binaryString) {
 
 	// Determine the length of the typedArray_arrayBuffer
 	console.log('arrayBuffer.byteLength: ', arrayBuffer.byteLength);
-
-	// --------------------
-
-	const max_amp = Math.max([uint8Array.sort().shift(), uint8Array.sort().pop()]);
-	var uint8Array_normalized = await uint8Array.map((val, ind) => { return val/max_amp; });
-	console.log('uint8Array max min: ', [uint8Array_normalized.sort().shift(), uint8Array_normalized.sort().pop()])
 	
 	// --------------------
 	
