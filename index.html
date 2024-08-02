@@ -314,7 +314,7 @@ async function view_frequency_response_from_audio() {
 
 	// --------------------
 	
-	const freq_response_db = freq_response.map((val, ind) => { 20 * Math.log10(val) });
+	const freq_response_db = freq_response.map((val, ind) => { return 20 * Math.log10(val); });
 	
 	await plot_line_graph_dataObject(f, freq_response_db, "Frequency response: decibels");
 	
@@ -436,11 +436,11 @@ async function plot_line_graph_dataObject(x, y, title_text) {
 		.attr("height", height);
 
         const x_scale = d3.scaleLinear()
-            .domain([0, d3.max(dataObject, d => d.x)])
+            .domain([0, d3.max(dataObject, d => d.x)], [margin.left, width - margin.right])
             .range([0, width]);
 
         const y_scale = d3.scaleLinear()
-            .domain([0, d3.max(dataObject, d => d.y)])
+            .domain([0, d3.max(dataObject, d => d.y)], [height - margin.bottom, margin.top])
             .range([height, 0]);
 
         const line = d3.line()
