@@ -310,12 +310,12 @@ async function view_frequency_response_from_audio() {
 	f = Array.from({ length: freq_response.length }, (_, i) => i * 2 * Math.PI * 1/time_sample_rate_OR_timePeriod);
 	console.log('f.length : ', f.length);
 	
-	// await plot_line_graph_dataObject(f, freq_response, "Frequency response: Hz");
+	await plot_line_graph_dataObject(f, freq_response, "Frequency response: Hz");
 
 	// --------------------
 	
-	// var freq_response_db = 20 * Math.log10(freq_response);
-	// await plot_line_graph_dataObject(f, freq_response_db, "Frequency response: decibels");
+	var freq_response_db = 20 * Math.log10(freq_response);
+	await plot_line_graph_dataObject(f, freq_response_db, "Frequency response: decibels");
 	
 	// --------------------
 	
