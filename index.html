@@ -330,15 +330,13 @@ async function DFT(x) {
 
 	// Discrete Fourier Transform:  1/sqrt(N) * sum_{0}^{N-1}(x(t) exp^{-j * omega * t}), where omega = 2 * pi * k/N for k=0...N-1
 	const N = x.length;
-
-	console.log("Math.i: ", Math.i)
 	
 	var x_jomega = [];
 	for (var k=0; k<N; k++) {
 		var arr_at_jomega = [];
 		for (var t=0; t<N; t++) {
 			var omega = 2 * Math.PI * k/N;
-			arr_at_jomega.push(x.at(t)*Math.exp(-Math.i * omega * t));
+			arr_at_jomega.push(x.at(t)*Math.exp(- omega * t));
 		}
 		// sum across t
 		x_jomega.push(1/Math.sqrt(N) * await sum(arr_at_jomega));
@@ -469,8 +467,8 @@ async function plot_line_graph_dataObject(x, y, title_text) {
 		.call(d3.axisLeft(y_scale))
 		// Add title
 		.call(g => g.append("text")
-			.attr("x", d3.max(dataObject, d => d.x)/4 )
-			.attr("y", 10)
+			.attr("x", d3.max(dataObject, d => d.x)/2 )
+			.attr("y", 15)
 			.attr("fill", "currentColor")
 			.attr("text-anchor", "middle")
 			.style("font-size", "16px")
