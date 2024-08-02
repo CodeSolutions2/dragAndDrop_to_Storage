@@ -181,9 +181,8 @@ async function view_timeseries_from_audio() {
 	// --------------------
 
 	// Average the channel data
-	var x = channel1 + channel2;
-	console.log('x.length : ', x.length);
-	var x_avg = await (channel1 + channel2).map((val, ind) => { return val/2; });
+	const x_avg = await channel1.map((val, ind) => { return (val + channel2.at(ind))/2; });
+	console.log('x_avg.length : ', x_avg.length);
 
 	await plot_line_graph_dataObject(t1, x_avg, "Timeseries: channels averaged");
 	
@@ -296,9 +295,8 @@ async function view_frequency_response_from_audio() {
 	// --------------------
 
 	// Average the channel data
-	var x = channel1 + channel2;
-	console.log('x.length : ', x.length);
-	var x_avg = await (channel1 + channel2).map((val, ind) => { return val/2; });
+	const x_avg = await channel1.map((val, ind) => { return (val + channel2.at(ind))/2; });
+	console.log('x_avg.length : ', x_avg.length);
 
 	// --------------------
 
@@ -450,7 +448,7 @@ async function plot_line_graph_dataObject(x, y, title_text) {
 	svg.append("g")
 		.attr('class', 'x axis')
 		// The next line moves the axis to the bottom
-		.attr("transform", "translate(0," + height + ")")
+		.attr("transform", `translate(0, ${height - margin.bottom})`)
 		.call(d3.axisBottom(x_scale));
 
 	// --------------------
@@ -458,17 +456,18 @@ async function plot_line_graph_dataObject(x, y, title_text) {
 	// Add the y-axis
 	svg.append("g")
 		.attr('class', 'y-axis')
+		.attr("transform", `translate(${margin.left}, 0)`)
 		.call(d3.axisLeft(y_scale));
+		// Add title
+		.call(g => g.append("text")
+			.attr("x", -margin.left)
+			.attr("y", 10)
+			.attr("fill", "currentColor")
+			.attr("text-anchor", "middle")
+			.style("font-size", "16px")
+			.text(`Title: ${title_text}`));
 
 	// --------------------
-	
-	// Add title
-	svg.append("text")
-	    .attr("x", (width / 2))
-	    .attr("y", 0 - (margin.top / 2))
-	    .attr("text-anchor", "middle")
-	    .style("font-size", "16px")
-	    .text(title_text);
 
 }
 
