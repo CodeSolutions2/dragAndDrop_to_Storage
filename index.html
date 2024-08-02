@@ -6,6 +6,8 @@
 <button id="play_sound_from_a_url" onclick="play_sound_from_a_url()" style="display:block;">play_sound_from_a_url</button>
  
 <button id="view_timeseries_from_audio" onclick="view_timeseries_from_audio()" style="display:block;">view_timeseries_from_audio</button>
+	
+<button id="view_frequency_response_from_audio" onclick="view_frequency_response_from_audio()" style="display:block;">view_frequency_response_from_audio</button>
 
  
 <div id="data_display" style="display:block; text-align: left; width: 600px;">
@@ -184,6 +186,119 @@ async function view_timeseries_from_audio() {
 	var x_avg = await (channel1 + channel2).map((val, ind) => { return val/2; });
 
 	await plot_line_graph_dataObject(t1, x_avg, "Timeseries: channels averaged");
+	
+}
+
+async function view_frequency_response_from_audio() {
+	
+	var url = "https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3";
+
+	// Create an AudioElement
+	const audioElement = document.createElement('audio');
+  
+	audioElement.setAttribute("controls", true);
+	audioElement.setAttribute('crossOrigin', "anonymous");
+	audioElement.setAttribute('autoplay', true);
+	audioElement.setAttribute('preload', "auto");
+	// OR
+	// audioElement.setAttribute('src', url);
+	
+	// -----------------------------------------------
+ 
+	// Create an AudioContext
+	var audioContext = new AudioContext();
+ 
+	// -----------------------------------------------
+ 
+	// Create an SourceElement (audioSourceNode)
+	var sourceElement = document.createElement('source');
+  
+	sourceElement.setAttribute("src", url);
+	console.log('sourceElement: ', sourceElement);
+ 
+	// -----------------------------------------------
+
+	// Create an AnalyserNode
+	var analyserNode = audioContext.createAnalyser();
+	console.log('analyserNode: ', analyserNode);
+
+	let channels = analyserNode.channelCount;     // 2
+	console.log('channels: ', channels);
+	
+	let time_length = analyserNode.context.currentTime;   // 354.976
+	console.log('time_length: ', time_length);
+	
+	let fs = analyserNode.context.sampleRate; // 48000
+	console.log('fs: ', fs);
+	
+	var time_sample_rate_OR_timePeriod = (1/fs) * 1000; // every time_sample_rate there is a data point, 0.020833333333333333
+	console.log('time_sample_rate_OR_timePeriod: ', time_sample_rate_OR_timePeriod);
+	
+	// -----------------------------------------------
+
+
+	// -----------------------------------------------
+	// [Way B]: Obtain the audio data using the URL, transform the fetched data to an Array
+	// -----------------------------------------------
+	// Way 0: fetch on URL -> output audiobuffer
+
+	// --------------------
+  
+	// [Step 0] Fetch binaryString of audio data
+	var settings = {
+		type : 'GET',
+		async: true,
+		crossDomain: true,
+		xhrFields: {responseType: 'arrayBuffer'},
+		dataType: 'binary',
+		beforeSend: function(xhr) {xhr.withCredentials = true;},
+		success: function(response) { console.log('Success'); },
+		error: function(xhr, status, error) { console.log('Error:', error); }
+	};
+ 
+	var binaryString = await $.ajax(url, [,settings]).done(function(response) { return response; });
+	console.log('binaryString: ', binaryString);
+
+	// --------------------
+  
+	// [Step 1] Determine the [channels, frameCount, sampleRate] from the audioContext and analyserNode
+	var channels_from_audioContext = audioContext.channelCount;
+	console.log('channels_from_audioContext: ', channels_from_audioContext);
+	if (channels_from_audioContext == undefined) { 
+		channels_from_audioContext = analyserNode.channelCount;
+	}
+	console.log('channels_from_audioContext: ', channels_from_audioContext);
+
+	const frameCount_from_audioContext = audioContext.sampleRate * 2.0;
+	console.log('frameCount_from_audioContext: ', frameCount_from_audioContext);
+
+	const sampleRate_from_audioContext = audioContext.sampleRate; // 48000
+	console.log('sampleRate_from_audioContext: ', sampleRate_from_audioContext);
+
+
+	// [Step 2] 
+	const normalArray_normalized = await decodeAudioData_from_binaryString_to_uint8Array(binaryString);
+	
+	// --------------------
+
+	var channel1 = [];
+	var channel2 = normalArray_normalized.map((val, ind) => {
+		if (ind % 2 == 0) {
+			channel1.push(val);
+			return '';
+		} else {
+			return val;
+		}
+	});
+	const NonEmptyVals_toKeep = (x) => x.length != 0;
+	channel2 = channel2.filter(NonEmptyVals_toKeep);
+
+	// --------------------
+
+	// Average the channel data
+	var x = channel1 + channel2;
+	console.log('x.length : ', x.length);
+	var x_avg = await (channel1 + channel2).map((val, ind) => { return val/2; });
 
 	// --------------------
 
@@ -200,10 +315,8 @@ async function view_timeseries_from_audio() {
 	
 	// --------------------
 	
-  
-
 }
-
+	
 
 // Downsample time series to a [desired_sampleRate]
 
@@ -334,7 +447,7 @@ async function plot_line_graph_dataObject(x, y, title_text) {
 	// --------------------
 	
 	// Add the x-axis
-	var xAxis = d3.svg.axis()
+	var xAxis = d3.axisBottom()
 		.scale(x_scale)
 		.orient("bottom");
 	
@@ -347,7 +460,7 @@ async function plot_line_graph_dataObject(x, y, title_text) {
 	// --------------------
 	
 	// Add the y-axis
-	var yAxis = d3.svg.axis()
+	var yAxis = d3.axisLeft()
 		.scale(y_scale)
 		.orient("left");
 	
