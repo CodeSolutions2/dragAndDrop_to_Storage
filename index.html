@@ -447,27 +447,18 @@ async function plot_line_graph_dataObject(x, y, title_text) {
 	// --------------------
 	
 	// Add the x-axis
-	var xAxis = d3.axisBottom()
-		.scale(x_scale)
-		.orient("bottom");
-	
 	svg.append("g")
-		.attr('class', 'x-axis')
-		//.call(d3.axisBottom(x_scale));
+		.attr('class', 'x axis')
+		// The next line moves the axis to the bottom
 		.attr("transform", "translate(0," + height + ")")
-		.call(xAxis);
+		.call(d3.axisBottom(x_scale));
 
 	// --------------------
 	
 	// Add the y-axis
-	var yAxis = d3.axisLeft()
-		.scale(y_scale)
-		.orient("left");
-	
 	svg.append("g")
 		.attr('class', 'y-axis')
-		//.call(d3.axisLeft(y_scale))
-		.call(yAxis);
+		.call(d3.axisLeft(y_scale));
 
 	// --------------------
 	
