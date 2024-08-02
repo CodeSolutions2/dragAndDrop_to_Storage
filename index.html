@@ -301,7 +301,7 @@ async function view_frequency_response_from_audio() {
 	// --------------------
 
 	// Compute frequency domain
-	var freq_response = await DFT(x_avg);
+	const freq_response = await DFT(x_avg);
 	console.log('freq_response.length : ', freq_response.length);
 
 	var freq_arr_char = await obtain_array_characteristics(freq_response);
@@ -314,7 +314,8 @@ async function view_frequency_response_from_audio() {
 
 	// --------------------
 	
-	var freq_response_db = 20 * Math.log10(freq_response);
+	const freq_response_db = freq_response.map((val, ind) => { 20 * Math.log10(val) });
+	
 	await plot_line_graph_dataObject(f, freq_response_db, "Frequency response: decibels");
 	
 	// --------------------
@@ -413,6 +414,10 @@ async function plot_line_graph_dataObject(x, y, title_text) {
         //     { x: 3, y: 25 },
         //     { x: 4, y: 18 }
         // ];
+
+	console.log("x: ", x.slice(0, 10));
+	console.log("y: ", y.slice(0, 10));
+	
 	var dataObject = [];
 	for (var i=0; i<x.length; i++) {
 		var obj = { x: x.at(i), y: y.at(i) };
