@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head></head>
+    
+<body>
+
+
+<button type="button" id="run_process" onclick="run_process()" style="display:block">run_process</button>
+  
+<script>
+
+async function run_process() {
+    
+  const streamPromise = navigator.mediaDevices.getDisplayMedia();
+  
+  streamPromise.then(stream => {
+    let recordedChunks = [];
+    var options = {mimeType: "video/webm; codecs=vp9"};
+    var mediaRecorder = new MediaRecorder(stream, options);
+  
+    mediaRecorder.ondataavailable = handleDataAvailable;
+    
+    mediaRecorder.start();
+  
+    function handleDataAvailable(event) {
+      if (event.data.size > 0) {
+        recordedChunks.push(even.data);
+        download();
+      }
+    }
+  
+    function download() {
+      var blob = new Blob(recordedChunks, {type: "video/webm"});
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      document.body.appendChild(a);
+      a.setAttribute('style', 'display:none');
+      a.setAttribute('href', url);
+      a.setAttribute('download', 'test.webm');
+      
+      a.click();
+  
+      window.URL.revokeObjectURL(url);
+    }
+    
+  });
+
+}
+
+  
+  </script>
+</body>
+</html>
