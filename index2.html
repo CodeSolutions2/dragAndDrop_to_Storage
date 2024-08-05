@@ -15,7 +15,7 @@ async function run_process() {
   
   streamPromise.then(stream => {
     let recordedChunks = [];
-    var options = {mimeType: "video/webm; codecs=vp9"};
+    var options = {mimeType: "video/webm"};
     var mediaRecorder = new MediaRecorder(stream, options);
   
     mediaRecorder.ondataavailable = handleDataAvailable;
