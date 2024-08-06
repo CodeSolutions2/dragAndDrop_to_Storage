@@ -13,7 +13,9 @@
 async function run_process() {
     
     const displayMediaOptions = { video: { displaySurface: "browser", },
-                                 audio: { suppressLocalAudioPlayback: false, },
+                                 audio: { echoCancellation: true,
+                                         noiseSuppression: true,
+                                         sampleRate: 44100 },
                                  preferCurrentTab: false,
                                  selfBrowserSurface: "exclude",
                                  systemAudio: "include",
