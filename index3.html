@@ -70,9 +70,11 @@ function download_screen_recording_video(recordedChunks) {
 
 // -------------------------------------------------
 
+const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    
 async function run_voice_to_text() {
 
-    const recognition = new webkitSpeechRecognition();
+    // const recognition = new webkitSpeechRecognition();
 
     recognition.lang = "en-US";
 
