@@ -20,8 +20,8 @@ async function run_video_screen_capture() {
     
     const displayMediaOptions = { video: { displaySurface: "browser", },
                                  audio: true,
-                                 preferCurrentTab: false,
-                                 selfBrowserSurface: "exclude",
+                                 preferCurrentTab: true,
+                                 selfBrowserSurface: "include",
                                  systemAudio: "include",
                                  surfaceSwitching: "include",
                                  monitorTypeSurfaces: "include",
@@ -70,6 +70,7 @@ function download_screen_recording_video(recordedChunks) {
 
 // -------------------------------------------------
 
+// https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition
 // var recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition || window.mozSpeechRecognition || window.msSpeechRecognition)();
     
 async function run_voice_to_text() {
