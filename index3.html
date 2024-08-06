@@ -4,13 +4,19 @@
     
 <body>
 
-<button type="button" id="run_process" onclick="run_process()" style="display:block">run_process</button>
+<button type="button" id="run_video_screen_capture" onclick="run_video_screen_capture()" style="display:block">run_video_screen_capture</button>
 
+<button type="button" id="run_voice_to_text" onclick="run_voice_to_text()" style="display:block">run_voice_to_text</button>
+
+<div id="output"></div>
+    
 <input type="text" name="" id="input" value="" placeholder="input" style="display:block;">
     
 <script>
 
-async function run_process() {
+// -------------------------------------------------
+    
+async function run_video_screen_capture() {
     
     const displayMediaOptions = { video: { displaySurface: "browser", },
                                  audio: true,
@@ -64,6 +70,26 @@ function download_screen_recording_video(recordedChunks) {
 
 // -------------------------------------------------
 
+async function run_voice_to_text() {
+
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition || window.mozSpeechRecognition || window.msSpeechRecognition)();
+
+    recognition.lang = "en-US";
+
+    recognition.onstart = () => { document.getElementById("run_voice_to_text").textContent = "Recording..."; }
+
+    recognition.start();
+    
+    recognition.onresult = (event) => {
+        document.getElementById("output").textContent = event.results[0][0].transcript;
+    };
+
+    recognition.onend = (event) => {
+        document.getElementById("run_voice_to_text").textContent = "run_voice_to_text";
+    };
+}
+
+    
 </script>
 </body>
 </html>
