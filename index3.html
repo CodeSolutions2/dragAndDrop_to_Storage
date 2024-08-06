@@ -70,11 +70,11 @@ function download_screen_recording_video(recordedChunks) {
 
 // -------------------------------------------------
 
-var recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition || window.mozSpeechRecognition || window.msSpeechRecognition)();
+// var recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition || window.mozSpeechRecognition || window.msSpeechRecognition)();
     
 async function run_voice_to_text() {
 
-    recognition = new SpeechRecognition();
+    var recognition = new SpeechRecognition();
 
     recognition.lang = "en-US";
     recognition.continuous = true;
