@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head></head>
+    
+<body>
+
+<input type="text" name="" id="url" value="" placeholder="url" style="display:block;">
+  
+<button id="run_fetch_script" onclick="run_fetch_script()" style="display:block">run_fetch_script</button>
+  
+<script>
+
+// -------------------------------------------------
+  
+function run_fetch_script() {
+  
+  loadScript()
+      .then( data  => { console.log("Script loaded successfully", data); })
+      .catch( err => { console.error(err); });
+}
+
+// -------------------------------------------------
+
+const loadScript = (async = true, type = "text/javascript") => {
+
+  const FILE_URL = document.getElementById('url').value;
+  console.log("FILE_URL: ", FILE_URL);
+  
+    return new Promise((resolve, reject) => {
+        try {
+            const scriptElement = document.createElement("script");
+            scriptElement.type = type;
+            scriptElement.async = async;
+            scriptElement.src =FILE_URL;
+            scriptElement.crossorigin="*";
+            scriptElement.redirect="follow";
+            scriptElement.mode='cors';
+
+            scriptElement.addEventListener("load", (ev) => {
+                resolve({ status: true });
+            });
+
+            scriptElement.addEventListener("error", (ev) => {
+                reject({
+                    status: false,
+                    message: `Failed to load the script ${FILE_URL}`
+                });
+            });
+
+            document.body.appendChild(scriptElement);
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
+// -------------------------------------------------
+	
+</script>
+</body>
+</html>
