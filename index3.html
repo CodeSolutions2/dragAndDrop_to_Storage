@@ -72,17 +72,18 @@ function download_screen_recording_video(recordedChunks) {
 
 async function run_voice_to_text() {
 
-    const recognition = new SpeechRecognition();
+    const recognition = new webkitSpeechRecognition();
 
     recognition.lang = "en-US";
 
     recognition.onstart = () => { document.getElementById("run_voice_to_text").textContent = "Recording..."; }
-
-    recognition.start();
     
     recognition.onresult = (event) => {
+        console.log('event.results: ', event.results);
         document.getElementById("output").textContent = event.results[0][0].transcript;
     };
+
+    recognition.start();
 
     recognition.onend = () => {
         document.getElementById("run_voice_to_text").textContent = "run_voice_to_text";
