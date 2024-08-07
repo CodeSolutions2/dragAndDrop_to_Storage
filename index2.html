@@ -7,7 +7,10 @@
 <button type="button" id="run_video_screen_capture" onclick="run_video_screen_capture()" style="display:block">run_video_screen_capture</button>
 
 <button type="button" id="record_audio" onclick="record_audio()" style="display:block">record_audio</button>
+    
 <button type="button" id="stop_record_audio" onclick="stop_record_audio()" style="display:block">stop_record_audio</button>
+
+<div id="data_display" style="display:block; text-align: left; width: 600px;">
 
 <script>
 
@@ -125,7 +128,7 @@ async function record_audio() {
             mediaRecorder.ondataavailable = handleDataAvailable_audio;
 
             // Show the audio file on the page for play back
-        // mediaRecorder.onstop = (e) => {
+            // mediaRecorder.onstop = (e) => {
          //  console.log("data available after MediaRecorder.stop() called.");
   
          //  const clipName = prompt("Enter a name for your sound clip");
@@ -150,7 +153,7 @@ async function record_audio() {
          //  mainContainer.appendChild(clipContainer);
   
            //  audio.controls = true;
-          //   const blob = new Blob(chunks, { type: "audio/mp3" });
+          // const blob = new Blob(chunks, { type: "audio/mp3" });
           //   chunks = [];
           //   const audioURL = URL.createObjectURL(blob);
           //   audio.src = audioURL;
@@ -177,30 +180,75 @@ function handleDataAvailable_audio(event) {
     
     if (event.data.size > 0) {
         recordedChunks.push(event.data);
-        download_audio_recording(recordedChunks);
+
+        // Create a URL for the audio data
+        var blob = new Blob(recordedChunks, {type: "audio/mp3"});
+        var url = URL.createObjectURL(blob);
+        
+        download_audio_recording(url)
+            .then(function() { play_sound_from_a_url(url); })
+            .then(function() { window.URL.revokeObjectURL(url); });
+        
     }
 }
 
 // -------------------------------------------------
   
-function download_audio_recording(recordedChunks) {
+function download_audio_recording(url) {
     
-      var blob = new Blob(recordedChunks, {type: "audio/mp3"});
-      var url = URL.createObjectURL(blob);
-      var a = document.createElement("a");
-      document.body.appendChild(a);
-      a.setAttribute('style', 'display:none');
-      a.setAttribute('href', url);
+    var a = document.createElement("a");
+    document.body.appendChild(a);
+    a.setAttribute('style', 'display:none');
+    a.setAttribute('href', url);
       a.setAttribute('download', 'test.mp3');
       
       a.click();
   
-      window.URL.revokeObjectURL(url);
+     // window.URL.revokeObjectURL(url);
 }
 
 
 
 // -------------------------------------------------
+
+async function play_sound_from_a_url(url) {
+	
+	// Create an AudioElement
+	const audioElement = document.createElement('audio');
+  
+	audioElement.setAttribute("controls", true);
+	audioElement.setAttribute('crossOrigin', "anonymous");
+	audioElement.setAttribute('autoplay', true);
+	audioElement.setAttribute('preload', "auto");
+	// OR
+	// audioElement.setAttribute('src', url);
+ 
+	// -----------------------------------------------
+ 
+	// Create an AudioContext
+	// var audioContext = new (window.AudioContext || window.webkitAudioContext)();
+	// audioContext = new AudioContext();
+	// OR
+	var audioContext = new AudioContext();
+ 
+	// -----------------------------------------------
+ 
+	// Create an SourceElement (audioSourceNode)
+	var sourceElement = document.createElement('source');
+  
+	sourceElement.setAttribute("src", url);
+	console.log('sourceElement: ', sourceElement);
+ 
+	// -----------------------------------------------
+  
+	audioElement.appendChild(sourceElement);
+  
+	document.getElementById('data_display').appendChild(audioElement);
+
+}
+
+// -------------------------------------------------
+
 
     
 </script>
