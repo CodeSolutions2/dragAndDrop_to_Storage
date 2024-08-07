@@ -52,7 +52,7 @@ function handleDataAvailable(event) {
   
 function download_screen_recording_video(recordedChunks) {
     
-      var blob = new Blob(recordedChunks, {type: "video/webm"});
+      var blob = new Blob(recordedChunks, {type: "video/webm; codecs=vp8"});
       var url = URL.createObjectURL(blob);
       var a = document.createElement("a");
       document.body.appendChild(a);
@@ -112,61 +112,91 @@ async function record_audio() {
             console.log("recorder started");
             document.getElementById("record_audio").style.background = "red";
             document.getElementById("record_audio").style.color = "black";
+            
+            document.getElementById("stop_record_audio").onclick = () => {
+                mediaRecorder.stop();
+                console.log(mediaRecorder.state);
+                console.log("recorder stopped");
+                document.getElementById("record_audio").style.background = "";
+                document.getElementById("record_audio").style.color = "";
+            };
 
-        document.getElementById("stop_record_audio").onclick = () => {
-          mediaRecorder.stop();
-          console.log(mediaRecorder.state);
-          console.log("recorder stopped");
-          document.getElementById("record_audio").style.background = "";
-          document.getElementById("record_audio").style.color = "";
-        };
+            // Download the audio file
+            mediaRecorder.ondataavailable = handleDataAvailable_audio;
+
+            // Show the audio file on the page for play back
+        // mediaRecorder.onstop = (e) => {
+         //  console.log("data available after MediaRecorder.stop() called.");
   
-        mediaRecorder.onstop = (e) => {
-          console.log("data available after MediaRecorder.stop() called.");
+         //  const clipName = prompt("Enter a name for your sound clip");
   
-          const clipName = prompt("Enter a name for your sound clip");
-  
-          const clipContainer = document.createElement("article");
-          const clipLabel = document.createElement("p");
+         //  const clipContainer = document.createElement("article");
+         //  const clipLabel = document.createElement("p");
             
-          const audio = document.createElement("audio");
+         //  const audio = document.createElement("audio");
             
-          const deleteButton = document.createElement("button");
-          const mainContainer = document.querySelector("body");
+         //  const deleteButton = document.createElement("button");
+         //  const mainContainer = document.querySelector("body");
   
-          clipContainer.classList.add("clip");
-          audio.setAttribute("controls", "");
-          deleteButton.textContent = "Delete";
-          clipLabel.textContent = clipName;
+         //  clipContainer.classList.add("clip");
+         // audio.setAttribute("controls", "");
+        //   deleteButton.textContent = "Delete";
+        //   clipLabel.textContent = clipName;
   
-             clipContainer.appendChild(audio);
+         //     clipContainer.appendChild(audio);
             
-            clipContainer.appendChild(clipLabel);
-          clipContainer.appendChild(deleteButton);
-          mainContainer.appendChild(clipContainer);
+          //   clipContainer.appendChild(clipLabel);
+         //  clipContainer.appendChild(deleteButton);
+         //  mainContainer.appendChild(clipContainer);
   
-            audio.controls = true;
-            const blob = new Blob(chunks, { type: "audio/mp3; codecs=opus" });
-            chunks = [];
-            const audioURL = URL.createObjectURL(blob);
-            audio.src = audioURL;
+           //  audio.controls = true;
+          //   const blob = new Blob(chunks, { type: "audio/mp3" });
+          //   chunks = [];
+          //   const audioURL = URL.createObjectURL(blob);
+          //   audio.src = audioURL;
             
-            console.log("recorder stopped");
 
             
-          deleteButton.onclick = (e) => { 
-              const evtTgt = e.target; 
-              evtTgt.parentNode.parentNode.removeChild(evtTgt.parentNode);
-          };
-        };
+          // deleteButton.onclick = (e) => { 
+          //     const evtTgt = e.target; 
+         //      evtTgt.parentNode.parentNode.removeChild(evtTgt.parentNode);
+         //  };
+        // };
   
-        mediaRecorder.ondataavailable = handleDataAvailable;
+        
       })
       .catch((err) => { console.error(`The following error occurred: ${err}`); });
 
 }
 
 // -------------------------------------------------
+    
+function handleDataAvailable_audio(event) {
+
+    var recordedChunks = [];
+    
+    if (event.data.size > 0) {
+        recordedChunks.push(event.data);
+        download_audio_recording(recordedChunks);
+    }
+}
+
+// -------------------------------------------------
+  
+function download_audio_recording(recordedChunks) {
+    
+      var blob = new Blob(recordedChunks, {type: "audio/mp3"});
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      document.body.appendChild(a);
+      a.setAttribute('style', 'display:none');
+      a.setAttribute('href', url);
+      a.setAttribute('download', 'test.mp3');
+      
+      a.click();
+  
+      window.URL.revokeObjectURL(url);
+}
 
 
 
