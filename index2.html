@@ -125,7 +125,7 @@ async function record_audio() {
             };
 
             // Download the audio file
-            mediaRecorder.ondataavailable = handleDataAvailable_audio;
+            mediaRecorder.ondataavailable = await handleDataAvailable_audio;
 
             // Show the audio file on the page for play back
             // mediaRecorder.onstop = (e) => {
@@ -174,7 +174,7 @@ async function record_audio() {
 
 // -------------------------------------------------
     
-function handleDataAvailable_audio(event) {
+async function handleDataAvailable_audio(event) {
 
     var recordedChunks = [];
     
@@ -185,8 +185,8 @@ function handleDataAvailable_audio(event) {
         var blob = new Blob(recordedChunks, {type: "audio/mp3"});
         var url = URL.createObjectURL(blob);
         
-        download_audio_recording(url)
-            .then(function() { play_sound_from_a_url(url); })
+        await download_audio_recording(url)
+            .then(async function() { await play_sound_from_a_url(url); })
             .then(function() { window.URL.revokeObjectURL(url); });
         
     }
@@ -194,7 +194,7 @@ function handleDataAvailable_audio(event) {
 
 // -------------------------------------------------
   
-function download_audio_recording(url) {
+async function download_audio_recording(url) {
     
     var a = document.createElement("a");
     document.body.appendChild(a);
