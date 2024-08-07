@@ -125,7 +125,7 @@ async function record_audio() {
             };
 
             // Download the audio file
-            mediaRecorder.ondataavailable = await handleDataAvailable_audio;
+            await mediaRecorder.ondataavailable = handleDataAvailable_audio;
 
             // Show the audio file on the page for play back
             // mediaRecorder.onstop = (e) => {
