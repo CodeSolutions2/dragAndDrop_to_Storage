@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head></head>
+    
+<body>
+
+<button type="button" id="run_video_screen_capture" onclick="run_video_screen_capture()" style="display:block">run_video_screen_capture</button>
+
+<button type="button" id="record_audio" onclick="record_audio()" style="display:block">record_audio</button>
+
+<script>
+
+// -------------------------------------------------
+    
+async function run_video_screen_capture() {
+    
+    const displayMediaOptions = { video: { displaySurface: "browser", },
+                                 audio: true,
+                                 preferCurrentTab: true,
+                                 selfBrowserSurface: "include",
+                                 systemAudio: "include",
+                                 surfaceSwitching: "include",
+                                 monitorTypeSurfaces: "include",
+                                };
+    
+    await navigator.mediaDevices.getDisplayMedia(displayMediaOptions)
+        .then(stream => {
+            
+            var options = {mimeType: "video/webm"};
+            var mediaRecorder = new MediaRecorder(stream, options);
+            
+            mediaRecorder.ondataavailable = handleDataAvailable;
+            mediaRecorder.start();
+        });
+
+}
+
+// -------------------------------------------------
+    
+function handleDataAvailable(event) {
+
+    var recordedChunks = [];
+    
+    if (event.data.size > 0) {
+        recordedChunks.push(event.data);
+        download_screen_recording_video(recordedChunks);
+    }
+}
+
+// -------------------------------------------------
+  
+function download_screen_recording_video(recordedChunks) {
+    
+      var blob = new Blob(recordedChunks, {type: "video/webm"});
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement("a");
+      document.body.appendChild(a);
+      a.setAttribute('style', 'display:none');
+      a.setAttribute('href', url);
+      a.setAttribute('download', 'test.webm');
+      
+      a.click();
+  
+      window.URL.revokeObjectURL(url);
+}
+
+// -------------------------------------------------
+
+// Only works in Chrome
+// https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition
+// var recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition || window.mozSpeechRecognition || window.msSpeechRecognition)();
+    
+async function run_voice_to_text() {
+
+    var recognition = new SpeechRecognition();
+
+    recognition.lang = "en-US";
+    recognition.continuous = true;
+    recognition.interimResults = true;
+
+    recognition.onstart = () => { document.getElementById("run_voice_to_text").textContent = "Recording..."; }
+    
+    recognition.onresult = (event) => {
+        console.log('event.results: ', event.results);
+        document.getElementById("output").textContent = event.results[0][0].transcript;
+    };
+
+    recognition.start();
+
+    recognition.onend = () => {
+        document.getElementById("run_voice_to_text").textContent = "run_voice_to_text";
+    };
+}
+
+
+// -------------------------------------------------
+
+async function record_audio() {
+  
+    const constraints = { audio: true };
+    let chunks = [];
+  
+    navigator.mediaDevices
+      .getUserMedia(constraints)
+      .then((stream) => {
+        const mediaRecorder = new MediaRecorder(stream);
+  
+        record.onclick = () => {
+          mediaRecorder.start();
+          console.log(mediaRecorder.state);
+          console.log("recorder started");
+          record.style.background = "red";
+          record.style.color = "black";
+        };
+  
+        stop.onclick = () => {
+          mediaRecorder.stop();
+          console.log(mediaRecorder.state);
+          console.log("recorder stopped");
+          record.style.background = "";
+          record.style.color = "";
+        };
+  
+        mediaRecorder.onstop = (e) => {
+          console.log("data available after MediaRecorder.stop() called.");
+  
+          const clipName = prompt("Enter a name for your sound clip");
+  
+          const clipContainer = document.createElement("article");
+          const clipLabel = document.createElement("p");
+          const audio = document.createElement("audio");
+          const deleteButton = document.createElement("button");
+          const mainContainer = document.querySelector("body");
+  
+          clipContainer.classList.add("clip");
+          audio.setAttribute("controls", "");
+          deleteButton.textContent = "Delete";
+          clipLabel.textContent = clipName;
+  
+          clipContainer.appendChild(audio);
+          clipContainer.appendChild(clipLabel);
+          clipContainer.appendChild(deleteButton);
+          mainContainer.appendChild(clipContainer);
+  
+          audio.controls = true;
+          const blob = new Blob(chunks, { type: "audio/ogg; codecs=opus" });
+          chunks = [];
+          const audioURL = URL.createObjectURL(blob);
+          audio.src = audioURL;
+          console.log("recorder stopped");
+  
+          deleteButton.onclick = (e) => {
+            const evtTgt = e.target;
+            evtTgt.parentNode.parentNode.removeChild(evtTgt.parentNode);
+          };
+        };
+  
+        mediaRecorder.ondataavailable = (e) => { chunks.push(e.data); };
+      })
+      .catch((err) => { console.error(`The following error occurred: ${err}`); });
+
+}
+
+// -------------------------------------------------
+
+
+
+// -------------------------------------------------
+
+    
+</script>
+</body>
+</html>
