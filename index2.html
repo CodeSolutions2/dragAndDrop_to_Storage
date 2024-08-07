@@ -175,24 +175,23 @@ async function record_audio() {
 // -------------------------------------------------
     
 function handleDataAvailable_audio(event) {
+	
+	var recordedChunks = [];
+	
+	if (event.data.size > 0) {
+		recordedChunks.push(event.data);
+		
+		// Create a URL for the audio data
+		var blob = new Blob(recordedChunks, {type: "audio/mp3"});
+		var url = URL.createObjectURL(blob);
+		console.log('url: ', url);
 
-    var recordedChunks = [];
-    
-    if (event.data.size > 0) {
-        recordedChunks.push(event.data);
-
-        // Create a URL for the audio data
-        var blob = new Blob(recordedChunks, {type: "audio/mp3"});
-        var url = URL.createObjectURL(blob);
-
-	var out  = async () => { 
-		await download_audio_recording(url)
-			.then(async function() { await play_sound_from_a_url(url); })
-			.then(function() { window.URL.revokeObjectURL(url); }); 
-	};
-        
-        
-    }
+		async () => { 
+			await download_audio_recording(url)
+				.then(async function() { await play_sound_from_a_url(url); })
+				.then(function() { window.URL.revokeObjectURL(url); }); 
+		};
+	}
 }
 
 // -------------------------------------------------
