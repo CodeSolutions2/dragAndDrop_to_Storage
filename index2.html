@@ -27,7 +27,7 @@ async function run_video_screen_capture() {
     await navigator.mediaDevices.getDisplayMedia(displayMediaOptions)
         .then(stream => {
             
-            var options = {mimeType: "video/webm; codecs=av1"};
+            var options = {mimeType: "video/webm; codecs=vp8"};
             var mediaRecorder = new MediaRecorder(stream, options);
             
             mediaRecorder.ondataavailable = handleDataAvailable;
@@ -98,7 +98,7 @@ async function run_voice_to_text() {
 
 async function record_audio() {
     
-    const constraints = { video: { displaySurface: "browser", }, audio: true };
+    const constraints = { audio: true };
     let chunks = [];
   
     navigator.mediaDevices.getUserMedia(constraints)
@@ -129,9 +129,7 @@ async function record_audio() {
           const clipContainer = document.createElement("article");
           const clipLabel = document.createElement("p");
             
-          // const audio = document.createElement("audio");
-        // OR
-            const video = document.createElement("video");
+          const audio = document.createElement("audio");
             
           const deleteButton = document.createElement("button");
           const mainContainer = document.querySelector("body");
@@ -141,27 +139,17 @@ async function record_audio() {
           deleteButton.textContent = "Delete";
           clipLabel.textContent = clipName;
   
-             // clipContainer.appendChild(audio);
-             // OR
-            clipContainer.appendChild(video);
+             clipContainer.appendChild(audio);
             
             clipContainer.appendChild(clipLabel);
           clipContainer.appendChild(deleteButton);
           mainContainer.appendChild(clipContainer);
   
-            // audio.controls = true;
-            // const blob = new Blob(chunks, { type: "audio/ogg; codecs=opus" });
-            // chunks = [];
-            // const audioURL = URL.createObjectURL(blob);
-            // audio.src = audioURL;
-            // OR
-            video.controls = true;
-            const blob = new Blob(chunks, { type: "video/webm; codecs=av1" });
+            audio.controls = true;
+            const blob = new Blob(chunks, { type: "audio/ogg; codecs=opus" });
             chunks = [];
-            const videoURL = URL.createObjectURL(blob);
-            video.src = videoURL;
-
-
+            const audioURL = URL.createObjectURL(blob);
+            audio.src = audioURL;
             
             console.log("recorder stopped");
 
