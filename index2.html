@@ -7,6 +7,7 @@
 <button type="button" id="run_video_screen_capture" onclick="run_video_screen_capture()" style="display:block">run_video_screen_capture</button>
 
 <button type="button" id="record_audio" onclick="record_audio()" style="display:block">record_audio</button>
+<button type="button" id="stop_record_audio" onclick="stop_record_audio()" style="display:block">stop_record_audio</button>
 
 <script>
 
@@ -96,29 +97,28 @@ async function run_voice_to_text() {
 // -------------------------------------------------
 
 async function record_audio() {
-  
+    
     const constraints = { audio: true };
     let chunks = [];
   
-    navigator.mediaDevices
-      .getUserMedia(constraints)
-      .then((stream) => {
-        const mediaRecorder = new MediaRecorder(stream);
-  
-        record.onclick = () => {
-          mediaRecorder.start();
-          console.log(mediaRecorder.state);
-          console.log("recorder started");
-          record.style.background = "red";
-          record.style.color = "black";
-        };
-  
-        stop.onclick = () => {
+    navigator.mediaDevices.getUserMedia(constraints)
+        .then((stream) => {
+            
+            const mediaRecorder = new MediaRecorder(stream);
+            
+            mediaRecorder.start();
+            console.log(mediaRecorder.state);
+            
+            console.log("recorder started");
+            document.getElementById("record_audio").style.background = "red";
+            document.getElementById("record_audio").style.color = "black";
+
+        document.getElementById("stop_record_audio").onclick = () => {
           mediaRecorder.stop();
           console.log(mediaRecorder.state);
           console.log("recorder stopped");
-          record.style.background = "";
-          record.style.color = "";
+          document.getElementById("record_audio").style.background = "";
+          document.getElementById("record_audio").style.color = "";
         };
   
         mediaRecorder.onstop = (e) => {
