@@ -186,17 +186,20 @@ function handleDataAvailable_audio(event) {
 		var url = URL.createObjectURL(blob);
 		console.log('url: ', url);
 
-		async () => { 
-			await download_audio_recording(url)
-				.then(async function() { await play_sound_from_a_url(url); })
-				.then(function() { window.URL.revokeObjectURL(url); }); 
-		};
+		download_audio_recording(url);
+
+		play_sound_from_a_url(url);
+
+		// async () => { 
+			// await download_audio_recording(url)
+			// 	.then(async function() { await play_sound_from_a_url(url); })
+		// };
 	}
 }
 
 // -------------------------------------------------
   
-async function download_audio_recording(url) {
+function download_audio_recording(url) {
     
     var a = document.createElement("a");
     document.body.appendChild(a);
@@ -213,7 +216,7 @@ async function download_audio_recording(url) {
 
 // -------------------------------------------------
 
-async function play_sound_from_a_url(url) {
+function play_sound_from_a_url(url) {
 	
 	// Create an AudioElement
 	const audioElement = document.createElement('audio');
@@ -222,15 +225,10 @@ async function play_sound_from_a_url(url) {
 	audioElement.setAttribute('crossOrigin', "anonymous");
 	audioElement.setAttribute('autoplay', true);
 	audioElement.setAttribute('preload', "auto");
-	// OR
-	// audioElement.setAttribute('src', url);
  
 	// -----------------------------------------------
  
 	// Create an AudioContext
-	// var audioContext = new (window.AudioContext || window.webkitAudioContext)();
-	// audioContext = new AudioContext();
-	// OR
 	var audioContext = new AudioContext();
  
 	// -----------------------------------------------
@@ -239,7 +237,6 @@ async function play_sound_from_a_url(url) {
 	var sourceElement = document.createElement('source');
   
 	sourceElement.setAttribute("src", url);
-	console.log('sourceElement: ', sourceElement);
  
 	// -----------------------------------------------
   
@@ -247,6 +244,7 @@ async function play_sound_from_a_url(url) {
   
 	document.getElementById('data_display').appendChild(audioElement);
 
+	window.URL.revokeObjectURL(url);
 }
 
 // -------------------------------------------------
