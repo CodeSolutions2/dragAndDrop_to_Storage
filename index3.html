@@ -19,8 +19,8 @@
 <input type="file" id="upload_audio_file" accept="video/*" style="display:block">
 <button type="button" id="combine_audio_video" onclick="combine_audio_video()" style="display:block">combine_audio_video</button>
 
-<script src='https://unpkg.com/@ffmpeg/ffmpeg@0.9.6/dist/ffmpeg.min.js'></script>
 
+<script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.min.js"></script>
 	
 <script>
 
@@ -41,7 +41,8 @@ async function run_video_screen_capture() {
         .then(stream => {  
 		
 		// This specifies the type of blob it will create for event.data
-		var options = {mimeType: "video/webm;codecs=vp8,opus"};
+		// var options = {mimeType: "video/webm;codecs=vp8,opus"}; // save popup does not appear
+		var options = {mimeType: "video/webm; audio/webm; codecs=vp8"};
 		
 		var mediaRecorder = new MediaRecorder(stream, options);
 
@@ -168,7 +169,11 @@ function handleDataAvailable_audio(event) {
 	document.getElementById("stop_record_audio").removeEventListener("click", handleDataAvailable_audio);
 
 	download_audio_recording(url);
-	play_sound(event.data);
+	// Works
+	
+	
+	// play_sound(event.data);
+	// Security Error: Content at https://codesolutions2.github.io/temp_repo_js_tests/index3.html may not load data from blob:https://codesolutions2.github.io/06a46a49-f1a9-4b30-b588-477fb9408453.
 }
 
 // -------------------------------------------------
@@ -315,18 +320,27 @@ async function fetch_file(base64_string, file_name, file_type) {
 // -------------------------------------------------
 	
 async function combine_audio_video() {
-	
-	let { createFFmpeg, fetchFile } = FFmpeg;
-	let ffmpeg = createFFmpeg();
+
+	// [Step 0] Load library
+	const ffmpeg = new FFmpeg();
 	
 	await ffmpeg.load();
+
+	// [Step 1] Load the video and audio file
+	// ffmpeg.FS('writeFile', 'video.webm', await fetch_file(base64_string_video, file_name_video, "video/webm"));
+	// ffmpeg.FS('writeFile', 'audio.webm', await fetch_file(base64_string_audio, file_name_audio, "audio/webm"));
+	await ffmpeg.writeFile('video.webm', await fetchFile(base64_string_video));
+	await ffmpeg.writeFile('audio.webm', await fetchFile(base64_string_audio));
 	
-	ffmpeg.FS('writeFile', 'video.webm', await fetch_file(base64_string_video, file_name_video, "video/webm"));
-	ffmpeg.FS('writeFile', 'audio.webm', await fetch_file(base64_string_audio, file_name_audio, "audio/webm"));
+	console.log('Start transcoding');
+
+	// [Step 2] Run a ffmpeg command
+        // await ffmpeg.exec(['-i', 'video.webm',  'output.mp4']);  // Convert video.webm to output.mp4
+	await ffmpeg.exec('-i', 'video.webm', '-i', 'audio.webm', '-c', 'copy', 'output.webm');
 	
-	await ffmpeg.run('-i', 'video.webm', '-i', 'audio.webm', '-c', 'copy', 'output.webm');
+	console.log('Complete transcoding');
 	
-	let data = await ffmpeg.FS('readFile', 'output.webm');
+        const data = await ffmpeg.readFile('output.webm');
 	console.log('data: ', data);
 	
 	// const uint8Array_audio_video = new Uint8Array(data.buffer);
