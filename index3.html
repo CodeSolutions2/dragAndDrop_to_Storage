@@ -28,13 +28,16 @@ async function run_video_screen_capture() {
                                 };
     
     await navigator.mediaDevices.getDisplayMedia(displayMediaOptions)
-        .then(stream => {
-            
-            var options = {mimeType: "video/webm; codecs=vp8"};
-            var mediaRecorder = new MediaRecorder(stream, options);
-            
-            mediaRecorder.ondataavailable = handleDataAvailable;
-            mediaRecorder.start();
+        .then(stream => {  
+		var options = {mimeType: "video/webm; codecs=vp8"};
+		var mediaRecorder = new MediaRecorder(stream, options);
+
+		// dataavailable runs when the MediaRecorder delivers media data to your application for its use
+		// When mediaRecorder.stop() is called mediaRecorder.ondataavailable is run.
+		// mediaRecorder.stop() is on the interface for the user to push.
+		mediaRecorder.ondataavailable = handleDataAvailable;
+		
+		mediaRecorder.start();
         });
 
 }
@@ -42,19 +45,18 @@ async function run_video_screen_capture() {
 // -------------------------------------------------
     
 function handleDataAvailable(event) {
-
-    var recordedChunks = [];
-    
-    if (event.data.size > 0) {
-        recordedChunks.push(event.data);
-        download_screen_recording_video(recordedChunks);
-    }
+	if (event.data.size > 0) {
+		download_screen_recording_video([event.data]);
+	}
 }
 
 // -------------------------------------------------
   
 function download_screen_recording_video(recordedChunks) {
-    
+
+	// mdn claims that event.data is a blob object - do we need to make another blob object?
+	console.log('recordedChunks', recordedChunks);
+	
       var blob = new Blob(recordedChunks, {type: "video/webm; codecs=vp8"});
       var url = URL.createObjectURL(blob);
       var a = document.createElement("a");
@@ -104,56 +106,70 @@ async function record_audio() {
     const constraints = { audio: true };
     let chunks = [];
   
-    navigator.mediaDevices.getUserMedia(constraints)
+    await navigator.mediaDevices.getUserMedia(constraints)
         .then((stream) => {
             
-            const mediaRecorder = new MediaRecorder(stream);
+            var mediaRecorder = new MediaRecorder(stream);
             
             mediaRecorder.start();
-            console.log(mediaRecorder.state);
-            
-            console.log("recorder started");
+            console.log("recorder started - mediaRecorder.state: ", mediaRecorder.state);
             document.getElementById("record_audio").style.background = "red";
             document.getElementById("record_audio").style.color = "black";
             
-            document.getElementById("stop_record_audio").onclick = () => {
-                mediaRecorder.stop();
-                console.log(mediaRecorder.state);
-                console.log("recorder stopped");
-                document.getElementById("record_audio").style.background = "";
-                document.getElementById("record_audio").style.color = "";
-            };
+            // document.getElementById("stop_record_audio").onclick = () => {
+             //    mediaRecorder.stop();
+             //    console.log("mediaRecorder.state: ", mediaRecorder.state);
+             //    console.log("recorder stopped");
+             //    document.getElementById("record_audio").style.background = "";
+             //    document.getElementById("record_audio").style.color = "";
+            // };
 
-            // Download the audio file
-            mediaRecorder.ondataavailable = handleDataAvailable_audio;
+		// When mediaRecorder.stop() is called mediaRecorder.ondataavailable is run.
+		// mediaRecorder.stop() is on the interface for the user to push.
+		// mediaRecorder.ondataavailable = handleDataAvailable_audio;
+		// OR
+		document.getElementById("stop_record_audio").addEventListener("click", handleDataAvailable_audio, false);
+
+
+		function handleDataAvailable_audio(event) {
+
+			// Stop recording
+			mediaRecorder.stop();
+			console.log("recorder stopped - mediaRecorder.state: ", mediaRecorder.state);
+			document.getElementById("record_audio").style.background = "";
+			document.getElementById("record_audio").style.color = "";
+
+			// If the recorded audio has size greater than zero, save it in an array
+			if (event.data.size > 0) {
+				console.log('event.data: ', event.data);
+				
+				// Create a URL for the audio data
+				var blob = new Blob([event.data], {type: "audio/mp3"});
+				url = URL.createObjectURL(blob);
+				console.log('url: ', url);
+			}
+			document.getElementById("stop_record_audio").removeEventListener("click", handleDataAvailable_audio);
+		}
+            
       })
-      .then(async function() { download_audio_recording(url); })
-      .then(async function() { play_sound_from_a_url(url); })
+      .then(async function() { await download_audio_recording(url); })
+      .then(async function() { await play_sound_from_a_url(url); })
       .catch((err) => { console.error(`The following error occurred: ${err}`); });
 
 }
 
+
+
+	
 // -------------------------------------------------
 
 var url = "";
 	
-function handleDataAvailable_audio(event) {
-	
-	var recordedChunks = [];
-	
-	if (event.data.size > 0) {
-		recordedChunks.push(event.data);
-		
-		// Create a URL for the audio data
-		var blob = new Blob(recordedChunks, {type: "audio/mp3"});
-		url = URL.createObjectURL(blob);
-		console.log('url: ', url);
-	}
-}
+
 
 // -------------------------------------------------
   
-function download_audio_recording(url) {
+async function download_audio_recording(url) {
 	
 	var a = document.createElement("a");
 	document.body.appendChild(a);
@@ -170,7 +186,7 @@ function download_audio_recording(url) {
 
 // -------------------------------------------------
 
-function play_sound_from_a_url(url) {
+async function play_sound_from_a_url(url) {
 	
 	// Create an AudioElement
 	const audioElement = document.createElement('audio');
