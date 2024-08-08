@@ -156,7 +156,7 @@ async function record_audio() {
 			if (event.data.size > 0) {
 				// event.data = Array [ Blob ] 0: Blob { size: 105474, type: "audio/mp3" }
 				var blob_object = event.data[0];
-				url = URL.createObjectURL(blob_object);
+				var url = URL.createObjectURL(blob_object);
 				console.log('url: ', url);
 			}
 			document.getElementById("stop_record_audio").removeEventListener("click", handleDataAvailable_audio);
@@ -167,13 +167,6 @@ async function record_audio() {
 
 }
 
-
-
-	
-// -------------------------------------------------
-
-var url = "";
-
 // -------------------------------------------------
 
 function handleDataAvailable_audio(event) {
@@ -182,9 +175,8 @@ function handleDataAvailable_audio(event) {
 
 	// If the recorded audio has size greater than zero, save it in an array
 	if (event.data.size > 0) {
-		// event.data = Array [ Blob ] 0: Blob { size: 105474, type: "audio/mp3" }
-		var blob_object = event.data[0];
-		var url = URL.createObjectURL(blob_object);
+		// event.data = Blob { size: 38931, type: "audio/webm; codecs=opus" }
+		var url = URL.createObjectURL(event.data);
 		console.log('url: ', url);
 	}
 	document.getElementById("stop_record_audio").removeEventListener("click", handleDataAvailable_audio);
