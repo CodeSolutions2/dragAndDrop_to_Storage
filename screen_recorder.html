@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head></head>
+    
+<body>
+
+<button type="button" id="run_video_screen_capture" onclick="run_video_screen_capture()" style="display:block">run_video_screen_capture</button>
+
+<button type="button" id="record_audio" onclick="record_audio()" style="display:block">record_audio</button>
+    
+<button type="button" id="stop_record_audio" style="display:block">stop_record_audio</button>
+
+
+<script>
+
+// -------------------------------------------------
+    
+async function run_video_screen_capture() {
+    
+    const displayMediaOptions = { video: { displaySurface: "browser", },
+                                 audio: true,
+                                 preferCurrentTab: true,
+                                 selfBrowserSurface: "include",
+                                 systemAudio: "include",
+                                 surfaceSwitching: "include",
+                                 monitorTypeSurfaces: "include",
+                                };
+    
+    await navigator.mediaDevices.getDisplayMedia(displayMediaOptions)
+        .then(stream => {  
+		
+		// This specifies the type of blob it will create for event.data
+		// var options = {mimeType: "video/webm;codecs=vp8,opus"}; // save popup does not appear
+		var options = {mimeType: "video/webm; audio/webm; codecs=vp8"};
+		
+		var mediaRecorder = new MediaRecorder(stream, options);
+
+		// https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/dataavailable_event
+		// dataavailable runs when the MediaRecorder delivers media data to your application for its use
+		// When mediaRecorder.stop() is called mediaRecorder.ondataavailable is run.
+		// mediaRecorder.stop() is on the interface for the user to push.
+		mediaRecorder.ondataavailable = handleDataAvailable;
+		
+		mediaRecorder.start();
+        });
+
+}
+
+// -------------------------------------------------
+    
+function handleDataAvailable(event) {
+	if (event.data.size > 0) {
+		// event.data = Blob { size: 105571, type: "XXX" }
+		console.log('event.data: ', event.data);
+		
+		download_screen_recording_video(event.data);
+	}
+}
+
+// -------------------------------------------------
+  
+function download_screen_recording_video(blob_object) {
+
+	console.log('blob_object: ', blob_object);
+	
+	var url = URL.createObjectURL(blob_object);
+	var a = document.createElement("a");
+	document.body.appendChild(a);
+	a.setAttribute('style', 'display:none');
+	a.setAttribute('href', url);
+	a.setAttribute('download', 'test.webm');
+      
+	a.click();
+  
+	window.URL.revokeObjectURL(url);
+}
+
+// -------------------------------------------------
+
+// Only works in Chrome
+// https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition
+// var recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition || window.mozSpeechRecognition || window.msSpeechRecognition)();
+    
+async function run_voice_to_text() {
+
+    var recognition = new SpeechRecognition();
+
+    recognition.lang = "en-US";
+    recognition.continuous = true;
+    recognition.interimResults = true;
+
+    recognition.onstart = () => { document.getElementById("run_voice_to_text").textContent = "Recording..."; }
+    
+    recognition.onresult = (event) => {
+        console.log('event.results: ', event.results);
+        document.getElementById("output").textContent = event.results[0][0].transcript;
+    };
+
+    recognition.start();
+
+    recognition.onend = () => {
+        document.getElementById("run_voice_to_text").textContent = "run_voice_to_text";
+    };
+}
+
+
+// -------------------------------------------------
+
+async function record_audio() {
+
+	// https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder
+	const MediaOptions = { audio: true };
+  
+    await navigator.mediaDevices.getUserMedia(MediaOptions)
+        .then((stream) => {
+		
+		// This specifies the type of blob it will create for event.data
+		var options = {mimeType: "audio/webm"};
+		var mediaRecorder = new MediaRecorder(stream, options);
+            
+		mediaRecorder.start();
+		console.log("recorder started - mediaRecorder.state: ", mediaRecorder.state);
+		document.getElementById("record_audio").style.background = "red";
+		document.getElementById("record_audio").style.color = "black";
+
+		// Way 0
+		document.getElementById("stop_record_audio").onclick = () => {
+			mediaRecorder.stop();
+			console.log("recorder stopped - mediaRecorder.state: ", mediaRecorder.state);
+			document.getElementById("record_audio").style.background = "";
+			document.getElementById("record_audio").style.color = "";
+		};
+
+		// When mediaRecorder.stop() is called mediaRecorder.ondataavailable is run.
+		// mediaRecorder.stop() is called when the eventlistener is called for pushing the button stop_record_audio 
+		mediaRecorder.ondataavailable = handleDataAvailable_audio;
+		
+            
+      })
+      .catch((err) => { console.error(`The following error occurred: ${err}`); });
+
+}
+
+// -------------------------------------------------
+
+function handleDataAvailable_audio(event) {
+
+	console.log('event: ', event);
+
+	// If the recorded audio has size greater than zero, save it in an array
+	if (event.data.size > 0) {
+		// event.data = Blob { size: 38931, type: "XXX" }
+		var url = URL.createObjectURL(event.data);
+		console.log('url: ', url);
+	}
+	document.getElementById("stop_record_audio").removeEventListener("click", handleDataAvailable_audio);
+
+	download_audio_recording(url);
+	// Works
+	
+	
+	// play_sound(event.data);
+	// Security Error: Content at https://codesolutions2.github.io/temp_repo_js_tests/index3.html may not load data from blob:https://codesolutions2.github.io/06a46a49-f1a9-4b30-b588-477fb9408453.
+}
+
+// -------------------------------------------------
+  
+function download_audio_recording(url) {
+	
+	var a = document.createElement("a");
+	document.body.appendChild(a);
+	a.setAttribute('style', 'display:none');
+	a.setAttribute('href', url);
+	a.setAttribute('download', 'test.mp3');
+      
+	a.click();
+  
+	URL.revokeObjectURL(url);
+}
+
+
+	
+</script>
+</body>
+</html>
