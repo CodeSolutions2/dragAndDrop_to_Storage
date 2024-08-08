@@ -126,20 +126,20 @@ async function record_audio() {
 		document.getElementById("record_audio").style.color = "black";
 
 		// Way 0
-		// document.getElementById("stop_record_audio").onclick = () => {
-             //    mediaRecorder.stop();
-             //    console.log("recorder stopped - mediaRecorder.state: ", mediaRecorder.state);
-             //    document.getElementById("record_audio").style.background = "";
-             //    document.getElementById("record_audio").style.color = "";
-            // };
+		document.getElementById("stop_record_audio").onclick = () => {
+			mediaRecorder.stop();
+			console.log("recorder stopped - mediaRecorder.state: ", mediaRecorder.state);
+			document.getElementById("record_audio").style.background = "";
+			document.getElementById("record_audio").style.color = "";
+		};
 
 		// When mediaRecorder.stop() is called mediaRecorder.ondataavailable is run.
 		// mediaRecorder.stop() is called when the eventlistener is called for pushing the button stop_record_audio 
-		// mediaRecorder.ondataavailable = handleDataAvailable_audio;
+		mediaRecorder.ondataavailable = handleDataAvailable_audio;
 		// OR
 
 		// Way 1
-		document.getElementById("stop_record_audio").addEventListener("click", handleDataAvailable_audio_way1, false);
+		// document.getElementById("stop_record_audio").addEventListener("click", handleDataAvailable_audio_way1, false);
 
 
 		function handleDataAvailable_audio_way1(event) {
@@ -163,8 +163,6 @@ async function record_audio() {
 		}
             
       })
-     // .then(async function() { await download_audio_recording(url); })
-      //.then(async function() { await play_sound_from_a_url(url); })
       .catch((err) => { console.error(`The following error occurred: ${err}`); });
 
 }
@@ -186,10 +184,13 @@ function handleDataAvailable_audio(event) {
 	if (event.data.size > 0) {
 		// event.data = Array [ Blob ] 0: Blob { size: 105474, type: "audio/mp3" }
 		var blob_object = event.data[0];
-		url = URL.createObjectURL(blob_object);
+		var url = URL.createObjectURL(blob_object);
 		console.log('url: ', url);
 	}
 	document.getElementById("stop_record_audio").removeEventListener("click", handleDataAvailable_audio);
+
+	download_audio_recording(url);
+	play_sound_from_a_url(url);
 }
 
 // -------------------------------------------------
