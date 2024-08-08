@@ -49,13 +49,10 @@ async function run_video_screen_capture() {
     
 function handleDataAvailable(event) {
 	if (event.data.size > 0) {
-		// event.data = Array [ Blob ] 0: Blob { size: 105474, type: "video/webm; codecs=vp8" }
+		// event.data = Blob { size: 105571, type: "video/webm; codecs=vp8" }
 		console.log('event.data: ', event.data);
 		
-		var blob_object = event.data[0];
-		console.log('blob_object: ', blob_object);
-		
-		download_screen_recording_video(blob_object);
+		download_screen_recording_video(event.data);
 	}
 }
 
@@ -65,16 +62,16 @@ function download_screen_recording_video(blob_object) {
 
 	console.log('blob_object: ', blob_object);
 	
-      var url = URL.createObjectURL(blob_object);
-      var a = document.createElement("a");
-      document.body.appendChild(a);
-      a.setAttribute('style', 'display:none');
-      a.setAttribute('href', url);
-      a.setAttribute('download', 'test.webm');
+	var url = URL.createObjectURL(blob_object);
+	var a = document.createElement("a");
+	document.body.appendChild(a);
+	a.setAttribute('style', 'display:none');
+	a.setAttribute('href', url);
+	a.setAttribute('download', 'test.webm');
       
-      a.click();
+	a.click();
   
-      window.URL.revokeObjectURL(url);
+	window.URL.revokeObjectURL(url);
 }
 
 // -------------------------------------------------
@@ -141,7 +138,7 @@ async function record_audio() {
 		// OR
 
 		// Way 1
-		document.getElementById("stop_record_audio").addEventListener("click", handleDataAvailable_audio_way1, false);
+		document.getElementById("stop_record_audio").addEventListener("change", handleDataAvailable_audio_way1, false);
 
 
 		function handleDataAvailable_audio_way1(event) {
