@@ -12,6 +12,13 @@
 
 <div id="data_display" style="display:block; text-align: left; width: 600px;">
 
+<input type="file" id="upload_video_file" accept="video/*" style="display:block">
+<input type="file" id="upload_audio_file" accept="audio/*" style="display:block">
+<button type="button" id="combine_audio_video" onclick="combine_audio_video()" style="display:block">combine_audio_video</button>
+
+<script src='https://unpkg.com/@ffmpeg/ffmpeg@0.9.6/dist/ffmpeg.min.js'></script>
+
+	
 <script>
 
 // -------------------------------------------------
@@ -31,7 +38,7 @@ async function run_video_screen_capture() {
         .then(stream => {  
 		
 		// This specifies the type of blob it will create for event.data
-		var options = {mimeType: "video/webm; audio/webm;"}; //  codecs=vp8
+		var options = {mimeType: "video/webm;codecs=vp8,opus"};
 		
 		var mediaRecorder = new MediaRecorder(stream, options);
 
@@ -50,7 +57,7 @@ async function run_video_screen_capture() {
     
 function handleDataAvailable(event) {
 	if (event.data.size > 0) {
-		// event.data = Blob { size: 105571, type: "video/webm; codecs=vp8" }
+		// event.data = Blob { size: 105571, type: "XXX" }
 		console.log('event.data: ', event.data);
 		
 		download_screen_recording_video(event.data);
@@ -117,7 +124,7 @@ async function record_audio() {
 		// var mediaRecorder = new MediaRecorder(stream);
 		// OR
 		// This specifies the type of blob it will create for event.data
-		var options = {mimeType: "audio/webm"};
+		var options = {mimeType: "audio/mp4"};
 		var mediaRecorder = new MediaRecorder(stream, options);
             
 		mediaRecorder.start();
@@ -151,7 +158,7 @@ function handleDataAvailable_audio(event) {
 
 	// If the recorded audio has size greater than zero, save it in an array
 	if (event.data.size > 0) {
-		// event.data = Blob { size: 38931, type: "audio/webm; codecs=opus" }
+		// event.data = Blob { size: 38931, type: "XXX" }
 		var url = URL.createObjectURL(event.data);
 		console.log('url: ', url);
 	}
@@ -163,7 +170,7 @@ function handleDataAvailable_audio(event) {
 
 // -------------------------------------------------
   
-async function download_audio_recording(url) {
+function download_audio_recording(url) {
 	
 	var a = document.createElement("a");
 	document.body.appendChild(a);
@@ -180,7 +187,7 @@ async function download_audio_recording(url) {
 
 // -------------------------------------------------
 
-async function play_sound(blob_object) {
+function play_sound(blob_object) {
 
 	var file_blob_object = new File ([blob_object], 'recorded_audio', {type: "audio/mp3"});
 	var url_file_blob_object = URL.createObjectURL(file_blob_object);
@@ -218,6 +225,112 @@ async function play_sound(blob_object) {
 
 // -------------------------------------------------
 
+// The eventlistener needs to be always running, to detect which file the user selected with browse
+document.getElementById("upload_audio_file").addEventListener("change", previewInput_audio, false);
+var file_name_audio;
+var base64_string_audio;
+	
+async function previewInput_audio(event) {
+	
+	// ---------------------
+	
+	// console.log("event :", event);
+	// Automatic path to the audio on the PC
+	// document.getElementById("file_path").innerHTML = event.srcElement.value;
+	
+	// ---------------------
+	
+	// Take the first file
+	const file = event.target.files[0];  // first file in the list of selected files, better for selecting multiple files at one time
+	// console.log("file :", file);
+
+	// ---------------------
+	
+	// Set the file name
+	// document.getElementById("file_name_audio").innerHTML = file.name;
+	// OR
+	file_name_audio = file.name;
+	
+	// ---------------------
+
+	const reader = new FileReader();
+	
+	reader.onload = async function(e){
+		// Save base64_string to DOM 
+		// console.log("e.target.result :", e.target.result);
+		// document.getElementById("base64_string_audio").innerHTML = e.target.result;
+		// OR
+		base64_string_audio = e.target.result;
+	}
+	reader.readAsDataURL(file);
+}
+
+// -------------------------------------------------
+
+document.getElementById("upload_video_file").addEventListener("change", previewInput_video, false);
+var file_name_video;
+var base64_string_video;
+	
+async function previewInput_video(event) {
+	
+	const file_video = event.target.files[0];  // first file in the list of selected files, better for selecting multiple files at one time
+	// console.log("file_video :", file_video);
+
+	// ---------------------
+	
+	// Set the file name
+	// document.getElementById("file_name_video").innerHTML = file_video.name;
+	// OR
+	file_name_video = file_video.name;
+	
+	// ---------------------
+
+	const reader_video = new FileReader();
+	
+	reader_video.onload = async function(e){
+		// Save base64_string to DOM 
+		// console.log("e.target.result :", e.target.result);
+		// document.getElementById("base64_string_video").innerHTML = e.target.result;
+		// OR
+		base64_string_video = e.target.result;
+	}
+	reader_video.readAsDataURL(file_video);
+}
+
+// -------------------------------------------------
+
+async function fetch_file(base64_string, file_name, file_type) {
+	
+	await fetch(base64_string)
+		.then(response => response.blob())
+		.then(async function(blob_object) { 
+			return new File ([blob_object], file_name, {type: file_type});
+		})
+		.catch(error => { document.getElementById('error').innerHTML = error; });
+}
+
+// -------------------------------------------------
+	
+async function combine_audio_video() {
+	
+	let { createFFmpeg, fetchFile } = FFmpeg;
+	let ffmpeg = createFFmpeg();
+	
+	await ffmpeg.load();
+	
+	ffmpeg.FS('writeFile', 'video.mp4', await fetch_file(base64_string_video, file_name_video, "video/webm"));
+	ffmpeg.FS('writeFile', 'audio.mp4', await fetch_file(base64_string_audio, file_name_audio, "audio/webm"));
+	
+	await ffmpeg.run('-i', 'video.mp4', '-i', 'audio.mp4', '-c', 'copy', 'output.mp4');
+	
+	let data = await ffmpeg.FS('readFile', 'output.mp4');
+	
+	const uint8Array_audio_video = new Uint8Array(data.buffer);
+
+	const blob_object = new Blob(uint8Array_audio_video, {type: "video/webm"});
+
+	download_screen_recording_video(blob_object);
+};
 
     
 </script>
