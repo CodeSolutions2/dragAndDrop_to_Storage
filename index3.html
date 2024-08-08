@@ -12,17 +12,20 @@
 
 <div id="data_display" style="display:block; text-align: left; width: 600px;">
 
-<label for="select_video">Select an video:</label> 
-<input type="file" id="upload_video_file" accept="video/*" style="display:block">
+<!-- <label for="select_video">Select an video:</label> -->
+<!-- <input type="file" id="upload_video_file" accept="video/*" style="display:block"> -->
 
-<label for="select_audio">Select an audio:</label> 
-<input type="file" id="upload_audio_file" accept="video/*" style="display:block">
-<button type="button" id="combine_audio_video" onclick="combine_audio_video()" style="display:block">combine_audio_video</button>
+<!-- <label for="select_audio">Select an audio:</label> -->
+<!-- <input type="file" id="upload_audio_file" accept="video/*" style="display:block"> -->
+
+<!-- <button type="button" id="combine_audio_video" onclick="combine_audio_video()" style="display:block">combine_audio_video</button> -->
+
 
 
 <!-- <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.min.js" crossorigin></script> -->
 
-<script src='https://unpkg.com/@ffmpeg/ffmpeg@0.9.6/dist/ffmpeg.min.js'></script>
+<!-- <script src='https://unpkg.com/@ffmpeg/ffmpeg@0.9.6/dist/ffmpeg.min.js'></script> -->
+<!-- ReferenceError: SharedArrayBuffer is not defined createFFmpegCore 5afb6a17-d329-4919-9d89-7669454bad27:22 -->
 
 <script>
 
@@ -321,10 +324,10 @@ async function fetch_file(base64_string, file_name, file_type) {
 
 // -------------------------------------------------
 	
-async function combine_audio_video() {
+// async function combine_audio_video() {
 
 	// [Step 0] Load library
-	console.log('FFmpeg: ', FFmpeg);
+	// console.log('FFmpeg: ', FFmpeg);
 
 	// const ffmpeg = new FFmpeg(); //  ReferenceError: FFmpeg is not defined
 	// OR
@@ -334,37 +337,34 @@ async function combine_audio_video() {
 
 	// OR
 
-	const ffmpeg = new FFmpeg.createFFmpeg();
-
-
-// How does one call the Object { FFmpeg: Getter, ... } FFmpeg: __esModule: true Symbol(Symbol.toStringTag): "Module" <get FFmpeg()>: function FFmpeg()
+	// const ffmpeg = new FFmpeg.createFFmpeg();
+	// ReferenceError: SharedArrayBuffer is not defined createFFmpegCore 5afb6a17-d329-4919-9d89-7669454bad27:22
+	// https://github.com/ffmpegwasm/ffmpeg.wasm/issues/263
 
 		
-	await ffmpeg.load();
+	// await ffmpeg.load();
 
 	// [Step 1] Load the video and audio file
-	// ffmpeg.FS('writeFile', 'video.webm', await fetch_file(base64_string_video, file_name_video, "video/webm"));
-	// ffmpeg.FS('writeFile', 'audio.webm', await fetch_file(base64_string_audio, file_name_audio, "audio/webm"));
-	await ffmpeg.writeFile('video.webm', await fetchFile(base64_string_video));
-	await ffmpeg.writeFile('audio.webm', await fetchFile(base64_string_audio));
+	// await ffmpeg.writeFile('video.webm', await fetchFile(base64_string_video));
+	// await ffmpeg.writeFile('audio.webm', await fetchFile(base64_string_audio));
 	
-	console.log('Start transcoding');
+	// console.log('Start transcoding');
 
 	// [Step 2] Run a ffmpeg command
         // await ffmpeg.exec(['-i', 'video.webm',  'output.mp4']);  // Convert video.webm to output.mp4
-	await ffmpeg.exec('-i', 'video.webm', '-i', 'audio.webm', '-c', 'copy', 'output.webm');
+	// await ffmpeg.exec('-i', 'video.webm', '-i', 'audio.webm', '-c', 'copy', 'output.webm');
 	
-	console.log('Complete transcoding');
+	// console.log('Complete transcoding');
 	
-        const data = await ffmpeg.readFile('output.webm');
-	console.log('data: ', data);
+        // const data = await ffmpeg.readFile('output.webm');
+	// console.log('data: ', data);
 	
 	// const uint8Array_audio_video = new Uint8Array(data.buffer);
 
 	// const blob_object = new Blob(uint8Array_audio_video, {type: "video/webm"});
 
 	// download_screen_recording_video(blob_object);
-};
+// };
 
     
 </script>
