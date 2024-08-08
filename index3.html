@@ -329,12 +329,12 @@ async function combine_audio_video() {
 	// const ffmpeg = new FFmpeg(); //  ReferenceError: FFmpeg is not defined
 	// OR
 
-	// let { createFFmpeg, fetchFile } = FFmpeg;
+	// const { createFFmpeg, fetchFile } = FFmpeg;
 	// let ffmpeg = createFFmpeg();  // error
 
 	// OR
 
-	const ffmpeg = new FFmpeg.FFmpeg();
+	const ffmpeg = new FFmpeg.createFFmpeg();
 
 
 // How does one call the Object { FFmpeg: Getter, ... } FFmpeg: __esModule: true Symbol(Symbol.toStringTag): "Module" <get FFmpeg()>: function FFmpeg()
