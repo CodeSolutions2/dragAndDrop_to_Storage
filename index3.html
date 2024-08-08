@@ -322,7 +322,7 @@ async function fetch_file(base64_string, file_name, file_type) {
 async function combine_audio_video() {
 
 	// [Step 0] Load library
-	console.log('FFmpeg: ', FFmpegWASM);
+	console.log('FFmpegWASM: ', FFmpegWASM);
 
 	// const ffmpeg = new FFmpeg(); //  ReferenceError: FFmpeg is not defined
 	// OR
@@ -330,7 +330,14 @@ async function combine_audio_video() {
 	// let { createFFmpeg, fetchFile } = FFmpeg;
 	// let ffmpeg = createFFmpeg();  // error
 
-	
+	// OR
+
+	const ffmpeg = FFmpegWASM.FFmpeg();
+
+
+// How does one call the Object { FFmpeg: Getter, ... } FFmpeg: __esModule: true Symbol(Symbol.toStringTag): "Module" <get FFmpeg()>: function FFmpeg()
+
+		
 	await ffmpeg.load();
 
 	// [Step 1] Load the video and audio file
