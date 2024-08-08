@@ -8,7 +8,7 @@
 
 <button type="button" id="record_audio" onclick="record_audio()" style="display:block">record_audio</button>
     
-<button type="button" id="stop_record_audio" onclick="stop_record_audio()" style="display:block">stop_record_audio</button>
+<button type="button" id="stop_record_audio" style="display:block">stop_record_audio</button>
 
 <div id="data_display" style="display:block; text-align: left; width: 600px;">
 
@@ -35,6 +35,7 @@ async function run_video_screen_capture() {
 		
 		var mediaRecorder = new MediaRecorder(stream, options);
 
+		// https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/dataavailable_event
 		// dataavailable runs when the MediaRecorder delivers media data to your application for its use
 		// When mediaRecorder.stop() is called mediaRecorder.ondataavailable is run.
 		// mediaRecorder.stop() is on the interface for the user to push.
@@ -106,11 +107,11 @@ async function run_voice_to_text() {
 // -------------------------------------------------
 
 async function record_audio() {
-    
-    const constraints = { audio: true };
-    let chunks = [];
+
+	// https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder
+	const MediaOptions = { audio: true };
   
-    await navigator.mediaDevices.getUserMedia(constraints)
+    await navigator.mediaDevices.getUserMedia(MediaOptions)
         .then((stream) => {
 		
 		// var mediaRecorder = new MediaRecorder(stream);
@@ -138,7 +139,7 @@ async function record_audio() {
 		// OR
 
 		// Way 1
-		document.getElementById("stop_record_audio").addEventListener("change", handleDataAvailable_audio_way1, false);
+		document.getElementById("stop_record_audio").addEventListener("click", handleDataAvailable_audio_way1, false);
 
 
 		function handleDataAvailable_audio_way1(event) {
