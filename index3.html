@@ -373,15 +373,29 @@ async function combine_audio_video() {
 	const videoElement = document.createElement('video');
 	videoElement.src = await fetch_file(base64_string_video, file_name_video, "video/webm") // 'video.webm';
 	videoElement.autoplay = true;
+	console.log('videoElement: ', videoElement);
+	
+	// --------------------------
 
 	const audioElement = document.createElement('audio');
 	audioElement.src = await fetch_file(base64_string_audio, file_name_audio, "audio/webm") // 'audio.webm';
 	audioElement.autoplay = true;
+	console.log('audioElement: ', audioElement);
 
+	// --------------------------
+	
 	const stream = new MediaStream();
-	stream.addTrack(videoElement.captureStream().getVideoTracks()[0]);
-	stream.addTrack(audioElement.captureStream().getAudioTracks()[0]);
+	// stream.addTrack(videoElement.captureStream().getVideoTracks()[0]);
+	// videoElement.captureStream is not a function
+	// OR
+	stream.addTrack(videoElement.srcObject.getVideoTracks()[0]);
 
+	// stream.addTrack(audioElement.captureStream().getAudioTracks()[0]);
+	// OR
+	stream.addTrack(audioElement.srcObject.getAudioTracks()[0]);
+
+	// --------------------------
+	
 	const recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
 	const chunks = [];
 
