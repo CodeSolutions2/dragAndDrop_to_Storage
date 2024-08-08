@@ -322,7 +322,14 @@ async function fetch_file(base64_string, file_name, file_type) {
 async function combine_audio_video() {
 
 	// [Step 0] Load library
-	const ffmpeg = new FFmpeg();
+	console.log('FFmpeg: ', FFmpegWASM);
+
+	// const ffmpeg = new FFmpeg(); //  ReferenceError: FFmpeg is not defined
+	// OR
+
+	// let { createFFmpeg, fetchFile } = FFmpeg;
+	// let ffmpeg = createFFmpeg();  // error
+
 	
 	await ffmpeg.load();
 
