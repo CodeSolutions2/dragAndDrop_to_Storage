@@ -411,50 +411,57 @@ async function combine_audio_video() {
 	document.getElementById('data_display').appendChild(audioElement);
 	
 	// --------------------------
+
 	
-	// const stream = new MediaStream();
-	// stream.addTrack(videoElement.mozCaptureStream().getVideoTracks()[0]); // videoElement.captureStream is not a function
-	// OR
-	// stream.addTrack(videoElement.srcObject.getVideoTracks()[0]);  // videoElement.srcObject = null
+	const stream = new MediaStream();
 
-	const captureStream = videoElement.mozCaptureStream();
-	console.log('captureStream: ', captureStream);
-
-	// stream.addTrack(audioElement.captureStream().getAudioTracks()[0]); // videoElement.captureStream is not a function
-	// OR
-	// stream.addTrack(audioElement.srcObject.getAudioTracks()[0]);
-	// OR
+	console.log('browser check: ', (/firefox/i).test(navigator.userAgent));
+	
+	if ((/firefox/i).test(navigator.userAgent) == true) {
+		// Test - worked
+		// const captureStream = videoElement.mozCaptureStream();
+		//
+		stream.addTrack(videoElement.mozCaptureStream().getVideoTracks()[0]);
+		stream.addTrack(audioElement.mozCaptureStream().getAudioTracks()[0]);
+		// OR
+		// stream.addTrack(videoElement.srcObject.getVideoTracks()[0]);  // videoElement.srcObject = null
+	} else {
+		// const captureStream = videoElement.captureStream();
+		//
+		stream.addTrack(videoElement.captureStream().getVideoTracks()[0]);
+		stream.addTrack(audioElement.captureStream().getAudioTracks()[0]);
+	}
 	
 
 	// --------------------------
 	
-	// const recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
-	// const chunks = [];
+	const recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+	const chunks = [];
 
-  // --------------------------
+	// --------------------------
   
-	// recorder.ondataavailable = (event) => {
-	// 	if (event.data.size > 0) {
-	// 		chunks.push(event.data);
-	// 	}
-	// };
+	recorder.ondataavailable = (event) => {
+	 	if (event.data.size > 0) {
+	 		chunks.push(event.data);
+	 	}
+	};
 
-  // --------------------------
+	// --------------------------
   
-	// recorder.onstop = () => {
-	// 	const combinedBlob = new Blob(chunks, { type: 'video/webm' });
-	// 	const combinedVideo = document.createElement('video');
-	//  combinedVideo.src = URL.createObjectURL(combinedBlob);
-	// 	combinedVideo.controls = true;
-	// 	document.body.appendChild(combinedVideo);
-	// };
+	recorder.onstop = () => {
+		const combinedBlob = new Blob(chunks, { type: 'video/webm' });
+	 	const combinedVideo = document.createElement('video');
+		combinedVideo.src = URL.createObjectURL(combinedBlob);
+	 	combinedVideo.controls = true;
+	 	document.body.appendChild(combinedVideo);
+	};
 
-  // --------------------------
+	// --------------------------
   
-	// recorder.start();
-	// setTimeout(() => { recorder.stop(); }, 10000); // Record for 10 seconds
+	recorder.start();
+	await setTimeout(() => { recorder.stop(); }, 10000); // Record for 10 seconds
 
-  // --------------------------
+	// --------------------------
   
 }
 
