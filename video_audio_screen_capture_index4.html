@@ -311,16 +311,16 @@ async function previewInput_video(event) {
 
 async function fetch_file(base64_string, file_name, file_type) {
 
-	console.log('base64_string: ', base64_string.slice(0,20));
+	// console.log('base64_string: ', base64_string.slice(0,20));
 	
 	return await fetch(base64_string)
 		.then(response => response.blob())
 		.then(async function(blob_object) {
-			console.log('blob_object: ', blob_object);
+			// console.log('blob_object: ', blob_object);
 			return new File ([blob_object], file_name, {type: file_type});
 		})
 		.then(async function(file_blob_object) {
-			console.log('file_blob_object: ', file_blob_object);
+			// console.log('file_blob_object: ', file_blob_object);
 			return URL.createObjectURL(file_blob_object);
 		})
 		.catch(error => { document.getElementById('error').innerHTML = error; });
@@ -410,13 +410,13 @@ async function combine_audio_video() {
 	
 	// --------------------------
 	
-	// const stream = new MediaStream();
-	// stream.addTrack(videoElement.captureStream().getVideoTracks()[0]);
+	const stream = new MediaStream();
+	stream.addTrack(videoElement.captureStream().getVideoTracks()[0]);
 	// videoElement.captureStream is not a function
 	// OR
-	// stream.addTrack(videoElement.srcObject.getVideoTracks()[0]);
+	// stream.addTrack(videoElement.srcObject.getVideoTracks()[0]);  // videoElement.srcObject = null
 
-	// stream.addTrack(audioElement.captureStream().getAudioTracks()[0]);
+	stream.addTrack(audioElement.captureStream().getAudioTracks()[0]);
 	// OR
 	// stream.addTrack(audioElement.srcObject.getAudioTracks()[0]);
 
