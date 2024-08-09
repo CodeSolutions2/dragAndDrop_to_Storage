@@ -385,7 +385,7 @@ async function combine_audio_video() {
 	videoElement.onend = function() { URL.revokeObjectURL(url_video); }
 	console.log('videoElement: ', videoElement);
 
-	document.getElementById('data_display').appendChild(videoElement);
+	// document.getElementById('data_display').appendChild(videoElement);
 	
 	// --------------------------
 
@@ -398,17 +398,16 @@ async function combine_audio_video() {
 	audioElement.setAttribute("controls", true);
 	// audioElement.setAttribute('crossOrigin', "anonymous");
 	// audioElement.setAttribute('preload', "auto");
-	// OR
-	// audioElement.setAttribute('src', url_audio);
+	audioElement.setAttribute('src', url_audio);
 	console.log('audioElement: ', audioElement);
 
   	// Create an SourceElement (audioSourceNode)
-	var sourceElement = document.createElement('source');
-	sourceElement.setAttribute("src", url_audio);
-	console.log('sourceElement: ', sourceElement);
+	// var sourceElement = document.createElement('source');
+	// sourceElement.setAttribute("src", url_audio);
+	// console.log('sourceElement: ', sourceElement);
   
-	audioElement.appendChild(sourceElement);
-	document.getElementById('data_display').appendChild(audioElement);
+	// audioElement.appendChild(sourceElement);
+	// document.getElementById('data_display').appendChild(audioElement);
 	
 	// --------------------------
 
@@ -453,7 +452,8 @@ async function combine_audio_video() {
 	 	const combinedVideo = document.createElement('video');
 		combinedVideo.src = URL.createObjectURL(combinedBlob);
 	 	combinedVideo.controls = true;
-	 	document.body.appendChild(combinedVideo);
+		combinedVideo.autoplay = true;
+		document.getElementById('data_display').appendChild(combinedVideo);
 	};
 
 	// --------------------------
