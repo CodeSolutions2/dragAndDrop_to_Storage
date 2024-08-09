@@ -421,13 +421,13 @@ async function combine_audio_video() {
 		const captureStream_videoElement = videoElement.mozCaptureStream();
 		console.log('captureStream_videoElement: ', captureStream_videoElement);
 
-		var video_id = JSON.parse(captureStream_videoElement.id)[0].toString();
+		var video_id = captureStream_videoElement.id.slice(1, captureStream_videoElement.id.length-1);
 		console.log('video_id: ', video_id);
 
 		const captureStream_audioElement = audioElement.mozCaptureStream();
 		console.log('captureStream_audioElement: ', captureStream_audioElement);
 
-		var audio_id = JSON.parse(captureStream_audioElement.id)[0].toString();
+		var audio_id = captureStream_audioElement.id.slice(1, captureStream_videoElement.id.length-1);
 		console.log('audio_id: ', audio_id);
 
 		// -------------------------------------
