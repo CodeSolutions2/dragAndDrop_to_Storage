@@ -421,17 +421,21 @@ async function combine_audio_video() {
 		const captureStream_videoElement = videoElement.mozCaptureStream();
 		console.log('captureStream_videoElement: ', captureStream_videoElement);
 
-		console.log('captureStream_videoElement.id: ', captureStream_videoElement.id);
+		var video_id = JSON.parse(captureStream_videoElement.id)[0].toString();
+		console.log('video_id: ', video_id);
 
 		const captureStream_audioElement = audioElement.mozCaptureStream();
 		console.log('captureStream_audioElement: ', captureStream_audioElement);
 
-		console.log('captureStream_audioElement.id: ', captureStream_audioElement.id);
+		var audio_id = JSON.parse(captureStream_audioElement.id)[0].toString();
+		console.log('audio_id: ', audio_id);
+
+		// -------------------------------------
 		
-		const captureStream_videoElement_tracks = captureStream_videoElement.getTrackById(captureStream_videoElement.id);
+		const captureStream_videoElement_tracks = captureStream_videoElement.getTrackById(video_id);
 		console.log('captureStream_videoElement_tracks: ', captureStream_videoElement_tracks);
 
-		const captureStream_audioElement_tracks = captureStream_audioElement.getTrackById(captureStream_audioElement_tracks.id);
+		const captureStream_audioElement_tracks = captureStream_audioElement.getTrackById(audio_id);
 		console.log('captureStream_audioElement_tracks: ', captureStream_audioElement_tracks);
 
 		// stream.addTrack(videoElement.mozCaptureStream().getVideoTracks()[0]);
