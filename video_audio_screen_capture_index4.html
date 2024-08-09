@@ -418,15 +418,20 @@ async function combine_audio_video() {
 	
 	if ((/firefox/i).test(navigator.userAgent) == true) {
 		// Test - worked
-		// const captureStream = videoElement.mozCaptureStream();
+		const captureStream_videoElement = videoElement.mozCaptureStream();
+		console.log('captureStream_videoElement: ', captureStream_videoElement);
 
-		const out = videoElement.mozCaptureStream().getVideoTracks();
-		console.log('out: ', out);
+		const captureStream_audioElement = audioElement.mozCaptureStream();
+		console.log('captureStream_audioElement: ', captureStream_audioElement);
+		
+		const captureStream_videoElement_tracks = captureStream_videoElement.getVideoTracks();
+		console.log('captureStream_videoElement_tracks: ', captureStream_videoElement_tracks);
+
+		const captureStream_audioElement_tracks = captureStream_audioElement.getVideoTracks();
+		console.log('captureStream_audioElement_tracks: ', captureStream_audioElement_tracks);
 		
 		// stream.addTrack(videoElement.mozCaptureStream().getVideoTracks()[0]);
 		// stream.addTrack(audioElement.mozCaptureStream().getAudioTracks()[0]);
-		// OR
-		// stream.addTrack(videoElement.srcObject.getVideoTracks()[0]);  // videoElement.srcObject = null
 	} else {
 		// const captureStream = videoElement.captureStream();
 		//
