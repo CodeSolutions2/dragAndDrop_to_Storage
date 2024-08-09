@@ -380,12 +380,14 @@ async function combine_audio_video() {
 	
 	const videoElement = document.createElement('video');
 	videoElement.src = url_video;
+	videoElement.id = "video track";
 	videoElement.autoplay = true;
 	videoElement.setAttribute("controls", true);
+	videoElement.setAttribute('preload', "auto");
 	videoElement.onend = function() { URL.revokeObjectURL(url_video); }
 	console.log('videoElement: ', videoElement);
-
-	// document.getElementById('data_display').appendChild(videoElement);
+	
+	document.getElementById('data_display').appendChild(videoElement);
 	
 	// --------------------------
 
@@ -394,11 +396,12 @@ async function combine_audio_video() {
 	
 	const audioElement = document.createElement('audio');
 	audioElement.src = url_audio;
+	audioElement.id = "audio track";
 	audioElement.autoplay = true;
 	audioElement.setAttribute("controls", true);
+	audioElement.setAttribute('preload', "auto");
+	audioElement.onend = function() { URL.revokeObjectURL(url_audio); }
 	// audioElement.setAttribute('crossOrigin', "anonymous");
-	// audioElement.setAttribute('preload', "auto");
-	audioElement.setAttribute('src', url_audio);
 	console.log('audioElement: ', audioElement);
 
   	// Create an SourceElement (audioSourceNode)
@@ -407,7 +410,7 @@ async function combine_audio_video() {
 	// console.log('sourceElement: ', sourceElement);
   
 	// audioElement.appendChild(sourceElement);
-	// document.getElementById('data_display').appendChild(audioElement);
+	document.getElementById('data_display').appendChild(audioElement);
 	
 	// --------------------------
 
@@ -421,13 +424,15 @@ async function combine_audio_video() {
 		const captureStream_videoElement = videoElement.mozCaptureStream();
 		console.log('captureStream_videoElement: ', captureStream_videoElement);
 
-		var video_id = captureStream_videoElement.id.slice(1, captureStream_videoElement.id.length-1);
+		// var video_id = captureStream_videoElement.id.slice(1, captureStream_videoElement.id.length-1);
+		var video_id = captureStream_videoElement.id;
 		console.log('video_id: ', video_id);
 
 		const captureStream_audioElement = audioElement.mozCaptureStream();
 		console.log('captureStream_audioElement: ', captureStream_audioElement);
 
-		var audio_id = captureStream_audioElement.id.slice(1, captureStream_videoElement.id.length-1);
+		// var audio_id = captureStream_audioElement.id.slice(1, captureStream_videoElement.id.length-1);
+		var audio_id = captureStream_audioElement.id;
 		console.log('audio_id: ', audio_id);
 
 		// -------------------------------------
