@@ -367,6 +367,8 @@ async function fetch_file(base64_string, file_name, file_type) {
 	// download_screen_recording_video(blob_object);
 // };
 
+
+// -------------------------------------------------
 	
 async function combine_audio_video() {
 	
@@ -379,47 +381,76 @@ async function combine_audio_video() {
 
 	const audioElement = document.createElement('audio');
 	audioElement.src = await fetch_file(base64_string_audio, file_name_audio, "audio/webm") // 'audio.webm';
+  console.log('audioElement.src: ', audioElement.src);
+  
 	audioElement.autoplay = true;
+  audioElement.setAttribute("controls", true);
+	// audioElement.setAttribute('crossOrigin', "anonymous");
+	// audioElement.setAttribute('preload', "auto");
+	// OR
+	// audioElement.setAttribute('src', url);
 	console.log('audioElement: ', audioElement);
+
+  // Create an SourceElement (audioSourceNode)
+	var sourceElement = document.createElement('source');
+	sourceElement.setAttribute("src", url);
+	console.log('sourceElement: ', sourceElement);
+  
+	audioElement.appendChild(sourceElement);
+	document.getElementById('data_display').appendChild(audioElement);
+  
 
 	// --------------------------
 	
-	const stream = new MediaStream();
+	// const stream = new MediaStream();
 	// stream.addTrack(videoElement.captureStream().getVideoTracks()[0]);
 	// videoElement.captureStream is not a function
 	// OR
-	stream.addTrack(videoElement.srcObject.getVideoTracks()[0]);
+	// stream.addTrack(videoElement.srcObject.getVideoTracks()[0]);
 
 	// stream.addTrack(audioElement.captureStream().getAudioTracks()[0]);
 	// OR
-	stream.addTrack(audioElement.srcObject.getAudioTracks()[0]);
+	// stream.addTrack(audioElement.srcObject.getAudioTracks()[0]);
 
 	// --------------------------
 	
-	const recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
-	const chunks = [];
+	// const recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+	// const chunks = [];
 
-	recorder.ondataavailable = (event) => {
-		if (event.data.size > 0) {
-			chunks.push(event.data);
-		}
-	};
-	
-	recorder.onstop = () => {
-		const combinedBlob = new Blob(chunks, { type: 'video/webm' });
-		const combinedVideo = document.createElement('video');
-		combinedVideo.src = URL.createObjectURL(combinedBlob);
-		combinedVideo.controls = true;
-		document.body.appendChild(combinedVideo);
-	};
-	
-	recorder.start();
-	setTimeout(() => { recorder.stop(); }, 10000); // Record for 10 seconds
-	
+  // --------------------------
+  
+	// recorder.ondataavailable = (event) => {
+	// 	if (event.data.size > 0) {
+	// 		chunks.push(event.data);
+	// 	}
+	// };
+
+  // --------------------------
+  
+	// recorder.onstop = () => {
+	// 	const combinedBlob = new Blob(chunks, { type: 'video/webm' });
+	// 	const combinedVideo = document.createElement('video');
+	//  combinedVideo.src = URL.createObjectURL(combinedBlob);
+	// 	combinedVideo.controls = true;
+	// 	document.body.appendChild(combinedVideo);
+	// };
+
+  // --------------------------
+  
+	// recorder.start();
+	// setTimeout(() => { recorder.stop(); }, 10000); // Record for 10 seconds
+
+  // --------------------------
+  
 }
 
+// -------------------------------------------------
 
-	
+
+// -------------------------------------------------
+
+
+  
 </script>
 </body>
 </html>
