@@ -419,9 +419,12 @@ async function combine_audio_video() {
 	if ((/firefox/i).test(navigator.userAgent) == true) {
 		// Test - worked
 		// const captureStream = videoElement.mozCaptureStream();
-		//
-		stream.addTrack(videoElement.mozCaptureStream().getVideoTracks()[0]);
-		stream.addTrack(audioElement.mozCaptureStream().getAudioTracks()[0]);
+
+		const out = videoElement.mozCaptureStream().getVideoTracks();
+		console.log('out: ', out);
+		
+		// stream.addTrack(videoElement.mozCaptureStream().getVideoTracks()[0]);
+		// stream.addTrack(audioElement.mozCaptureStream().getAudioTracks()[0]);
 		// OR
 		// stream.addTrack(videoElement.srcObject.getVideoTracks()[0]);  // videoElement.srcObject = null
 	} else {
@@ -432,36 +435,6 @@ async function combine_audio_video() {
 	}
 	
 
-	// --------------------------
-	
-	const recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
-	const chunks = [];
-
-	// --------------------------
-  
-	recorder.ondataavailable = (event) => {
-	 	if (event.data.size > 0) {
-	 		chunks.push(event.data);
-	 	}
-	};
-
-	// --------------------------
-  
-	recorder.onstop = () => {
-		const combinedBlob = new Blob(chunks, { type: 'video/webm' });
-	 	const combinedVideo = document.createElement('video');
-		combinedVideo.src = URL.createObjectURL(combinedBlob);
-	 	combinedVideo.controls = true;
-		combinedVideo.autoplay = true;
-		document.getElementById('data_display').appendChild(combinedVideo);
-	};
-
-	// --------------------------
-  
-	recorder.start();
-	await setTimeout(() => { recorder.stop(); }, 10000); // Record for 10 seconds
-
-	// --------------------------
   
 }
 
