@@ -313,7 +313,7 @@ async function fetch_file(base64_string, file_name, file_type) {
 
 	console.log('base64_string: ', base64_string.slice(0,20));
 	
-	await fetch(base64_string)
+	return await fetch(base64_string)
 		.then(response => response.blob())
 		.then(async function(blob_object) {
 			console.log('blob_object: ', blob_object);
