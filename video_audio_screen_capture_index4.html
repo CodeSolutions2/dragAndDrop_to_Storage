@@ -310,14 +310,17 @@ async function previewInput_video(event) {
 // -------------------------------------------------
 
 async function fetch_file(base64_string, file_name, file_type) {
+
+	console.log('base64_string: ', base64_string.slice(0,20));
 	
 	await fetch(base64_string)
 		.then(response => response.blob())
-		.then(async function(blob_object) { 
+		.then(async function(blob_object) {
+			console.log('blob_object: ', blob_object);
 			return new File ([blob_object], file_name, {type: file_type});
 		})
 		.then(async function(file_blob_object) {
-			// Create a url
+			console.log('file_blob_object: ', file_blob_object);
 			return URL.createObjectURL(file_blob_object);
 		})
 		.catch(error => { document.getElementById('error').innerHTML = error; });
@@ -371,35 +374,38 @@ async function fetch_file(base64_string, file_name, file_type) {
 // -------------------------------------------------
 	
 async function combine_audio_video() {
+
+	const url_video = await fetch_file(base64_string_video, file_name_video, "video/webm");
+	console.log('url_video: ', url_video);
 	
 	const videoElement = document.createElement('video');
-	videoElement.src = await fetch_file(base64_string_video, file_name_video, "video/webm") // 'video.webm';
+	videoElement.src = url_video;
 	videoElement.autoplay = true;
 	console.log('videoElement: ', videoElement);
 	
 	// --------------------------
 
+	const url_audio = await fetch_file(base64_string_audio, file_name_audio, "audio/webm");
+	console.log('url_audio: ', url_audio);
+	
 	const audioElement = document.createElement('audio');
-	audioElement.src = await fetch_file(base64_string_audio, file_name_audio, "audio/webm") // 'audio.webm';
-  console.log('audioElement.src: ', audioElement.src);
-  
+	audioElement.src = url_audio;
 	audioElement.autoplay = true;
-  audioElement.setAttribute("controls", true);
+	audioElement.setAttribute("controls", true);
 	// audioElement.setAttribute('crossOrigin', "anonymous");
 	// audioElement.setAttribute('preload', "auto");
 	// OR
-	// audioElement.setAttribute('src', url);
+	// audioElement.setAttribute('src', url_audio);
 	console.log('audioElement: ', audioElement);
 
-  // Create an SourceElement (audioSourceNode)
+  	// Create an SourceElement (audioSourceNode)
 	var sourceElement = document.createElement('source');
-	sourceElement.setAttribute("src", url);
+	sourceElement.setAttribute("src", url_audio);
 	console.log('sourceElement: ', sourceElement);
   
 	audioElement.appendChild(sourceElement);
 	document.getElementById('data_display').appendChild(audioElement);
-  
-
+	
 	// --------------------------
 	
 	// const stream = new MediaStream();
