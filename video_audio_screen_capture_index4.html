@@ -382,6 +382,8 @@ async function combine_audio_video() {
 	videoElement.src = url_video;
 	videoElement.autoplay = true;
 	console.log('videoElement: ', videoElement);
+
+	document.getElementById('data_display').appendChild(videoElement);
 	
 	// --------------------------
 
