@@ -381,6 +381,8 @@ async function combine_audio_video() {
 	const videoElement = document.createElement('video');
 	videoElement.src = url_video;
 	videoElement.autoplay = true;
+	videoElement.setAttribute("controls", true);
+	videoElement.onend = function() { URL.revokeObjectURL(url_video); }
 	console.log('videoElement: ', videoElement);
 
 	document.getElementById('data_display').appendChild(videoElement);
@@ -410,15 +412,19 @@ async function combine_audio_video() {
 	
 	// --------------------------
 	
-	const stream = new MediaStream();
-	stream.addTrack(videoElement.captureStream().getVideoTracks()[0]);
-	// videoElement.captureStream is not a function
+	// const stream = new MediaStream();
+	// stream.addTrack(videoElement.captureStream().getVideoTracks()[0]); // videoElement.captureStream is not a function
 	// OR
 	// stream.addTrack(videoElement.srcObject.getVideoTracks()[0]);  // videoElement.srcObject = null
 
-	stream.addTrack(audioElement.captureStream().getAudioTracks()[0]);
+	const captureStream = videoElement.captureStream();
+	console.log('captureStream: ', captureStream);
+
+	// stream.addTrack(audioElement.captureStream().getAudioTracks()[0]); // videoElement.captureStream is not a function
 	// OR
 	// stream.addTrack(audioElement.srcObject.getAudioTracks()[0]);
+	// OR
+	
 
 	// --------------------------
 	
