@@ -413,11 +413,11 @@ async function combine_audio_video() {
 	// --------------------------
 	
 	// const stream = new MediaStream();
-	// stream.addTrack(videoElement.captureStream().getVideoTracks()[0]); // videoElement.captureStream is not a function
+	// stream.addTrack(videoElement.mozCaptureStream().getVideoTracks()[0]); // videoElement.captureStream is not a function
 	// OR
 	// stream.addTrack(videoElement.srcObject.getVideoTracks()[0]);  // videoElement.srcObject = null
 
-	const captureStream = videoElement.captureStream();
+	const captureStream = videoElement.mozCaptureStream();
 	console.log('captureStream: ', captureStream);
 
 	// stream.addTrack(audioElement.captureStream().getAudioTracks()[0]); // videoElement.captureStream is not a function
