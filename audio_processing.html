@@ -5,7 +5,7 @@
 
 <button id="audio_to_timeseries" onclick="audio_to_timeseries()" style="display:block;">audio_to_timeseries</button>
 	
-<button id="view_frequency_response_from_audio" onclick="view_frequency_response_from_audio()" style="display:block;">view_frequency_response_from_audio</button>
+<button id="audio_to_frequency_domain" onclick="audio_to_frequency_domain()" style="display:block;">audio_to_frequency_domain</button>
 
  
 <div id="data_display" style="display:block; text-align: left; width: 600px;">
@@ -22,23 +22,26 @@
  
 <script>
 
+	
 // var url = "https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3";
 
+// -------------------------------------------------
+	
 var audio_information = {};
 
 async function audio_to_timeseries() {
 	
 	var url = "https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3";
 
-  // Create audioElement
+	// Create audioElement
 	var audioElement = await load_audio_from_url(url, mode="nocors");
   
 	// -----------------------------------------------
 
-  // Obtain audio information
+	// Obtain audio information
 	audio_information = await evaluate_audioElement();
-  console.log('audio_information: ', audio_information);
-  // {channels: channels, fs: fs, time_length: time_length, frameCount: frameCount, time_sample_rate_OR_timePeriod: time_sample_rate_OR_timePeriod}
+	console.log('audio_information: ', audio_information);
+	// {channels: channels, fs: fs, time_length: time_length, frameCount: frameCount, time_sample_rate_OR_timePeriod: time_sample_rate_OR_timePeriod}
 	
 	// -----------------------------------------------
   
@@ -59,7 +62,7 @@ async function audio_to_timeseries() {
 
 	// -----------------------------------------------
 
-  // Normalize the audio data
+	// Normalize the audio data
 	const normalArray_normalized = await decodeAudioData_from_binaryString_to_uint8Array(binaryString);
 	const t0 = Array.from({ length: normalArray_normalized.length }, (_, i) => i * audio_information.time_sample_rate_OR_timePeriod);
 	
@@ -67,8 +70,8 @@ async function audio_to_timeseries() {
 	
 	// --------------------
 
-  // Separate the channels of the audio data
-  const [channel1, channel2] = await separate_stero_channels(normalArray_normalized)
+	// Separate the channels of the audio data
+	const [channel1, channel2] = await separate_stero_channels(normalArray_normalized)
 
 	console.log('channel1.length : ', channel1.length);
 	console.log('channel2.length : ', channel2.length);
@@ -86,7 +89,7 @@ async function audio_to_timeseries() {
 
 	await plot_line_graph_dataObject(t1, x_avg, "Timeseries: channels averaged");
 
-  return [t1, x_avg];
+	return [t1, x_avg];
 }
 
 // -------------------------------------------------
@@ -381,7 +384,7 @@ async function decodeAudioData_from_binaryString_to_uint8Array(binaryString) {
 
 	// Normalize the audio data in arrayBuffer from [-1, 1]
 	// var normalArray_normalized = await normalArray.map((val, ind) => { return val/arr_char.max_amp; });  // gave wrong results
-	// var normalArray_normalized = await normalArray.map((val, ind) => { return val/99; });  // gave wrong results
+	// var normalArray_normalized = await normalArray.map((val, ind) => { return val/255; }); 
 	// console.log('normalArray max min: ', [normalArray_normalized.sort().shift(), normalArray_normalized.sort().pop()])
 	// RESULT: it gives a value from 0 to 2.5656... not exactly what was expected
 	
@@ -389,8 +392,7 @@ async function decodeAudioData_from_binaryString_to_uint8Array(binaryString) {
 
 	// Try with Tensorflow library
 	const tf_normalArray = tf.tensor1d(normalArray);
-	const max_amp = tf.scalar(arr_char.max_amp);
-	var normalArray_normalized_tf = await tf_normalArray.div(max_amp);
+	var normalArray_normalized_tf = await tf_normalArray.div(tf.scalar(255));
 	  
 	// --------------------
 	
