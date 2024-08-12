@@ -171,7 +171,7 @@ function handleDataAvailable_audio(event) {
 	// Works
 	
 	
-	// play_sound(event.data);
+	// play_sound_from_a_blob_object(event.data);
 	// Security Error: Content at https://codesolutions2.github.io/temp_repo_js_tests/index3.html may not load data from blob:https://codesolutions2.github.io/06a46a49-f1a9-4b30-b588-477fb9408453.
 }
 
@@ -190,47 +190,8 @@ function download_audio_recording(url) {
 	URL.revokeObjectURL(url);
 }
 
-
-
 // -------------------------------------------------
 
-function play_sound(blob_object) {
-
-	var file_blob_object = new File ([blob_object], 'recorded_audio', {type: "audio/mp3"});
-	var url_file_blob_object = URL.createObjectURL(file_blob_object);
-	
-	// Create an AudioElement
-	const audioElement = document.createElement('audio');
-  
-	audioElement.setAttribute("controls", true);
-	audioElement.setAttribute('crossOrigin', "anonymous");
-	// audioElement.setAttribute('autoplay', true);
-	audioElement.setAttribute('preload', "auto");
-	// OR
-	audioElement.setAttribute("src", url_file_blob_object);
- 
-	// -----------------------------------------------
- 
-	// Create an AudioContext
-	var audioContext = new AudioContext();
- 
-	// -----------------------------------------------
- 
-	// Create an SourceElement (audioSourceNode)
-	var sourceElement = document.createElement('source');
-  
-	sourceElement.setAttribute("src", url_file_blob_object);
- 
-	// -----------------------------------------------
-  
-	audioElement.appendChild(sourceElement);
-  
-	document.getElementById('data_display').appendChild(audioElement);
-
-	URL.revokeObjectURL(url_file_blob_object);
-}
-
-// -------------------------------------------------
 
 
 
@@ -240,132 +201,12 @@ function play_sound(blob_object) {
 // -------------------------------------------------
 // C. Modify an existing audio and/or video file from file
 // -------------------------------------------------
-async function load_audio_file_from_file() {
-	
-	const url_audio = await fetch_file(base64_string_audio, file_name_audio, "audio/webm");
-	console.log('url_audio: ', url_audio);
-	
-	const audioElement = document.createElement('audio');
-	audioElement.src = url_audio;
-	audioElement.id = "audio track";
-	audioElement.autoplay = true;
-	audioElement.setAttribute("controls", true);
-	audioElement.setAttribute('preload', "auto");
-	audioElement.onend = function() { URL.revokeObjectURL(url_audio); }
-	// audioElement.setAttribute('crossOrigin', "anonymous");
-	console.log('audioElement: ', audioElement);
-
-  	// Create an SourceElement (audioSourceNode)
-	// var sourceElement = document.createElement('source');
-	// sourceElement.setAttribute("src", url_audio);
-	// console.log('sourceElement: ', sourceElement);
-  
-	// audioElement.appendChild(sourceElement);
-	document.getElementById('data_display').appendChild(audioElement);
-
-	return audioElement;
-}
-	
-// The eventlistener needs to be always running, to detect which file the user selected with browse
-document.getElementById("upload_audio_file").addEventListener("change", previewInput_audio, false);
-var file_name_audio;
-var base64_string_audio;
-	
-async function previewInput_audio(event) {
-	
-	// ---------------------
-	
-	// console.log("event :", event);
-	// Automatic path to the audio file
-	// document.getElementById("file_path").innerHTML = event.srcElement.value;
-	
-	// ---------------------
-	
-	// Take the first file
-	const file = event.target.files[0];  // first file in the list of selected files, better for selecting multiple files at one time
-	// console.log("file :", file);
-
-	// ---------------------
-	
-	// Set the file name
-	// document.getElementById("file_name_audio").innerHTML = file.name;
-	// OR
-	file_name_audio = file.name;
-	
-	// ---------------------
-
-	const reader = new FileReader();
-	
-	reader.onload = async function(e){
-		// Save base64_string to DOM 
-		// console.log("e.target.result :", e.target.result);
-		// document.getElementById("base64_string_audio").innerHTML = e.target.result;
-		// OR
-		base64_string_audio = e.target.result;
-	}
-	reader.readAsDataURL(file);
-}
-
-// -------------------------------------------------
-
-async function load_video_file_from_file() {
-	
-	const url_video = await fetch_file(base64_string_video, file_name_video, "video/webm");
-	console.log('url_video: ', url_video);
-	
-	const videoElement = document.createElement('video');
-	videoElement.src = url_video;
-	videoElement.id = "video track";
-	videoElement.autoplay = true;
-	videoElement.setAttribute("controls", true);
-	videoElement.setAttribute('preload', "auto");
-	videoElement.onend = function() { URL.revokeObjectURL(url_video); }
-	console.log('videoElement: ', videoElement);
-	
-	document.getElementById('data_display').appendChild(videoElement);
-	
-	return videoElement;
-}
-	
-document.getElementById("upload_video_file").addEventListener("change", previewInput_video, false);
-var file_name_video;
-var base64_string_video;
-	
-async function previewInput_video(event) {
-	
-	const file_video = event.target.files[0];  // first file in the list of selected files, better for selecting multiple files at one time
-	// console.log("file_video :", file_video);
-
-	// ---------------------
-	
-	// Set the file name
-	// document.getElementById("file_name_video").innerHTML = file_video.name;
-	// OR
-	file_name_video = file_video.name;
-	
-	// ---------------------
-
-	const reader_video = new FileReader();
-	
-	reader_video.onload = async function(e){
-		// Save base64_string to DOM 
-		// console.log("e.target.result :", e.target.result);
-		// document.getElementById("base64_string_video").innerHTML = e.target.result;
-		// OR
-		base64_string_video = e.target.result;
-	}
-	reader_video.readAsDataURL(file_video);
-}
-
-// -------------------------------------------------
-	
-
 async function modify_existing_audio_and_or_video_from_file() {
 
 	// --------------------------
 	
-	const audioElement = await load_audio_file_from_file();
-	const videoElement = await load_video_file_from_file();
+	const audioElement = await load_audio_from_file();
+	const videoElement = await load_video_from_file();
 		
 	// --------------------------
 
@@ -389,6 +230,9 @@ async function modify_existing_audio_and_or_video_from_file() {
 }
 	
 
+
+
+	
 
 // -------------------------------------------------
 // Basic functions to manipulate audio and video data
@@ -592,52 +436,16 @@ async function obtain_audio_information_way0(binaryString_audio0) {
 	
 	// -----------------------------------------------
 	
-	// Create an AudioElement
-	const audioElement = document.createElement('audio');
-  
-	audioElement.setAttribute("controls", true);
-	// audioElement.setAttribute('crossOrigin', "anonymous");
-	audioElement.setAttribute('autoplay', true);
-	audioElement.setAttribute('preload', "auto");
-	// OR
-	// audioElement.setAttribute('src', url_file_blob_object);
+	var audioElement = await load_audio_from_url(url_file_blob_object, mode="nocors");
 	
 	// -----------------------------------------------
  
-	// Create an AudioContext
-	var audioContext = new AudioContext();
- 
-	// -----------------------------------------------
- 
-	// Create an SourceElement (audioSourceNode)
-	var sourceElement = document.createElement('source');
-	sourceElement.setAttribute("src", url_file_blob_object);
-	// console.log('sourceElement: ', sourceElement);
- 
-	// -----------------------------------------------
-
-	// Create an AnalyserNode
-	var analyserNode = audioContext.createAnalyser();
-	// console.log('analyserNode: ', analyserNode);
-
-	let channels = analyserNode.channelCount;     // 2
-	// console.log('channels: ', channels);
-	
-	let time_length = analyserNode.context.currentTime;   // 354.976
-	// console.log('time_length: ', time_length);
-	
-	let fs = analyserNode.context.sampleRate; // 48000
-	// console.log('fs: ', fs);
-	
-	var time_sample_rate_OR_timePeriod = (1/fs) * 1000; // every time_sample_rate there is a data point, 0.020833333333333333
-	// console.log('time_sample_rate_OR_timePeriod: ', time_sample_rate_OR_timePeriod);
-
-	return {channels: channels, time_length: time_length, fs: fs, time_sample_rate_OR_timePeriod: time_sample_rate_OR_timePeriod};
+	return await evaluate_audioElement();
 }
 
 // -------------------------------------------------
 
-
+	
 // -------------------------------------------------
 
 
@@ -701,12 +509,223 @@ async function combine_audio_video(videoElement, audioElement) {
 
 
 // -------------------------------------------------
-// MODIFY AUDIO AND VIDEO SUBFUNCTIONS
+// DATA LOADING SUBFUNCTIONS
+// -------------------------------------------------
+async function fetch_file(base64_string, file_name, file_type) {
+
+	// console.log('base64_string: ', base64_string.slice(0,20));
+	
+	return await fetch(base64_string)
+		.then(response => response.blob())
+		.then(async function(blob_object) {
+			// console.log('blob_object: ', blob_object);
+			return new File ([blob_object], file_name, {type: file_type});
+		})
+		.then(async function(file_blob_object) {
+			// console.log('file_blob_object: ', file_blob_object);
+			return URL.createObjectURL(file_blob_object);
+		})
+		.catch(error => { document.getElementById('error').innerHTML = error; });
+}
+
 // -------------------------------------------------
 
-	
-// -----------------------------------------------
 
+
+	
+
+
+// -------------------------------------------------
+// AUDIO SUBFUNCTIONS
+// -------------------------------------------------
+async function load_audio_from_file() {
+	
+	const url_audio = await fetch_file(base64_string_audio, file_name_audio, "audio/webm");
+	console.log('url_audio: ', url_audio);
+
+	var audioElement = await load_audio_from_url(url_audio);
+	
+	audioElement.onend = function() { URL.revokeObjectURL(url_audio); }
+
+	return audioElement;
+}
+	
+// The eventlistener needs to be always running, to detect which file the user selected with browse
+document.getElementById("upload_audio_file").addEventListener("change", previewInput_audio, false);
+var file_name_audio;
+var base64_string_audio;
+	
+async function previewInput_audio(event) {
+	
+	// ---------------------
+	
+	// console.log("event :", event);
+	// Automatic path to the audio file
+	// document.getElementById("file_path").innerHTML = event.srcElement.value;
+	
+	// ---------------------
+	
+	// Take the first file
+	const file = event.target.files[0];  // first file in the list of selected files, better for selecting multiple files at one time
+	// console.log("file :", file);
+
+	// ---------------------
+	
+	// Set the file name
+	// document.getElementById("file_name_audio").innerHTML = file.name;
+	// OR
+	file_name_audio = file.name;
+	
+	// ---------------------
+
+	const reader = new FileReader();
+	
+	reader.onload = async function(e){
+		// Save base64_string to DOM 
+		// console.log("e.target.result :", e.target.result);
+		// document.getElementById("base64_string_audio").innerHTML = e.target.result;
+		// OR
+		base64_string_audio = e.target.result;
+	}
+	reader.readAsDataURL(file);
+}
+
+// -------------------------------------------------
+
+async function load_audio_from_url(url, mode="nocors") {
+
+	// Create an AudioElement
+	const audioElement = document.createElement('audio');
+	
+	audioElement.src = url;
+	audioElement.id = "audio track";
+	audioElement.autoplay = true;
+	audioElement.setAttribute("controls", true);
+	audioElement.setAttribute('preload', "auto");
+
+	if (mode == "cors") {
+		audioElement.setAttribute('crossOrigin', "anonymous");
+	}
+
+  	// Create an SourceElement (audioSourceNode)
+	// var sourceElement = document.createElement('source');
+	// sourceElement.setAttribute("src", url);
+	// console.log('sourceElement: ', sourceElement);
+  
+	// audioElement.appendChild(sourceElement);
+	
+	document.getElementById('data_display').appendChild(audioElement);
+
+	return audioElement;
+}
+	
+// -------------------------------------------------
+
+async function evaluate_audioElement() {
+
+	// It appears that if the audioElement is in memory, these functions can be used
+
+	// -----------------------------------------------
+	
+	// Create an AudioContext
+	// var audioContext = new (window.AudioContext || window.webkitAudioContext)();
+	// audioContext = new AudioContext();
+	// OR
+	var audioContext = new AudioContext();
+ 
+	// -----------------------------------------------
+
+	// Create an AnalyserNode: some signal information was more reliable with analyserNode than audioContext
+	var analyserNode = audioContext.createAnalyser();
+	// console.log('analyserNode: ', analyserNode);
+	
+	var channels = audioContext.channelCount;
+	if (channels == undefined) { 
+		channels = analyserNode.channelCount;
+	}
+	// console.log('channels: ', channels);
+	
+	var fs = audioContext.sampleRate;
+	if (fs == undefined) { 
+		fs = analyserNode.context.sampleRate; // 48000
+	}
+	// console.log('fs: ', fs);
+
+	let time_length = analyserNode.context.currentTime;   // 354.976
+	// console.log('time_length: ', time_length);
+
+	// -----------------------------------------------
+
+	const frameCount = fs * 2.0;
+	
+	var time_sample_rate_OR_timePeriod = (1/fs) * 1000; // every time_sample_rate there is a data point, 0.020833333333333333
+	// console.log('time_sample_rate_OR_timePeriod: ', time_sample_rate_OR_timePeriod);
+
+	// -----------------------------------------------
+	
+	return {channels: channels, fs: fs, time_length: time_length, frameCount: frameCount, time_sample_rate_OR_timePeriod: time_sample_rate_OR_timePeriod};
+}
+
+// -------------------------------------------------
+
+
+	
+
+
+// -------------------------------------------------
+// VIDEO SUBFUNCTIONS
+// -------------------------------------------------
+async function load_video_from_file() {
+	
+	const url_video = await fetch_file(base64_string_video, file_name_video, "video/webm");
+	console.log('url_video: ', url_video);
+	
+	const videoElement = document.createElement('video');
+	videoElement.src = url_video;
+	videoElement.id = "video track";
+	videoElement.autoplay = true;
+	videoElement.setAttribute("controls", true);
+	videoElement.setAttribute('preload', "auto");
+	videoElement.onend = function() { URL.revokeObjectURL(url_video); }
+	console.log('videoElement: ', videoElement);
+	
+	document.getElementById('data_display').appendChild(videoElement);
+	
+	return videoElement;
+}
+	
+document.getElementById("upload_video_file").addEventListener("change", previewInput_video, false);
+var file_name_video;
+var base64_string_video;
+	
+async function previewInput_video(event) {
+	
+	const file_video = event.target.files[0];  // first file in the list of selected files, better for selecting multiple files at one time
+	// console.log("file_video :", file_video);
+
+	// ---------------------
+	
+	// Set the file name
+	// document.getElementById("file_name_video").innerHTML = file_video.name;
+	// OR
+	file_name_video = file_video.name;
+	
+	// ---------------------
+
+	const reader_video = new FileReader();
+	
+	reader_video.onload = async function(e){
+		// Save base64_string to DOM 
+		// console.log("e.target.result :", e.target.result);
+		// document.getElementById("base64_string_video").innerHTML = e.target.result;
+		// OR
+		base64_string_video = e.target.result;
+	}
+	reader_video.readAsDataURL(file_video);
+}
+
+// -------------------------------------------------
+	
 async function create_dynamic_canvasElement(w) {
 
   	const index = 0;
@@ -736,25 +755,11 @@ async function create_dynamic_canvasElement(w) {
 
 // -------------------------------------------------
 
-async function fetch_file(base64_string, file_name, file_type) {
 
-	// console.log('base64_string: ', base64_string.slice(0,20));
+
+
+
 	
-	return await fetch(base64_string)
-		.then(response => response.blob())
-		.then(async function(blob_object) {
-			// console.log('blob_object: ', blob_object);
-			return new File ([blob_object], file_name, {type: file_type});
-		})
-		.then(async function(file_blob_object) {
-			// console.log('file_blob_object: ', file_blob_object);
-			return URL.createObjectURL(file_blob_object);
-		})
-		.catch(error => { document.getElementById('error').innerHTML = error; });
-}
-
-// -----------------------------------------------
-
 
 	
 // -------------------------------------------------
@@ -901,14 +906,6 @@ async function std(arr) {
   
 // -------------------------------------------------
 
-
-
-
-
-
-
-	
-
 // Only works in Chrome
 // https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition
 // var recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition || window.mozSpeechRecognition || window.msSpeechRecognition)();
@@ -936,6 +933,10 @@ async function run_voice_to_text() {
 }
 
 // -------------------------------------------------
+
+
+
+	
 
 
 </script>
