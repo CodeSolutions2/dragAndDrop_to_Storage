@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html>
+<head></head>
+    
+<body>
+
+<button type="button" id="run_video_screen_capture" onclick="run_video_screen_capture()" style="display:block">run_video_screen_capture</button>
+
+<button type="button" id="record_audio" onclick="record_audio()" style="display:block">record_audio</button>
+    
+<button type="button" id="stop_record_audio" style="display:block">stop_record_audio</button>
+
+<div id="data_display" style="display:block; text-align: left; width: 600px;">
+
+<label for="select_video">Select an video:</label>
+<input type="file" id="upload_video_file" accept="video/*" style="display:block">
+
+<label for="select_audio">Select an audio:</label>
+<input type="file" id="upload_audio_file" accept="video/*" style="display:block">
+
+<button type="button" id="combine_audio_video" onclick="combine_audio_video()" style="display:block">combine_audio_video</button>
+
+
+<!-- <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.min.js" crossorigin></script> -->
+
+<!-- <script src='https://unpkg.com/@ffmpeg/ffmpeg@0.9.6/dist/ffmpeg.min.js'></script> -->
+<!-- ReferenceError: SharedArrayBuffer is not defined createFFmpegCore 5afb6a17-d329-4919-9d89-7669454bad27:22 -->
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
+  
+<script>
+
+// -------------------------------------------------
+    
+async function run_video_screen_capture() {
+    
+    const displayMediaOptions = { video: { displaySurface: "browser", },
+                                 audio: true,
+                                 preferCurrentTab: true,
+                                 selfBrowserSurface: "include",
+                                 systemAudio: "include",
+                                 surfaceSwitching: "include",
+                                 monitorTypeSurfaces: "include",
+                                };
+    
+    await navigator.mediaDevices.getDisplayMedia(displayMediaOptions)
+        .then(stream => {  
+		
+		// This specifies the type of blob it will create for event.data
+		// var options = {mimeType: "video/webm;codecs=vp8,opus"}; // save popup does not appear
+		var options = {mimeType: "video/webm; audio/webm; codecs=vp8"};
+		
+		var mediaRecorder = new MediaRecorder(stream, options);
+
+		// https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder/dataavailable_event
+		// dataavailable runs when the MediaRecorder delivers media data to your application for its use
+		// When mediaRecorder.stop() is called mediaRecorder.ondataavailable is run.
+		// mediaRecorder.stop() is on the interface for the user to push.
+		mediaRecorder.ondataavailable = handleDataAvailable;
+		
+		mediaRecorder.start();
+        });
+
+}
+
+// -------------------------------------------------
+    
+function handleDataAvailable(event) {
+	if (event.data.size > 0) {
+		// event.data = Blob { size: 105571, type: "XXX" }
+		console.log('event.data: ', event.data);
+		
+		download_screen_recording_video(event.data);
+	}
+}
+
+// -------------------------------------------------
+  
+function download_screen_recording_video(blob_object) {
+
+	console.log('blob_object: ', blob_object);
+	
+	var url = URL.createObjectURL(blob_object);
+	var a = document.createElement("a");
+	document.body.appendChild(a);
+	a.setAttribute('style', 'display:none');
+	a.setAttribute('href', url);
+	a.setAttribute('download', 'test.webm');
+      
+	a.click();
+  
+	window.URL.revokeObjectURL(url);
+}
+
+// -------------------------------------------------
+
+// Only works in Chrome
+// https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition
+// var recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition || window.mozSpeechRecognition || window.msSpeechRecognition)();
+    
+async function run_voice_to_text() {
+
+    var recognition = new SpeechRecognition();
+
+    recognition.lang = "en-US";
+    recognition.continuous = true;
+    recognition.interimResults = true;
+
+    recognition.onstart = () => { document.getElementById("run_voice_to_text").textContent = "Recording..."; }
+    
+    recognition.onresult = (event) => {
+        console.log('event.results: ', event.results);
+        document.getElementById("output").textContent = event.results[0][0].transcript;
+    };
+
+    recognition.start();
+
+    recognition.onend = () => {
+        document.getElementById("run_voice_to_text").textContent = "run_voice_to_text";
+    };
+}
+
+
+// -------------------------------------------------
+
+async function record_audio() {
+
+	// https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder
+	const MediaOptions = { audio: true };
+  
+    await navigator.mediaDevices.getUserMedia(MediaOptions)
+        .then((stream) => {
+		
+		// This specifies the type of blob it will create for event.data
+		var options = {mimeType: "audio/webm"};
+		var mediaRecorder = new MediaRecorder(stream, options);
+            
+		mediaRecorder.start();
+		console.log("recorder started - mediaRecorder.state: ", mediaRecorder.state);
+		document.getElementById("record_audio").style.background = "red";
+		document.getElementById("record_audio").style.color = "black";
+
+		// Way 0
+		document.getElementById("stop_record_audio").onclick = () => {
+			mediaRecorder.stop();
+			console.log("recorder stopped - mediaRecorder.state: ", mediaRecorder.state);
+			document.getElementById("record_audio").style.background = "";
+			document.getElementById("record_audio").style.color = "";
+		};
+
+		// When mediaRecorder.stop() is called mediaRecorder.ondataavailable is run.
+		// mediaRecorder.stop() is called when the eventlistener is called for pushing the button stop_record_audio 
+		mediaRecorder.ondataavailable = handleDataAvailable_audio;
+		
+            
+      })
+      .catch((err) => { console.error(`The following error occurred: ${err}`); });
+
+}
+
+// -------------------------------------------------
+
+function handleDataAvailable_audio(event) {
+
+	console.log('event: ', event);
+
+	// If the recorded audio has size greater than zero, save it in an array
+	if (event.data.size > 0) {
+		// event.data = Blob { size: 38931, type: "XXX" }
+		var url = URL.createObjectURL(event.data);
+		console.log('url: ', url);
+	}
+	document.getElementById("stop_record_audio").removeEventListener("click", handleDataAvailable_audio);
+
+	download_audio_recording(url);
+	// Works
+	
+	
+	// play_sound(event.data);
+	// Security Error: Content at https://codesolutions2.github.io/temp_repo_js_tests/index3.html may not load data from blob:https://codesolutions2.github.io/06a46a49-f1a9-4b30-b588-477fb9408453.
+}
+
+// -------------------------------------------------
+  
+function download_audio_recording(url) {
+	
+	var a = document.createElement("a");
+	document.body.appendChild(a);
+	a.setAttribute('style', 'display:none');
+	a.setAttribute('href', url);
+	a.setAttribute('download', 'test.mp3');
+      
+	a.click();
+  
+	URL.revokeObjectURL(url);
+}
+
+
+
+// -------------------------------------------------
+
+function play_sound(blob_object) {
+
+	var file_blob_object = new File ([blob_object], 'recorded_audio', {type: "audio/mp3"});
+	var url_file_blob_object = URL.createObjectURL(file_blob_object);
+	
+	// Create an AudioElement
+	const audioElement = document.createElement('audio');
+  
+	audioElement.setAttribute("controls", true);
+	audioElement.setAttribute('crossOrigin', "anonymous");
+	// audioElement.setAttribute('autoplay', true);
+	audioElement.setAttribute('preload', "auto");
+	// OR
+	audioElement.setAttribute("src", url_file_blob_object);
+ 
+	// -----------------------------------------------
+ 
+	// Create an AudioContext
+	var audioContext = new AudioContext();
+ 
+	// -----------------------------------------------
+ 
+	// Create an SourceElement (audioSourceNode)
+	var sourceElement = document.createElement('source');
+  
+	sourceElement.setAttribute("src", url_file_blob_object);
+ 
+	// -----------------------------------------------
+  
+	audioElement.appendChild(sourceElement);
+  
+	document.getElementById('data_display').appendChild(audioElement);
+
+	URL.revokeObjectURL(url_file_blob_object);
+}
+
+// -------------------------------------------------
+
+// The eventlistener needs to be always running, to detect which file the user selected with browse
+document.getElementById("upload_audio_file").addEventListener("change", previewInput_audio, false);
+var file_name_audio;
+var base64_string_audio;
+	
+async function previewInput_audio(event) {
+	
+	// ---------------------
+	
+	// console.log("event :", event);
+	// Automatic path to the audio on the PC
+	// document.getElementById("file_path").innerHTML = event.srcElement.value;
+	
+	// ---------------------
+	
+	// Take the first file
+	const file = event.target.files[0];  // first file in the list of selected files, better for selecting multiple files at one time
+	// console.log("file :", file);
+
+	// ---------------------
+	
+	// Set the file name
+	// document.getElementById("file_name_audio").innerHTML = file.name;
+	// OR
+	file_name_audio = file.name;
+	
+	// ---------------------
+
+	const reader = new FileReader();
+	
+	reader.onload = async function(e){
+		// Save base64_string to DOM 
+		// console.log("e.target.result :", e.target.result);
+		// document.getElementById("base64_string_audio").innerHTML = e.target.result;
+		// OR
+		base64_string_audio = e.target.result;
+	}
+	reader.readAsDataURL(file);
+}
+
+// -------------------------------------------------
+
+document.getElementById("upload_video_file").addEventListener("change", previewInput_video, false);
+var file_name_video;
+var base64_string_video;
+	
+async function previewInput_video(event) {
+	
+	const file_video = event.target.files[0];  // first file in the list of selected files, better for selecting multiple files at one time
+	// console.log("file_video :", file_video);
+
+	// ---------------------
+	
+	// Set the file name
+	// document.getElementById("file_name_video").innerHTML = file_video.name;
+	// OR
+	file_name_video = file_video.name;
+	
+	// ---------------------
+
+	const reader_video = new FileReader();
+	
+	reader_video.onload = async function(e){
+		// Save base64_string to DOM 
+		// console.log("e.target.result :", e.target.result);
+		// document.getElementById("base64_string_video").innerHTML = e.target.result;
+		// OR
+		base64_string_video = e.target.result;
+	}
+	reader_video.readAsDataURL(file_video);
+}
+
+// -------------------------------------------------
+
+async function fetch_file(base64_string, file_name, file_type) {
+
+	// console.log('base64_string: ', base64_string.slice(0,20));
+	
+	return await fetch(base64_string)
+		.then(response => response.blob())
+		.then(async function(blob_object) {
+			// console.log('blob_object: ', blob_object);
+			return new File ([blob_object], file_name, {type: file_type});
+		})
+		.then(async function(file_blob_object) {
+			// console.log('file_blob_object: ', file_blob_object);
+			return URL.createObjectURL(file_blob_object);
+		})
+		.catch(error => { document.getElementById('error').innerHTML = error; });
+}
+
+// -------------------------------------------------
+	
+// async function combine_audio_video() {
+
+	// [Step 0] Load library
+	// console.log('FFmpeg: ', FFmpeg);
+
+	// const ffmpeg = new FFmpeg(); //  ReferenceError: FFmpeg is not defined
+	// OR
+
+	// const { createFFmpeg, fetchFile } = FFmpeg;
+	// let ffmpeg = createFFmpeg();  // error
+
+	// OR
+
+	// const ffmpeg = new FFmpeg.createFFmpeg();
+	// ReferenceError: SharedArrayBuffer is not defined createFFmpegCore 5afb6a17-d329-4919-9d89-7669454bad27:22
+	// https://github.com/ffmpegwasm/ffmpeg.wasm/issues/263
+
+		
+	// await ffmpeg.load();
+
+	// [Step 1] Load the video and audio file
+	// await ffmpeg.writeFile('video.webm', await fetchFile(base64_string_video));
+	// await ffmpeg.writeFile('audio.webm', await fetchFile(base64_string_audio));
+	
+	// console.log('Start transcoding');
+
+	// [Step 2] Run a ffmpeg command
+        // await ffmpeg.exec(['-i', 'video.webm',  'output.mp4']);  // Convert video.webm to output.mp4
+	// await ffmpeg.exec('-i', 'video.webm', '-i', 'audio.webm', '-c', 'copy', 'output.webm');
+	
+	// console.log('Complete transcoding');
+	
+        // const data = await ffmpeg.readFile('output.webm');
+	// console.log('data: ', data);
+	
+	// const uint8Array_audio_video = new Uint8Array(data.buffer);
+
+	// const blob_object = new Blob(uint8Array_audio_video, {type: "video/webm"});
+
+	// download_screen_recording_video(blob_object);
+// };
+
+
+// -------------------------------------------------
+	
+
+
+// -------------------------------------------------
+// Basic functions
+// -------------------------------------------------
+
+async function transform_video_to_image(binaryString_audio0, binaryString_audio1) {
+
+	const normalArray_normalized0 = await decodeAudioData_from_binaryString_to_uint8Array(binaryString_audio0);
+	
+  // Determine if the binaryString has mono or stero channels
+  // Option 0: maybe look in https://www.npmjs.com/package/music-metadata#trackinfoaudiotrack
+
+  var [channel1, channel2] = await separate_stero_channels(normalArray_normalized0);
+  
+	const normalArray_normalized1 = await decodeAudioData_from_binaryString_to_uint8Array(binaryString_audio1);
+  var [channel1, channel2] = await separate_stero_channels(normalArray_normalized1);
+
+  
+
+}
+
+// -------------------------------------------------
+
+async function separate_stero_channels(normalArray_normalized) {
+
+  // Audio files with two channels are interleaved, meaning that [channel0_datapoint0, channel1_datapoint0, channel0_datapoint1, channel1_datapoint1, ...channel0_datapointn-1, channel1_datapointn-1] 
+  var channel1 = [];
+	var channel2 = normalArray_normalized.map((val, ind) => {
+		if (ind % 2 == 0) {
+			channel1.push(val);
+			return '';
+		} else {
+			return val;
+		}
+	});
+	const NonEmptyVals_toKeep = (x) => x.length != 0;
+	channel2 = channel2.filter(NonEmptyVals_toKeep);
+  
+  return [channel1, channel2];
+}
+
+// -------------------------------------------------
+
+async function decodeAudioData_from_binaryString_to_uint8Array(binaryString) {
+	
+	// -----------------------------------------------
+	// Decode the binaryString response
+	// -----------------------------------------------
+	var character_array = binaryString.split('');
+	console.log("character_array: ", character_array);
+	// Array(38190) [ "�", "�", "�", "d", "\u0000", "\u0000", "\u0000", "\u0000", "\u0000", "\u0000", … ]
+			
+	// Map each [binary string character; a subset of binary string characters is UTF-8] as an [ASCII number; a number from 0 to number_of_characters]
+	var byteArray = character_array.map((character) => { return character.charCodeAt(0); });
+	console.log("byteArray: ", byteArray);
+	// byteArray:  Array(38190) [ 65533, 65533, 65533, 100, 0, 0, 0, 0, 0, 0, … ]
+
+	// The importance of this mapping is to limit the array values from 0 to 255.
+	var uint8Array = new Uint8Array(byteArray);
+	console.log('uint8Array: ', uint8Array);
+	// uint8Array:  Uint8Array(38190) [ 253, 253, 253, 100, 0, 0, 0, 0, 0, 0, … ]
+
+	// In some ways a uint8Array is an arrayBuffer because the size is "fixed" meaning that no more data will be appended to the array after the UTF-8 characters. And, it is a "fixed" array because the values of the array are limited to a certain range of numbers, from 0 to 255. 
+
+	// Convert UTF-8 array [non-fixed length array] to a binary arrayBuffer [fixed-length array]
+	const arrayBuffer = uint8Array.buffer;
+	console.log('arrayBuffer: ', arrayBuffer);
+
+	// Determine the length of the typedArray_arrayBuffer
+	console.log('arrayBuffer.byteLength: ', arrayBuffer.byteLength);
+	
+	// --------------------
+	
+	// Convert the TypedArray into a normal array
+	const normalArray = await Array.from(uint8Array);
+	console.log('normalArray: ', normalArray);
+
+	// Determine the length of the normalArray.length
+	console.log('normalArray.length: ', normalArray.length);
+
+	var arr_char = await obtain_array_characteristics(normalArray);
+	console.log('arr_char: ', arr_char);
+
+	// --------------------
+
+	// Normalize the audio data in arrayBuffer from [-1, 1]
+	// var normalArray_normalized = await normalArray.map((val, ind) => { return val/arr_char.max_amp; });  // gave wrong results
+	// var normalArray_normalized = await normalArray.map((val, ind) => { return val/99; });  // gave wrong results
+	// console.log('normalArray max min: ', [normalArray_normalized.sort().shift(), normalArray_normalized.sort().pop()])
+	// RESULT: it gives a value from 0 to 2.5656... not exactly what was expected
+
+  // OR
+
+  // Try with Tensorflow library
+  const tf_normalArray = tf.tensor1d(normalArray);
+  const max_amp = tf.scalar(arr_char.max_amp);
+  var normalArray_normalized_tf = await tf_normalArray.div(max_amp);
+  
+  // --------------------
+
+  // Convert Tensorflow_array to Array
+  const normalArray_normalized = normalArray_normalized_tf.arraySync();
+  console.log('normalArray max min: ', [normalArray_normalized.sort().shift(), normalArray_normalized.sort().pop()])
+  
+  // --------------------
+
+  // Only for verification
+	var arr_char_normalized = await obtain_array_characteristics(normalArray_normalized);
+	console.log('arr_char_normalized: ', arr_char_normalized);
+	
+	// --------------------
+
+	return normalArray_normalized;
+}
+
+// -------------------------------------------------
+
+// append_audio_tracks() {
+  
+// -------------------------------------------------
+
+// append_video_and_audio_tracks
+async function combine_audio_video() {
+
+	const url_video = await fetch_file(base64_string_video, file_name_video, "video/webm");
+	console.log('url_video: ', url_video);
+	
+	const videoElement = document.createElement('video');
+	videoElement.src = url_video;
+	videoElement.id = "video track";
+	videoElement.autoplay = true;
+	videoElement.setAttribute("controls", true);
+	videoElement.setAttribute('preload', "auto");
+	videoElement.onend = function() { URL.revokeObjectURL(url_video); }
+	console.log('videoElement: ', videoElement);
+	
+	document.getElementById('data_display').appendChild(videoElement);
+	
+	// --------------------------
+
+	const url_audio = await fetch_file(base64_string_audio, file_name_audio, "audio/webm");
+	console.log('url_audio: ', url_audio);
+	
+	const audioElement = document.createElement('audio');
+	audioElement.src = url_audio;
+	audioElement.id = "audio track";
+	audioElement.autoplay = true;
+	audioElement.setAttribute("controls", true);
+	audioElement.setAttribute('preload', "auto");
+	audioElement.onend = function() { URL.revokeObjectURL(url_audio); }
+	// audioElement.setAttribute('crossOrigin', "anonymous");
+	console.log('audioElement: ', audioElement);
+
+  	// Create an SourceElement (audioSourceNode)
+	// var sourceElement = document.createElement('source');
+	// sourceElement.setAttribute("src", url_audio);
+	// console.log('sourceElement: ', sourceElement);
+  
+	// audioElement.appendChild(sourceElement);
+	document.getElementById('data_display').appendChild(audioElement);
+	
+	// --------------------------
+
+	
+	const stream = new MediaStream();
+
+	console.log('browser check: ', (/firefox/i).test(navigator.userAgent));
+	
+	if ((/firefox/i).test(navigator.userAgent) == true) {
+		// Test - worked
+		const captureStream_videoElement = videoElement.mozCaptureStream();
+		console.log('captureStream_videoElement: ', captureStream_videoElement);
+
+		// var video_id = captureStream_videoElement.id.slice(1, captureStream_videoElement.id.length-1);
+		var video_id = captureStream_videoElement.id;
+		console.log('video_id: ', video_id);
+
+		const captureStream_audioElement = audioElement.mozCaptureStream();
+		console.log('captureStream_audioElement: ', captureStream_audioElement);
+
+		// var audio_id = captureStream_audioElement.id.slice(1, captureStream_videoElement.id.length-1);
+		var audio_id = captureStream_audioElement.id;
+		console.log('audio_id: ', audio_id);
+
+		// -------------------------------------
+		
+		const captureStream_videoElement_tracks = captureStream_videoElement.getTrackById(video_id);
+		console.log('captureStream_videoElement_tracks: ', captureStream_videoElement_tracks);
+
+		const captureStream_audioElement_tracks = captureStream_audioElement.getTrackById(audio_id);
+		console.log('captureStream_audioElement_tracks: ', captureStream_audioElement_tracks);
+
+		// stream.addTrack(videoElement.mozCaptureStream().getVideoTracks()[0]);
+		// stream.addTrack(audioElement.mozCaptureStream().getAudioTracks()[0]);
+	} else {
+		// const captureStream = videoElement.captureStream();
+		//
+		stream.addTrack(videoElement.captureStream().getVideoTracks()[0]);
+		stream.addTrack(audioElement.captureStream().getAudioTracks()[0]);
+	}
+	
+
+  
+}
+  
+// -------------------------------------------------
+
+// -----------------------------------------------
+
+async function obtain_array_characteristics(arr) {
+
+	var arr_char = {};
+	
+	arr_char.mu = await mean(arr);
+	arr_char.sigma = await std(arr);
+
+	const arr_sort = arr.sort();
+	arr_char.max_val = arr_sort.at(arr.length-1);
+	arr_char.min_val = arr_sort.at(0);
+
+	// Maximum amplitude
+	arr_char.max_amp = [Math.abs(arr_char.min_val), arr_char.max_val].sort().pop();
+	
+	return arr_char;
+}
+	
+// -----------------------------------------------
+
+async function sum(arr) {
+	return arr.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+}
+
+// -----------------------------------------------
+  
+async function mean(arr) {
+	return await sum(arr)/arr.length;
+}
+
+// -----------------------------------------------
+
+async function std(arr) {
+	const mu =  await mean(arr);
+	// console.log('mu: ', mu);
+
+	var arr1 = arr.map((x) => { return x-mu; });
+	const summ = await sum(arr1);
+	// console.log('summ: ', summ);
+
+	const out = Math.sqrt( Math.pow(summ, 2)/arr.length );
+	// console.log('out: ', out);
+	
+	return out;
+}
+  
+// -------------------------------------------------
+
+
+</script>
+</body>
+</html>
