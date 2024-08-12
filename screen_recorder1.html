@@ -220,6 +220,7 @@ async function modify_existing_audio_and_or_video_from_file() {
 		await append_two_audio_tracks(base64_string_audio0, bbase64_string_audio1);
 		
 	} else if (modification_type == 'Combine an audio and video file') {
+		await combine_audio_video(videoElement, audioElement);
 
 	} else if (modification_type == 'Append two video files') {
 		
@@ -507,7 +508,6 @@ async function combine_audio_video(videoElement, audioElement) {
 
 
 
-
 // -------------------------------------------------
 // DATA LOADING SUBFUNCTIONS
 // -------------------------------------------------
@@ -687,7 +687,8 @@ async function load_video_from_file() {
 	videoElement.setAttribute("controls", true);
 	videoElement.setAttribute('preload', "auto");
 	videoElement.onend = function() { URL.revokeObjectURL(url_video); }
-	console.log('videoElement: ', videoElement);
+	
+	// console.log('videoElement: ', videoElement);
 	
 	document.getElementById('data_display').appendChild(videoElement);
 	
