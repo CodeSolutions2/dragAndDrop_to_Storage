@@ -213,16 +213,18 @@ async function modify_existing_audio_and_or_video_from_file() {
 	var modification_type = document.getElementById("video_andor_audio").value;
 	
 	if (modification_type == 'Obtain a video frame at a specific time') {
-		await transform_video_to_image(videoElement);
+		document.getElementById('notification').innerHTML = "In progress.";
+		// await transform_video_to_image(videoElement);
 		
 	} else if (modification_type == 'Append two audio files') {
-		
-		await append_two_audio_tracks(base64_string_audio0, bbase64_string_audio1);
+		document.getElementById('notification').innerHTML = "In progress.";
 		
 	} else if (modification_type == 'Combine an audio and video file') {
+		document.getElementById('notification').innerHTML = "In progress.";
 		await combine_audio_video(videoElement, audioElement);
 
 	} else if (modification_type == 'Append two video files') {
+		document.getElementById('notification').innerHTML = "In progress.";
 		
 	} else {
 		document.getElementById('notification').innerHTML = "Please select an audio and/or video modification type."; 
