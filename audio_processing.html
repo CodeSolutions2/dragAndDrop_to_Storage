@@ -4,10 +4,8 @@
 <body>
 
 <button id="audio_to_timeseries" onclick="audio_to_timeseries()" style="display:block;">audio_to_timeseries</button>
-	
-<button id="audio_to_frequency_domain" onclick="audio_to_frequency_domain()" style="display:block;">audio_to_frequency_domain</button>
 
- 
+	
 <div id="data_display" style="display:block; text-align: left; width: 600px;">
 
 
@@ -94,55 +92,6 @@ async function audio_to_timeseries() {
 
 // -------------------------------------------------
   
-async function audio_to_frequency_domain() {
-	
-	const [t1, x_avg] = await audio_to_timeseries();
-  
-  // --------------------
-  
-	// Compute frequency domain
-	const freq_response0 = await DFT(x_avg);
-  console.log('freq_response0.length : ', freq_response0.length);
-  
-  // OR
-  
-  const x = tf.tensor1d(x_avg);
-  const freq_response1 = x.fft();
-	console.log('freq_response1.length : ', freq_response1.length);
-  
-	var freq_arr_char = await obtain_array_characteristics(freq_response1);
-	console.log('freq_arr_char: ', freq_arr_char);
-  
-	f = Array.from({ length: freq_response1.length }, (_, i) => i * 2 * Math.PI * 1/audio_information.time_sample_rate_OR_timePeriod);
-	console.log('f.length : ', f.length);
-	await plot_line_graph_dataObject(f, freq_response1, "Frequency response: Hz");
-	
-	const freq_response_db = freq_response1.map((val, ind) => { return 20 * Math.log10(val); });
-	await plot_line_graph_dataObject(f, freq_response_db, "Frequency response: decibels");
-	
-	// --------------------
-
-  // Calculate spectrogram
-  var frameLength = 255;
-  var frameStep = 128;
-
-  // Convert the waveform to a spectrogram using the Short-Time Fourier Transform (STFT)
-  var spectrogram = tf.signal.stft(x_avg, frameLength, frameStep);
-  console.log('spectrogram : ', spectrogram);
-
-  // Obtain the magnitude of the STFT
-  spectrogram = tf.abs(spectrogram);
-  console.log('spectrogram : ', spectrogram);
-
-  // Add an extra-dimension to view the results as an image
-  spectrogram = spectrogram.expandDims(0);
-  console.log('spectrogram : ', spectrogram);
-	
-}
-
-// -----------------------------------------------
-
-
   
 
 // -----------------------------------------------
@@ -477,32 +426,6 @@ async function std(arr) {
 	
 	return out;
 }
-
-// -------------------------------------------------
-
-
-async function DFT(x) {
-
-	// Discrete Fourier Transform:  1/sqrt(N) * sum_{0}^{N-1}(x(t) exp^{-j * omega * t}), where omega = 2 * pi * k/N for k=0...N-1
-	const N = x.length;
-	
-	var x_jomega = [];
-	for (var k=0; k<N; k++) {
-		var arr_at_jomega = [];
-		for (var t=0; t<N; t++) {
-			var omega = 2 * Math.PI * k/N;
-			arr_at_jomega.push(x.at(t)*Math.exp(- omega * t));
-		}
-		// sum across t
-		x_jomega.push(1/Math.sqrt(N) * await sum(arr_at_jomega));
-	}
-	return x_jomega;
-}
-
-
-// -------------------------------------------------
-
-// Downsample time series to a [desired_sampleRate]
 
 // -------------------------------------------------
   
