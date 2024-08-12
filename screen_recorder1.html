@@ -13,27 +13,32 @@
 
 
 <h3>C. Modify an existing audio and/or video file from file</h3>
+
+<!-- Dropdown: select a video and/or audio modification -->
+<label for="select_video_andor_audio_file">Select a video and/or audio modification:</label>
+<select name="video_andor_audio" id="video_andor_audio" style="display:block">
+  <option value="---">Select an option</option>
+  <option value="Obtain a video frame at a specific time">Obtain a video frame at a specific time</option>
+  <option value="Append two audio files">Append two audio files</option>
+  <option value="Combine an audio and video file">Combine an audio and video file</option>
+  <option value="Append two video files">Append two video files</option>
+</select>
+
+<!-- Select a video and/or audio -->
 <label for="select_video">Select an video:</label>
 <input type="file" id="upload_video_file" accept="video/*" style="display:block">
 
 <label for="select_audio">Select an audio:</label>
 <input type="file" id="upload_audio_file" accept="video/*" style="display:block">
 	
-	
-<h4>0. Obtain a video frame at a specific time</h4>
-<button type="button" id="get_image_from_video_at_a_specific_time" onclick="get_image_from_video_at_a_specific_time()" style="display:block">get_image_from_video_at_a_specific_time</button>
-   
-<h4>1. Append two audio files</h4>
-	
-
-<h4>2. Combine an audio and video file</h4>
-<button type="button" id="combine_audio_video" onclick="combine_audio_video()" style="display:block">combine_audio_video</button>
-
-<h4>3. Append two video files</h4>
-
+<button type="button" id="modify_existing_audio_and_or_video_from_file" onclick="modify_existing_audio_and_or_video_from_file()" style="display:block">get_image_from_video_at_a_specific_time</button>
 	
 	
 <div id="data_display" style="display:block; text-align: left; width: 600px;">
+
+
+<div id="notification"></div>
+<div id="error"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
   
@@ -357,18 +362,29 @@ async function previewInput_video(event) {
 
 async function modify_existing_audio_and_or_video_from_file() {
 
-
+	// --------------------------
+	
+	const audioElement = await load_audio_file_from_PC();
 	const videoElement = await load_video_file_from_PC();
 		
 	// --------------------------
-	
-	// 0. Obtain video frames: transform video to images
-	await transform_video_to_image(videoElement);
-	
-	// --------------------------
 
-
+	var modification_type = document.getElementById("video_andor_audio").value;
 	
+	if (modification_type == 'Obtain a video frame at a specific time') {
+		await transform_video_to_image(videoElement);
+		
+	} else if (modification_type == 'Append two audio files') {
+		
+		await append_two_audio_tracks(base64_string_audio0, bbase64_string_audio1);
+		
+	} else if (modification_type == 'Combine an audio and video file') {
+
+	} else if (modification_type == 'Append two video files') {
+		
+	} else {
+		document.getElementById('notification').innerHTML = "Please select an audio and/or video modification type."; 
+	}
 
 }
 	
@@ -720,12 +736,7 @@ async function decodeAudioData_from_binaryString_to_uint8Array(binaryString) {
 // -------------------------------------------------
 // 2. Combine a Video and Audio Track
 // -------------------------------------------------
-async function combine_audio_video() {
-
-	
-	
-	// --------------------------
-
+async function combine_audio_video(videoElement, audioElement) {
 	
 	const stream = new MediaStream();
 
