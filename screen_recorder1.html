@@ -3,37 +3,46 @@
 <head></head>
     
 <body>
-
+<h3>A. Create a video file from screen capture</h3>
 <button type="button" id="run_video_screen_capture" onclick="run_video_screen_capture()" style="display:block">run_video_screen_capture</button>
 
+
+<h3>B. Create an audio file from recorder</h3>
 <button type="button" id="record_audio" onclick="record_audio()" style="display:block">record_audio</button>
-    
 <button type="button" id="stop_record_audio" style="display:block">stop_record_audio</button>
 
-<div id="data_display" style="display:block; text-align: left; width: 600px;">
 
+<h3>C. Modify an existing audio and/or video file from file</h3>
 <label for="select_video">Select an video:</label>
 <input type="file" id="upload_video_file" accept="video/*" style="display:block">
 
 <label for="select_audio">Select an audio:</label>
 <input type="file" id="upload_audio_file" accept="video/*" style="display:block">
+	
+	
+<h4>0. Obtain a video frame at a specific time</h4>
+<button type="button" id="get_image_from_video_at_a_specific_time" onclick="get_image_from_video_at_a_specific_time()" style="display:block">get_image_from_video_at_a_specific_time</button>
+   
+<h4>1. Append two audio files</h4>
+	
 
+<h4>2. Combine an audio and video file</h4>
 <button type="button" id="combine_audio_video" onclick="combine_audio_video()" style="display:block">combine_audio_video</button>
 
+<h4>3. Append two video files</h4>
 
-<!-- <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.min.js" crossorigin></script> -->
-
-<!-- <script src='https://unpkg.com/@ffmpeg/ffmpeg@0.9.6/dist/ffmpeg.min.js'></script> -->
-<!-- ReferenceError: SharedArrayBuffer is not defined createFFmpegCore 5afb6a17-d329-4919-9d89-7669454bad27:22 -->
-
-
+	
+	
+<div id="data_display" style="display:block; text-align: left; width: 600px;">
 
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
   
 <script>
 
+
 // -------------------------------------------------
-    
+// A. Create a video file from screen capture
+// -------------------------------------------------
 async function run_video_screen_capture() {
     
     const displayMediaOptions = { video: { displaySurface: "browser", },
@@ -93,38 +102,17 @@ function download_screen_recording_video(blob_object) {
   
 	window.URL.revokeObjectURL(url);
 }
-
+	
 // -------------------------------------------------
 
-// Only works in Chrome
-// https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition
-// var recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition || window.mozSpeechRecognition || window.msSpeechRecognition)();
-    
-async function run_voice_to_text() {
 
-    var recognition = new SpeechRecognition();
 
-    recognition.lang = "en-US";
-    recognition.continuous = true;
-    recognition.interimResults = true;
-
-    recognition.onstart = () => { document.getElementById("run_voice_to_text").textContent = "Recording..."; }
-    
-    recognition.onresult = (event) => {
-        console.log('event.results: ', event.results);
-        document.getElementById("output").textContent = event.results[0][0].transcript;
-    };
-
-    recognition.start();
-
-    recognition.onend = () => {
-        document.getElementById("run_voice_to_text").textContent = "run_voice_to_text";
-    };
-}
+	
 
 
 // -------------------------------------------------
-
+// B. Create an audio file from recorder
+// -------------------------------------------------
 async function record_audio() {
 
 	// https://developer.mozilla.org/en-US/docs/Web/API/MediaRecorder
@@ -239,6 +227,40 @@ function play_sound(blob_object) {
 
 // -------------------------------------------------
 
+
+
+	
+
+
+// -------------------------------------------------
+// C. Modify an existing audio and/or video file from file
+// -------------------------------------------------
+async function load_audio_file_from_PC() {
+	
+	const url_audio = await fetch_file(base64_string_audio, file_name_audio, "audio/webm");
+	console.log('url_audio: ', url_audio);
+	
+	const audioElement = document.createElement('audio');
+	audioElement.src = url_audio;
+	audioElement.id = "audio track";
+	audioElement.autoplay = true;
+	audioElement.setAttribute("controls", true);
+	audioElement.setAttribute('preload', "auto");
+	audioElement.onend = function() { URL.revokeObjectURL(url_audio); }
+	// audioElement.setAttribute('crossOrigin', "anonymous");
+	console.log('audioElement: ', audioElement);
+
+  	// Create an SourceElement (audioSourceNode)
+	// var sourceElement = document.createElement('source');
+	// sourceElement.setAttribute("src", url_audio);
+	// console.log('sourceElement: ', sourceElement);
+  
+	// audioElement.appendChild(sourceElement);
+	document.getElementById('data_display').appendChild(audioElement);
+
+	return audioElement;
+}
+	
 // The eventlistener needs to be always running, to detect which file the user selected with browse
 document.getElementById("upload_audio_file").addEventListener("change", previewInput_audio, false);
 var file_name_audio;
@@ -281,6 +303,25 @@ async function previewInput_audio(event) {
 
 // -------------------------------------------------
 
+async function load_video_file_from_PC() {
+	
+	const url_video = await fetch_file(base64_string_video, file_name_video, "video/webm");
+	console.log('url_video: ', url_video);
+	
+	const videoElement = document.createElement('video');
+	videoElement.src = url_video;
+	videoElement.id = "video track";
+	videoElement.autoplay = true;
+	videoElement.setAttribute("controls", true);
+	videoElement.setAttribute('preload', "auto");
+	videoElement.onend = function() { URL.revokeObjectURL(url_video); }
+	console.log('videoElement: ', videoElement);
+	
+	document.getElementById('data_display').appendChild(videoElement);
+	
+	return videoElement;
+}
+	
 document.getElementById("upload_video_file").addEventListener("change", previewInput_video, false);
 var file_name_video;
 var base64_string_video;
@@ -312,91 +353,270 @@ async function previewInput_video(event) {
 }
 
 // -------------------------------------------------
-
-async function fetch_file(base64_string, file_name, file_type) {
-
-	// console.log('base64_string: ', base64_string.slice(0,20));
 	
-	return await fetch(base64_string)
-		.then(response => response.blob())
-		.then(async function(blob_object) {
-			// console.log('blob_object: ', blob_object);
-			return new File ([blob_object], file_name, {type: file_type});
-		})
-		.then(async function(file_blob_object) {
-			// console.log('file_blob_object: ', file_blob_object);
-			return URL.createObjectURL(file_blob_object);
-		})
-		.catch(error => { document.getElementById('error').innerHTML = error; });
+
+async function modify_existing_audio_and_or_video_from_file() {
+
+
+	const videoElement = await load_video_file_from_PC();
+		
+	// --------------------------
+	
+	// 0. Obtain video frames: transform video to images
+	await transform_video_to_image(videoElement);
+	
+	// --------------------------
+
+
+	
+
+}
+	
+
+
+// -------------------------------------------------
+// Basic functions to manipulate audio and video data
+// -------------------------------------------------
+
+// -------------------------------------------------
+// 0. Obtain video frames: transform video to images
+// -------------------------------------------------
+async function transform_video_to_image(videoElement) {
+
+	// Print video frame on a canvas
+	var w = 224;
+	const ctx = await create_dynamic_canvasElement(w);
+	
+	// This should plot the video frame on the canvas
+	ctx.drawImage(videoElement, 0, 0, w, w);
+
+	// Get the image data plotted on the canvas
+	var imageData_OR_videoframe = ctx.getImageData(0, 0, w, w);
+	// console.log('imageData_OR_videoframe: ', imageData_OR_videoframe);
+
+	// -----------------------------------------------
+	
+	// Create a 4D array from the imageData_OR_videoframe
+	// The oneD_array is interleaved with 4 components at each spatial data point (red, green, blue, alpha)
+	var oneD_array = imageData_OR_videoframe.data; // data is a 1D array
+	console.log('oneD_array: ', oneD_array);
+	
+	var red = [];
+	var green = []; 
+	var blue = [];
+	var alpha = [];
+	for (var i=0; i<len; i++) {
+		red.push(oneD_array[i*4+0]); 		// Red component
+		green.push(oneD_array[i*4+1]);	// Green component
+		blue.push(oneD_array[i*4+2]);		// Blue component
+		alpha.push(oneD_array[i*4+3]);	// Alpha component
+	}
+	
+	// JavaScript 
+	// shape (r, g, b, alpha)
+	const fourD_array_javascript = await convert_four_1Darrays_to_one_4Darr(red, green, blue, alpha);
+	console.log('fourD_array_javascript: ', fourD_array_javascript);
+	
+	// Tensorflow.js
+	// the output shape of the matrix has 1 batch, 4 width, 4 height and 4 depth
+	const data = [red, green, blue, alpha];
+	const fourD_array_tensorflowjs = tf.tensor4d(data, [1, 4, 4, 4]);
+	console.log('fourD_array_tensorflowjs: ', fourD_array_tensorflowjs);
+	
+	// -----------------------------------------------
+	
+	// Print modified video frame on a canvas
+	const ctx_mod = await create_dynamic_canvasElement(w);
+
+	// Manipulate image data, change the alpha component
+	// Way 0: use the 4D data array
+	let imageDataArray = new Uint8ClampedArray(28 * 28 * 4);
+	for (let i = 0; i < 28 * 28; i++) {
+	     let value = fourD_array_tensorflowjs.dataSync()[i];
+	     imageDataArray[i * 4] = value > 0.5 ? 255 : 0; // Red component
+	     imageDataArray[i * 4 + 1] = value > 0.5 ? 255 : 0; // Green component
+	     imageDataArray[i * 4 + 2] = value > 0.5 ? 255 : 0; // Blue component
+	     imageDataArray[i * 4 + 3] = 255; // Alpha component, set to 255 to make it fully opaque
+	}
+
+	// Print the manipulated image data on another canvas
+	let imageData = new ImageData(imageDataArray, 28, 28);
+	
+	// Draw the image data onto the canvas
+	ctx_mod.putImageData(imageData, 0, 0);
+
+	// OR
+	
+	// Way 1: take the image directly from canvas ctx
+	var len = imageData_OR_videoframe.data.length/4;
+	for (var i=0; i<len; i++) {
+		var r = imageData_OR_videoframe.data[i*4+0];	// Red component
+		var g = imageData_OR_videoframe.data[i*4+1];	// Green component
+		var b = imageData_OR_videoframe.data[i*4+2];	// Blue component
+		// Alpha component, set to 0 to make it not opaque
+		if (r<10 && g<10 && b<10){
+			imageData_OR_videoframe.data[i*4+3] = 0;
+		}
+	}
+	
+	// Draw the image data onto the canvas
+	ctx_mod.putImageData(imageData_OR_videoframe, 0, 0);
+
 }
 
 // -------------------------------------------------
 	
-// async function combine_audio_video() {
+async function convert_four_1Darrays_to_one_4Darr(arr0, arr1, arr2, arr3) {
+	const cut_val = arr0.length/4;
+	const stop_index = Array.from({ length: arr0.length }, (_, i) => (i+1)*cut_val);
+	return javascript_4D_arr = [[
+		[stop_index.map((val, ind) => { return arr0.slice(val-cut_val, val) })],
+				    [stop_index.map((val, ind) => { return arr1.slice(val-cut_val, val) })],
+				    [stop_index.map((val, ind) => { return arr2.slice(val-cut_val, val) })],
+				    [stop_index.map((val, ind) => { return arr3.slice(val-cut_val, val) })]
+	]];
+}
+	
 
-	// [Step 0] Load library
-	// console.log('FFmpeg: ', FFmpeg);
-
-	// const ffmpeg = new FFmpeg(); //  ReferenceError: FFmpeg is not defined
+// -------------------------------------------------
+// 1. Append two Audio Tracks
+// -------------------------------------------------
+async function append_two_audio_tracks(binaryString_audio0, binaryString_audio1) {
+	
+	// -----------------------------------------------
+	
+	// Determine if the binaryString has mono or stero channels
+	const audio_information0 = await obtain_audio_information_way0(binaryString_audio0);
+	// audio_information0 = {channels: channels, time_length: time_length, fs: fs, time_sample_rate_OR_timePeriod: time_sample_rate_OR_timePeriod};
 	// OR
+	// Option 1: maybe look in https://www.npmjs.com/package/music-metadata#trackinfoaudiotrack
 
-	// const { createFFmpeg, fetchFile } = FFmpeg;
-	// let ffmpeg = createFFmpeg();  // error
-
-	// OR
-
-	// const ffmpeg = new FFmpeg.createFFmpeg();
-	// ReferenceError: SharedArrayBuffer is not defined createFFmpegCore 5afb6a17-d329-4919-9d89-7669454bad27:22
-	// https://github.com/ffmpegwasm/ffmpeg.wasm/issues/263
-
-		
-	// await ffmpeg.load();
-
-	// [Step 1] Load the video and audio file
-	// await ffmpeg.writeFile('video.webm', await fetchFile(base64_string_video));
-	// await ffmpeg.writeFile('audio.webm', await fetchFile(base64_string_audio));
+	const audio_information1 = await obtain_audio_information_way0(binaryString_audio1);
 	
-	// console.log('Start transcoding');
-
-	// [Step 2] Run a ffmpeg command
-        // await ffmpeg.exec(['-i', 'video.webm',  'output.mp4']);  // Convert video.webm to output.mp4
-	// await ffmpeg.exec('-i', 'video.webm', '-i', 'audio.webm', '-c', 'copy', 'output.webm');
-	
-	// console.log('Complete transcoding');
-	
-        // const data = await ffmpeg.readFile('output.webm');
-	// console.log('data: ', data);
-	
-	// const uint8Array_audio_video = new Uint8Array(data.buffer);
-
-	// const blob_object = new Blob(uint8Array_audio_video, {type: "video/webm"});
-
-	// download_screen_recording_video(blob_object);
-// };
-
-
-// -------------------------------------------------
-	
-
-
-// -------------------------------------------------
-// Basic functions
-// -------------------------------------------------
-
-async function transform_video_to_image(binaryString_audio0, binaryString_audio1) {
+	// -----------------------------------------------
 
 	const normalArray_normalized0 = await decodeAudioData_from_binaryString_to_uint8Array(binaryString_audio0);
-	
-  // Determine if the binaryString has mono or stero channels
-  // Option 0: maybe look in https://www.npmjs.com/package/music-metadata#trackinfoaudiotrack
 
-  var [channel1, channel2] = await separate_stero_channels(normalArray_normalized0);
-  
 	const normalArray_normalized1 = await decodeAudioData_from_binaryString_to_uint8Array(binaryString_audio1);
-  var [channel1, channel2] = await separate_stero_channels(normalArray_normalized1);
 
+	// -----------------------------------------------
+	
+	if (audio_information0.channels == 2) {
+		var audio0_channels = await separate_stero_channels(normalArray_normalized0);
+	} else {
+		// Mono channel
+		var audio0_channels = [normalArray_normalized0];
+	}
+
+	if (audio_information1.channels == 2) {
+		var audio1_channels = await separate_stero_channels(normalArray_normalized1);
+	} else {
+		// Mono channel
+		var audio1_channels = [normalArray_normalized1];
+	}
+
+	// 4 cases 
+	if (audio0_channels.length == 2 && audio1_channels.length == 2) {
+		// Both stero
+		const audio0 = [audio0_channels.at(0), audio0_channels.at(1)];
+		const audio1 = [audio1_channels.at(0), audio1_channels.at(1)];
+		
+		// const channel1_combined = audio0_channels.at(0).concat(audio1_channels.at(0));
+		// const channel2_combined = audio0_channels.at(1).concat(audio1_channels.at(1));
+		const normalArray_normalized = await monoORstero_channels_to_singleArray(audio0, audio1);
+		
+	} else if (audio0_channels.length == 2 && audio1_channels.length == 1) {
+		const audio0 = [audio0_channels.at(0), audio0_channels.at(1)];
+		const audio1 = [audio1_channels.at(0),audio1_channels.at(0)];
+		const normalArray_normalized = await monoORstero_channels_to_singleArray(audio0, audio1);
+
+	} else if (audio0_channels.length == 1 && audio1_channels.length == 2) {
+		const audio0 = [audio0_channels.at(0), audio0_channels.at(0)];
+		const audio1 = [audio1_channels.at(0),audio1_channels.at(1)];
+		const normalArray_normalized = await monoORstero_channels_to_singleArray(audio0, audio1);
+
+	} else if (audio0_channels.length == 1 && audio1_channels.length == 1) {
+		// Both are mono
+		const normalArray_normalized = audio0_channels.at(0).concat(audio1_channels.at(0));
+	}
+
+  return normalArray_normalized;
+}
+
+// -------------------------------------------------
+	
+async function monoORstero_channels_to_singleArray(audio0, audio1) {
+	
+	const channel1_combined = audio0.at(0).concat(audio1.at(0));
+	const channel2_combined = audio0.at(1).concat(audio1.at(1));
+
+	// Interweave the channels to reconstruct the audio
+	const normalArray_normalized = [];
+	var c = 0;
+	for (var i=0; i<(channel1_combined.length+channel2_combined.length); i++) {
+		if (i % 2 == 0) {
+			normalArray_normalized.push(channel1_combined.at(c));
+		} else {
+			normalArray_normalized.push(channel2_combined.at(c));
+		}
+		c = c + 1;
+	}
+	return normalArray_normalized;
+}
+
+// -------------------------------------------------
+
+async function obtain_audio_information_way0(binaryString_audio0) {
+
+	var url_file_blob_object = await fetch(binaryString_audio0)
+		.then(response => response.blob())
+		.then(async function(blob_object) {
+			return URL.createObjectURL(blob_object);
+	});
+	
+	// -----------------------------------------------
+	
+	// Create an AudioElement
+	const audioElement = document.createElement('audio');
   
+	audioElement.setAttribute("controls", true);
+	// audioElement.setAttribute('crossOrigin', "anonymous");
+	audioElement.setAttribute('autoplay', true);
+	audioElement.setAttribute('preload', "auto");
+	// OR
+	// audioElement.setAttribute('src', url_file_blob_object);
+	
+	// -----------------------------------------------
+ 
+	// Create an AudioContext
+	var audioContext = new AudioContext();
+ 
+	// -----------------------------------------------
+ 
+	// Create an SourceElement (audioSourceNode)
+	var sourceElement = document.createElement('source');
+	sourceElement.setAttribute("src", url_file_blob_object);
+	// console.log('sourceElement: ', sourceElement);
+ 
+	// -----------------------------------------------
 
+	// Create an AnalyserNode
+	var analyserNode = audioContext.createAnalyser();
+	// console.log('analyserNode: ', analyserNode);
+
+	let channels = analyserNode.channelCount;     // 2
+	// console.log('channels: ', channels);
+	
+	let time_length = analyserNode.context.currentTime;   // 354.976
+	// console.log('time_length: ', time_length);
+	
+	let fs = analyserNode.context.sampleRate; // 48000
+	// console.log('fs: ', fs);
+	
+	var time_sample_rate_OR_timePeriod = (1/fs) * 1000; // every time_sample_rate there is a data point, 0.020833333333333333
+	// console.log('time_sample_rate_OR_timePeriod: ', time_sample_rate_OR_timePeriod);
+
+	return {channels: channels, time_length: time_length, fs: fs, time_sample_rate_OR_timePeriod: time_sample_rate_OR_timePeriod};
 }
 
 // -------------------------------------------------
@@ -495,49 +715,14 @@ async function decodeAudioData_from_binaryString_to_uint8Array(binaryString) {
 
 // -------------------------------------------------
 
-// append_audio_tracks() {
-  
-// -------------------------------------------------
 
-// append_video_and_audio_tracks
+
+// -------------------------------------------------
+// 2. Combine a Video and Audio Track
+// -------------------------------------------------
 async function combine_audio_video() {
 
-	const url_video = await fetch_file(base64_string_video, file_name_video, "video/webm");
-	console.log('url_video: ', url_video);
 	
-	const videoElement = document.createElement('video');
-	videoElement.src = url_video;
-	videoElement.id = "video track";
-	videoElement.autoplay = true;
-	videoElement.setAttribute("controls", true);
-	videoElement.setAttribute('preload', "auto");
-	videoElement.onend = function() { URL.revokeObjectURL(url_video); }
-	console.log('videoElement: ', videoElement);
-	
-	document.getElementById('data_display').appendChild(videoElement);
-	
-	// --------------------------
-
-	const url_audio = await fetch_file(base64_string_audio, file_name_audio, "audio/webm");
-	console.log('url_audio: ', url_audio);
-	
-	const audioElement = document.createElement('audio');
-	audioElement.src = url_audio;
-	audioElement.id = "audio track";
-	audioElement.autoplay = true;
-	audioElement.setAttribute("controls", true);
-	audioElement.setAttribute('preload', "auto");
-	audioElement.onend = function() { URL.revokeObjectURL(url_audio); }
-	// audioElement.setAttribute('crossOrigin', "anonymous");
-	console.log('audioElement: ', audioElement);
-
-  	// Create an SourceElement (audioSourceNode)
-	// var sourceElement = document.createElement('source');
-	// sourceElement.setAttribute("src", url_audio);
-	// console.log('sourceElement: ', sourceElement);
-  
-	// audioElement.appendChild(sourceElement);
-	document.getElementById('data_display').appendChild(audioElement);
 	
 	// --------------------------
 
@@ -584,6 +769,69 @@ async function combine_audio_video() {
 }
   
 // -------------------------------------------------
+
+
+
+// -------------------------------------------------
+// 3. Append two Video Tracks
+// -------------------------------------------------
+
+
+
+
+
+// -------------------------------------------------
+// SUBFUNCTIONS
+// -------------------------------------------------
+
+	
+// -----------------------------------------------
+
+async function create_dynamic_canvasElement(w) {
+
+  	const index = 0;
+  
+	// Create a canvas element
+	var canvasElement = document.createElement('canvas');
+
+	// Set the width and height of the canvas
+	canvasElement.width = w;
+	canvasElement.height = canvasElement.width;
+	      
+	// Get the 2D rendering context of the canvas
+	var ctx = canvasElement.getContext("2d");
+	
+	if (index == 0) {
+		canvasElement.style.left = 40+'px';
+	} else {
+		let tot = index*canvasElement.width + 40;
+		canvasElement.style.left = tot+'px';
+	}
+	
+	// Add the canvas to the document body or any other desired element
+	document.getElementById('data_display').appendChild(canvasElement);
+
+	return ctx;
+}
+
+// -------------------------------------------------
+
+async function fetch_file(base64_string, file_name, file_type) {
+
+	// console.log('base64_string: ', base64_string.slice(0,20));
+	
+	return await fetch(base64_string)
+		.then(response => response.blob())
+		.then(async function(blob_object) {
+			// console.log('blob_object: ', blob_object);
+			return new File ([blob_object], file_name, {type: file_type});
+		})
+		.then(async function(file_blob_object) {
+			// console.log('file_blob_object: ', file_blob_object);
+			return URL.createObjectURL(file_blob_object);
+		})
+		.catch(error => { document.getElementById('error').innerHTML = error; });
+}
 
 // -----------------------------------------------
 
@@ -632,6 +880,34 @@ async function std(arr) {
 	return out;
 }
   
+// -------------------------------------------------
+
+// Only works in Chrome
+// https://developer.mozilla.org/en-US/docs/Web/API/SpeechRecognition
+// var recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition || window.mozSpeechRecognition || window.msSpeechRecognition)();
+    
+async function run_voice_to_text() {
+
+    var recognition = new SpeechRecognition();
+
+    recognition.lang = "en-US";
+    recognition.continuous = true;
+    recognition.interimResults = true;
+
+    recognition.onstart = () => { document.getElementById("run_voice_to_text").textContent = "Recording..."; }
+    
+    recognition.onresult = (event) => {
+        console.log('event.results: ', event.results);
+        document.getElementById("output").textContent = event.results[0][0].transcript;
+    };
+
+    recognition.start();
+
+    recognition.onend = () => {
+        document.getElementById("run_voice_to_text").textContent = "run_voice_to_text";
+    };
+}
+
 // -------------------------------------------------
 
 
