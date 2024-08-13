@@ -148,25 +148,21 @@ async function audio_to_frequency_domain() {
 	const freq_response1_js_db = freq_response1_js.map((val, ind) => { return 20 * Math.log10(val); });
 	// await plot_line_graph_dataObject(f, freq_response1_js_db, "Frequency response tf: decibels");
 
-	// OR
-
-	// const series1 = freq_response1_js.map((y, ind) => {
-	// 	return {ind*2*Math.PI*1/audio_information.time_sample_rate_OR_timePeriod, y};
-	//});
+	// --------------------
 	
-	// const series2 = freq_response1_js_db.map((y, ind) => {
-	// 	return {ind*2*Math.PI*1/audio_information.time_sample_rate_OR_timePeriod, y};
-	// });
-	
-	const series1 = freq_response1_js.map((value, index) => ({ x: index, y: value }));
-	const series2 = freq_response1_js_db.map((value, index) => ({ x: index, y: value }));
-	
+	const series1 = freq_response1_js.map((value, index) => ({ x: index*2*Math.PI*0.02, y: value }));
 	const surface = { name: 'Line chart', tab: 'Charts' };
-	const data = { values: [series1, series2], series: ['First', 'Second'] };
-	
+	const data = { values: [series1], series: ['Frequency response (Hz)'] };
 	tfvis.render.linechart(surface, data);
 
+	// --------------------
+	
+	const series2 = freq_response1_js_db.map((value, index) => ({ x: index*2*Math.PI*0.02, y: value }));
+	const surface = { name: 'Line chart', tab: 'Charts' };
+	const data = { values: [series2], series: ['Frequency response (Decibels)'] };
+	tfvis.render.linechart(surface, data);
 
+	// --------------------
 	
 }
 
