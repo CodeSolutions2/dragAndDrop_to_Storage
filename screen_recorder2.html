@@ -467,8 +467,14 @@ async function append_two_audio_tracks(binaryString_audio0, binaryString_audio1)
 		// Mono channel
 		var audio1_channels = [normalArray_normalized1];
 	}
-
-	// 4 cases 
+	
+	// -----------------------------------------------
+	
+	// 4 cases
+	var normalArray_normalized = [];
+	console.log('audio0_channels.length: ', audio0_channels.length);
+	console.log('audio1_channels.length: ', audio1_channels.length);
+	
 	if (audio0_channels.length == 2 && audio1_channels.length == 2) {
 		// Both stero
 		const audio0 = [audio0_channels.at(0), audio0_channels.at(1)];
@@ -476,21 +482,21 @@ async function append_two_audio_tracks(binaryString_audio0, binaryString_audio1)
 		
 		// const channel1_combined = audio0_channels.at(0).concat(audio1_channels.at(0));
 		// const channel2_combined = audio0_channels.at(1).concat(audio1_channels.at(1));
-		const normalArray_normalized = await monoORstero_channels_to_singleArray(audio0, audio1);
+		normalArray_normalized = await monoORstero_channels_to_singleArray(audio0, audio1);
 		
 	} else if (audio0_channels.length == 2 && audio1_channels.length == 1) {
 		const audio0 = [audio0_channels.at(0), audio0_channels.at(1)];
 		const audio1 = [audio1_channels.at(0),audio1_channels.at(0)];
-		const normalArray_normalized = await monoORstero_channels_to_singleArray(audio0, audio1);
+		normalArray_normalized = await monoORstero_channels_to_singleArray(audio0, audio1);
 
 	} else if (audio0_channels.length == 1 && audio1_channels.length == 2) {
 		const audio0 = [audio0_channels.at(0), audio0_channels.at(0)];
 		const audio1 = [audio1_channels.at(0),audio1_channels.at(1)];
-		const normalArray_normalized = await monoORstero_channels_to_singleArray(audio0, audio1);
+		normalArray_normalized = await monoORstero_channels_to_singleArray(audio0, audio1);
 
 	} else if (audio0_channels.length == 1 && audio1_channels.length == 1) {
 		// Both are mono
-		const normalArray_normalized = audio0_channels.at(0).concat(audio1_channels.at(0));
+		normalArray_normalized = audio0_channels.at(0).concat(audio1_channels.at(0));
 	}
 
   return normalArray_normalized;
