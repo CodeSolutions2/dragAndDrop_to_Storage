@@ -35,13 +35,19 @@
 	
 <button type="button" id="modify_existing_audio_and_or_video_from_file" onclick="modify_existing_audio_and_or_video_from_file()" style="display:block">get_image_from_video_at_a_specific_time</button>
 	
+
+<h3>D. Play an audio from file</h3>
+<button type="button" id="play_sound_from_file" onclick="play_sound_from_file()" style="display:block">play_sound_from_file</button>
+
+
+<!-- ---------------------------------------- -->
 	
 <div id="data_display" style="display:block; text-align: left; width: 600px;">
-
-
 <div id="notification"></div>
 <div id="error"></div>
 
+<!-- ---------------------------------------- -->
+	
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
   
 <script>
@@ -263,7 +269,6 @@ function download_audio_recording(url) {
 
 
 
-
 	
 
 
@@ -348,12 +353,34 @@ async function modify_existing_audio_and_or_video_from_file() {
 	}
 
 }
+
+
+
+
+	
+
+// -------------------------------------------------
+// D. Play an audio from file
+// -------------------------------------------------
+async function play_sound_from_file() {
+
+    document.getElementById("select_audio").style.display = 'block';
+    document.getElementById("upload_audio_file0").style.display = 'block';
+
+const url_audio0 = await fetch_file(base64_string_audio0, file_name_audio0, "video/webm");
+		console.log('url_audio0: ', url_audio0);
+		const audioElement0 = await load_audio_from_url(url_audio0, mode="nocors");
+
+}
+
+
 	
 
 
 
-	
 
+
+	
 // -------------------------------------------------
 // Basic functions to manipulate audio and video data
 // -------------------------------------------------
