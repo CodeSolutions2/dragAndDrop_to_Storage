@@ -151,16 +151,16 @@ async function audio_to_frequency_domain() {
 	// --------------------
 	
 	const series1 = freq_response1_js.map((value, index) => ({ x: index*2*Math.PI*0.02, y: value }));
-	const surface = { name: 'Line chart', tab: 'Charts' };
-	const data = { values: [series1], series: ['Frequency response (Hz)'] };
-	tfvis.render.linechart(surface, data);
+	const surface1 = { name: 'Line chart', tab: 'Charts' };
+	const data1 = { values: [series1], series: ['Frequency response (Hz)'] };
+	tfvis.render.linechart(surface1, data1);
 
 	// --------------------
 	
 	const series2 = freq_response1_js_db.map((value, index) => ({ x: index*2*Math.PI*0.02, y: value }));
-	const surface = { name: 'Line chart', tab: 'Charts' };
-	const data = { values: [series2], series: ['Frequency response (Decibels)'] };
-	tfvis.render.linechart(surface, data);
+	const surface2 = { name: 'Line chart', tab: 'Charts' };
+	const data2 = { values: [series2], series: ['Frequency response (Decibels)'] };
+	tfvis.render.linechart(surface2, data2);
 
 	// --------------------
 	
