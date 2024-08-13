@@ -99,31 +99,28 @@ async function audio_to_timeseries() {
 async function audio_to_frequency_domain() {
 	
 	const [t1, x_avg] = await audio_to_timeseries();
-  
-  // --------------------
+	
+	// --------------------
   
 	// Compute frequency domain
 	const freq_response0 = await DFT(x_avg);
+	console.log('freq_response0 : ', freq_response0)
 	console.log('freq_response0.length : ', freq_response0.length);	//  19094
 	
 	// OR
 	
-	const real = tf.tensor1d(x_avg);
-	var x_zeros = Array.from({ length: x_avg.length }, (_, i) => 0);
-	const imag = tf.tensor1d(x_zeros);
-	const x = tf.cast(tf.complex(real, imag), 'complex64');
 	
-	const freq_response1 = tf.spectral.fft(x);
+	console.log('freq_response1 : ', freq_response1)
 	console.log('freq_response1.length : ', freq_response1.length); //  undefined
   
-	var freq_arr_char = await obtain_array_characteristics(freq_response1);
+	var freq_arr_char = await obtain_array_characteristics(freq_response0);
 	console.log('freq_arr_char: ', freq_arr_char);
   
-	f = Array.from({ length: freq_response1.length }, (_, i) => i * 2 * Math.PI * 1/audio_information.time_sample_rate_OR_timePeriod);
+	f = Array.from({ length: freq_response0.length }, (_, i) => i * 2 * Math.PI * 1/audio_information.time_sample_rate_OR_timePeriod);
 	console.log('f.length : ', f.length);
-	await plot_line_graph_dataObject(f, freq_response1, "Frequency response: Hz");
+	await plot_line_graph_dataObject(f, freq_response0, "Frequency response: Hz");
 	
-	const freq_response_db = freq_response1.map((val, ind) => { return 20 * Math.log10(val); });
+	const freq_response_db = freq_response0.map((val, ind) => { return 20 * Math.log10(val); });
 	await plot_line_graph_dataObject(f, freq_response_db, "Frequency response: decibels");
 	
 	// --------------------
@@ -489,20 +486,108 @@ async function std(arr) {
 
 async function DFT(x) {
 
-	// Discrete Fourier Transform:  1/sqrt(N) * sum_{0}^{N-1}(x(t) exp^{-j * omega * t}), where omega = 2 * pi * k/N for k=0...N-1
+	// Discrete Fourier Transform:  1/sqrt(N) * sum_{0}^{N-1}(x(n) exp^{-j * omega * n}), where omega = 2 * pi * k/N for k=0...N-1
 	const N = x.length;
 	
 	var x_jomega = [];
+	var x_jomega_plus = [];
+	var x_jomega_minus = [];
+	var x_jomega_plus_accumulated = [];
+	var x_jomega_minus_accumulated = [];
+	
 	for (var k=0; k<N; k++) {
 		var arr_at_jomega = [];
-		for (var t=0; t<N; t++) {
+		var arr_at_jomega_plus = [];
+		var arr_at_jomega_minus = [];
+
+		var real_accumulated = 0;
+		var imag_plus_accumulated = 0;
+		var imag_minus_accumulated = 0;
+		
+		for (var n=0; n<N; n++) {
+			
 			var omega = 2 * Math.PI * k/N;
-			arr_at_jomega.push(x.at(t)*Math.exp(- omega * t));
+			
+			// But, there is no imaginary component (j) in JavaScript, so this direct computation can not be performed
+			// For [-j * omega * n], remove the j and just say it is an imaginary component
+			// arr_at_jomega.push(x.at(n) * Math.exp(-j * omega * n));
+			arr_at_jomega.push(x.at(n) * Math.exp(-omega * n));
+			// RESULT: I obtain a single spike, unsure if this is correct.
+			
+			// OR
+			
+			var theta = omega * n;
+
+			// x.at(n) * Math.exp(-j * omega * n) = x.at(n) * Math.exp(-j * theta)
+
+			// Use sin and cos equivalent equation, to calculate the imaginary component (j)
+			// The math identify is: Math.exp(j * theta) = Math.cos(theta) +/- j * Math.sin(theta). 
+			// +/- means plus OR minus, so there are two numerical answers.
+			// For our case there is a negative sign in the exponential, so Math.exp(-j * theta) = -Math.cos(theta) +/- j * Math.sin(theta). 
+			// Replace exponent with cos and sin.
+			// For [j * Math.sin(theta)], remove the j and just say it is an imaginary component
+			arr_at_jomega_plus.push(x.at(n) * (-Math.cos(theta) + Math.sin(theta)));
+			arr_at_jomega_minus.push(x.at(n) * (-Math.cos(theta) - Math.sin(theta)));
+
+			// OR
+			
+			// Break the equation down into real and imaginary parts, and sum directly instead of a vector sum at the end of the function
+			real_accumulated = real_accumulated + (x.at(n) * -Math.cos(theta));
+			imag_plus_accumulated = imag_plus_accumulated + (x.at(n) * Math.sin(theta));
+			imag_minus_accumulated = imag_minus_accumulated + (x.at(n) * -Math.sin(theta));
 		}
-		// sum across t
+		// Normalize and sum across n
 		x_jomega.push(1/Math.sqrt(N) * await sum(arr_at_jomega));
+		// OR
+		x_jomega_plus.push(1/Math.sqrt(N) * await sum(arr_at_jomega_plus));
+		x_jomega_minus.push(1/Math.sqrt(N) * await sum(arr_at_jomega_minus));
+		// OR
+		// Normalize the accumulated sum of values across n
+		x_jomega_plus_accumulated.push(1/Math.sqrt(N) * (real_accumulated + imag_plus_accumulated));
+		x_jomega_minus_accumulated.push(1/Math.sqrt(N) * (real_accumulated + imag_minus_accumulated));
 	}
-	return x_jomega;
+	
+	return x_jomega_minus_accumulated;
+}
+
+
+async function tensorflow_FFT(x) {
+	
+	// Discrete Fourier Transform:  1/sqrt(N) * sum_{0}^{N-1}(x(n) exp^{-j * omega * n}), where omega = 2 * pi * k/N for k=0...N-1
+	const N = x.length;
+	
+	var real = [];
+	var imag_plus = [];
+	var imag_minus = [];
+	
+	for (var k=0; k<N; k++) {
+		var real_accumulated = 0;
+		var imag_plus_accumulated = 0;
+		var imag_minus_accumulated = 0;
+		
+		for (var n=0; n<N; n++) {
+			
+			var omega = 2 * Math.PI * k/N;
+			var theta = omega * n;
+			
+			// Break the equation down into real and imaginary parts, and sum directly instead of a vector sum at the end of the function
+			real_accumulated = real_accumulated + (x.at(n) * -Math.cos(theta));
+			imag_plus_accumulated = imag_plus_accumulated + (x.at(n) * Math.sin(theta));
+			imag_minus_accumulated = imag_minus_accumulated + (x.at(n) * -Math.sin(theta));
+		}
+		
+		// Save the [accumulated sum of real and imaginary values across n] for each k
+		real.push(real_accumulated);
+		imag_plus.push(imag_plus_accumulated);
+		imag_minus.push(imag_minus_accumulated);
+	}
+
+	// Call the tensorflow function to compute the sum of real and imaginary values normalized: (1/Math.sqrt(N) * (real + imag_minus))
+	const real = tf.tensor1d(real);
+	const imag = tf.tensor1d(imag_minus); // it was suggested that imag_minus should be used instead of imag_plus, but both are correct
+	const x = tf.cast(tf.complex(real, imag), 'complex64');
+	
+	return tf.spectral.fft(x);
 }
 
 
