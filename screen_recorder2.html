@@ -46,6 +46,16 @@
   
 <script>
 
+window.addEventListener('beforeunload', function() {
+	window.location.href = window.location.href + '?nocache=' + new Date().getTime();
+
+	document.getElementById("video_andor_audio").selectedIndex = 0;
+	document.getElementById("upload_video_file0").value = "";
+	document.getElementById("upload_video_file1").value = "";
+	document.getElementById("upload_audio_file0").value = "";
+	document.getElementById("upload_audio_file1").value = "";
+});
+	
 // -------------------------------------------------
 
 document.getElementById("video_andor_audio").addEventListener("change", processEvent_video_andor_audio, false);
@@ -235,7 +245,7 @@ function handleDataAvailable_audio(event) {
 }
 
 // -------------------------------------------------
-  
+
 function download_audio_recording(url) {
 	
 	var a = document.createElement("a");
@@ -279,17 +289,34 @@ async function modify_existing_audio_and_or_video_from_file() {
 		await transform_video_to_image(videoElement);
 		
 	} else if (modification_type == 'Append two audio files') {
-
-    const url_audio0 = await fetch_file(base64_string_audio0, file_name_audio0, "video/webm");
-    console.log('url_audio0: ', url_audio0);
+		
+		const url_audio0 = await fetch_file(base64_string_audio0, file_name_audio0, "video/webm");
+		console.log('url_audio0: ', url_audio0);
 		const audioElement0 = await load_audio_from_url(url_audio0, mode="nocors");
 
-    const url_audio1 = await fetch_file(base64_string_audio1, file_name_audio1, "video/webm");
-    console.log('url_audio1: ', url_audio1);
-    const audioElement1 = await load_audio_from_url(url_audio1, mode="nocors");
+		const url_audio1 = await fetch_file(base64_string_audio1, file_name_audio1, "video/webm");
+		console.log('url_audio1: ', url_audio1);
+		const audioElement1 = await load_audio_from_url(url_audio1, mode="nocors");
     
-		await append_two_audio_tracks(base64_string_audio0, base64_string_audio1);
-    
+		var appended_normalArray_normalized = await append_two_audio_tracks(base64_string_audio0, base64_string_audio1);
+
+		// I know how to play an audio from: 
+		// 0) file (base64string, fetch on the base64string to get a blob object, Make a url for the blob object. Give url to audioElement.src.), 
+		// 1) url (give url to audioElement.src), 
+		// 2) blob_object via event mediastream (get event.data, which is a blob object. Make a url for the blob object. Give url to audioElement.src.). Sometimes blob_objects fail due to security issues.
+		
+		// Try to play audio as an array by making a blob_object
+		var blob_object = await new Blob(appended_normalArray_normalized, {type: "audio/mp3"});
+		await play_sound_from_a_blob_object(blob_object);
+
+		// OR
+
+		// Try to download the audio array and then play it
+		var download_url = URL.createObjectURL(blob_object);
+		await download_audio_recording(download_url);
+
+		// is it possible to create a URL for an array, such that the url can be used to download tha array as an mp3 file? please give an example No, it is not possible to create a URL for an array that can be used to download it as an mp3 file.
+		
 	} else if (modification_type == 'Combine an audio and video file') {
 
     const url_audio0 = await fetch_file(base64_string_audio0, file_name_audio0, "video/webm");
@@ -673,38 +700,23 @@ async function create_dynamic_canvasElement(w) {
 // -------------------------------------------------
 // AUDIO SUBFUNCTIONS
 // -------------------------------------------------
+async function play_sound_from_a_url(url) {
   
-// The eventlistener needs to be always running, to detect which file the user selected with browse
-document.getElementById("upload_audio_file0").addEventListener("change", previewInput_audio0, false);
-var file_name_audio0;
-var base64_string_audio0;
-	
-async function previewInput_audio0(event) {
+  var audioElement = load_audio_from_url(url, mode="nocors");
 
-  // first file in the list of selected files, better for selecting multiple files at one time
-	const file_audio = event.target.files[0];
-
-	file_name_audio0 = file_audio.name;
-	const reader_audio = new FileReader();
-	reader_audio.onload = async function(e){ base64_string_audio0 = e.target.result; }
-	reader_audio.readAsDataURL(file_audio);
 }
 
 // -------------------------------------------------
 
-document.getElementById("upload_audio_file1").addEventListener("change", previewInput_audio1, false);
-var file_name_audio1;
-var base64_string_audio1;
-	
-async function previewInput_audio1(event) {
+async function play_sound_from_a_blob_object(blob_object) {
 
-  // first file in the list of selected files, better for selecting multiple files at one time
-	const file_audio = event.target.files[0];
+  var file_blob_object = new File ([blob_object], 'recorded_audio', {type: "audio/mp3"});
+	var url_file_blob_object = URL.createObjectURL(file_blob_object);
 
-	file_name_audio1 = file_audio.name;
-	const reader_audio = new FileReader();
-	reader_audio.onload = async function(e){ base64_string_audio1 = e.target.result; }
-	reader_audio.readAsDataURL(file_audio);
+  await play_sound_from_a_url(url_file_blob_object);
+
+  URL.revokeObjectURL(url_file_blob_object);
+  
 }
 
 // -------------------------------------------------
@@ -732,8 +744,7 @@ async function load_audio_from_url(url, mode="nocors") {
 	// audioElement.appendChild(sourceElement);
 	
 	document.getElementById('data_display').appendChild(audioElement);
-
-  audioElement.onend = function() { URL.revokeObjectURL(url); }
+	audioElement.onend = function() { URL.revokeObjectURL(url); }
 
 	return audioElement;
 }
@@ -786,7 +797,43 @@ async function evaluate_audioElement() {
 }
 
 // -------------------------------------------------
+	
+// The eventlistener needs to be always running, to detect which file the user selected with browse
+document.getElementById("upload_audio_file0").addEventListener("change", previewInput_audio0, false);
+var file_name_audio0;
+var base64_string_audio0;
+	
+async function previewInput_audio0(event) {
 
+  // first file in the list of selected files, better for selecting multiple files at one time
+	const file_audio = event.target.files[0];
+
+	file_name_audio0 = file_audio.name;
+	const reader_audio = new FileReader();
+	reader_audio.onload = async function(e){ base64_string_audio0 = e.target.result; }
+	reader_audio.readAsDataURL(file_audio);
+}
+
+// -------------------------------------------------
+
+document.getElementById("upload_audio_file1").addEventListener("change", previewInput_audio1, false);
+var file_name_audio1;
+var base64_string_audio1;
+	
+async function previewInput_audio1(event) {
+
+  // first file in the list of selected files, better for selecting multiple files at one time
+	const file_audio = event.target.files[0];
+
+	file_name_audio1 = file_audio.name;
+	const reader_audio = new FileReader();
+	reader_audio.onload = async function(e){ base64_string_audio1 = e.target.result; }
+	reader_audio.readAsDataURL(file_audio);
+}
+
+// -------------------------------------------------
+
+	
 
 	
 
