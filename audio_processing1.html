@@ -645,11 +645,11 @@ async function tensorflow_FFT(x) {
 	}
 
 	// Call the tensorflow function to compute the sum of real and imaginary values normalized: (1/Math.sqrt(N) * (real + imag_minus))
-	const real = tf.tensor1d(real);
-	const imag = tf.tensor1d(imag_minus); // it was suggested that imag_minus should be used instead of imag_plus, but both are correct
-	const x = tf.cast(tf.complex(real, imag), 'complex64');
+	const real_tf = tf.tensor1d(real);
+	const imag_tf = tf.tensor1d(imag_minus); // it was suggested that imag_minus should be used instead of imag_plus, but both are correct
+	const x_tf = tf.cast(tf.complex(real_tf, imag_tf), 'complex64');
 	
-	return tf.spectral.fft(x);
+	return tf.spectral.fft(x_tf);
 }
 
 
