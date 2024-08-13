@@ -7,7 +7,8 @@
 	
 <button id="audio_to_frequency_domain" onclick="audio_to_frequency_domain()" style="display:block;">audio_to_frequency_domain</button>
 
- 
+<button id="audio_to_spectrogram" onclick="audio_to_spectrogram()" style="display:block;">audio_to_spectrogram</button>
+
 <div id="data_display" style="display:block; text-align: left; width: 600px;">
 
 
@@ -109,44 +110,69 @@ async function audio_to_frequency_domain() {
 	
 	// OR
 	
-	
+	var freq_response1 = await tensorflow_FFT(x_avg);
 	console.log('freq_response1 : ', freq_response1)
 	console.log('freq_response1.length : ', freq_response1.length); //  undefined
   
-	var freq_arr_char = await obtain_array_characteristics(freq_response0);
+	var freq_arr_char = await obtain_array_characteristics(freq_response1);
 	console.log('freq_arr_char: ', freq_arr_char);
   
-	f = Array.from({ length: freq_response0.length }, (_, i) => i * 2 * Math.PI * 1/audio_information.time_sample_rate_OR_timePeriod);
+	f = Array.from({ length: freq_response1.length }, (_, i) => i * 2 * Math.PI * 1/audio_information.time_sample_rate_OR_timePeriod);
 	console.log('f.length : ', f.length);
-	await plot_line_graph_dataObject(f, freq_response0, "Frequency response: Hz");
+	await plot_line_graph_dataObject(f, freq_response1, "Frequency response: Hz");
 	
-	const freq_response_db = freq_response0.map((val, ind) => { return 20 * Math.log10(val); });
+	const freq_response_db = freq_response1.map((val, ind) => { return 20 * Math.log10(val); });
 	await plot_line_graph_dataObject(f, freq_response_db, "Frequency response: decibels");
-	
-	// --------------------
-
-  // Calculate spectrogram
-  var frameLength = 255;
-  var frameStep = 128;
-
-  // Convert the waveform to a spectrogram using the Short-Time Fourier Transform (STFT)
-  var spectrogram = tf.signal.stft(x_avg, frameLength, frameStep);
-  console.log('spectrogram : ', spectrogram);
-
-  // Obtain the magnitude of the STFT
-  spectrogram = tf.abs(spectrogram);
-  console.log('spectrogram : ', spectrogram);
-
-  // Add an extra-dimension to view the results as an image
-  spectrogram = spectrogram.expandDims(0);
-  console.log('spectrogram : ', spectrogram);
 	
 }
 
 // -----------------------------------------------
 
+async function audio_to_spectrogram() {
+	
+	const [t1, x_avg] = await audio_to_timeseries();
+	
+	// --------------------
 
-  
+	// Calculate spectrogram
+	var frameLength = 255;
+	var frameStep = 128;
+
+	// Convert the waveform to a spectrogram using the Short-Time Fourier Transform (STFT)
+	var spectrogram = tf.signal.stft(x_avg, frameLength, frameStep);
+	console.log('spectrogram : ', spectrogram);
+
+	// Obtain the magnitude of the STFT
+	spectrogram = tf.abs(spectrogram);
+	console.log('spectrogram : ', spectrogram);
+
+	// Add an extra-dimension to view the results as an image
+	spectrogram = spectrogram.expandDims(0);
+	console.log('spectrogram : ', spectrogram);
+
+	// --------------------
+
+	// Plot 3D data on canvas
+	var w = frameLength;
+	const ctx = await create_dynamic_canvasElement(w);
+	
+	// Manipulate image data, change the alpha component
+	// Way 0: use the 4D data array
+	let imageDataArray = new Uint8ClampedArray(w * w * 4);
+	for (let i = 0; i < w * w; i++) {
+	     let value = spectrogram.dataSync()[i];
+	     imageDataArray[i * 4] = value > 0.5 ? 255 : 0; // Red component
+	     imageDataArray[i * 4 + 1] = value > 0.5 ? 255 : 0; // Green component
+	     imageDataArray[i * 4 + 2] = value > 0.5 ? 255 : 0; // Blue component
+	     imageDataArray[i * 4 + 3] = 255; // Alpha component, set to 255 to make it fully opaque
+	}
+
+	// Print the manipulated image data on another canvas
+	let imageData = new ImageData(imageDataArray, w, w);
+	
+	// Draw the image data onto the canvas
+	ctx.putImageData(imageData, 0, 0);
+}
 
 // -----------------------------------------------
 	
@@ -234,6 +260,42 @@ async function plot_line_graph_dataObject(x, y, title_text) {
 
 
 
+
+// -------------------------------------------------
+// IMAGE SUBFUNCTIONS
+// -------------------------------------------------
+async function create_dynamic_canvasElement(w) {
+
+  	const index = 0;
+  
+	// Create a canvas element
+	var canvasElement = document.createElement('canvas');
+
+	// Set the width and height of the canvas
+	canvasElement.width = w;
+	canvasElement.height = canvasElement.width;
+	      
+	// Get the 2D rendering context of the canvas
+	var ctx = canvasElement.getContext("2d");
+	
+	if (index == 0) {
+		canvasElement.style.left = 40+'px';
+	} else {
+		let tot = index*canvasElement.width + 40;
+		canvasElement.style.left = tot+'px';
+	}
+	
+	// Add the canvas to the document body or any other desired element
+	document.getElementById('data_display').appendChild(canvasElement);
+
+	return ctx;
+}
+
+// -------------------------------------------------
+
+	
+
+	
 
 
 // -------------------------------------------------
