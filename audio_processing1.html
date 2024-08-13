@@ -7,8 +7,6 @@
 	
 <button id="audio_to_frequency_domain" onclick="audio_to_frequency_domain()" style="display:block;">audio_to_frequency_domain</button>
 
-<button id="audio_to_spectrogram" onclick="audio_to_spectrogram()" style="display:block;">audio_to_spectrogram</button>
-
 <div id="data_display" style="display:block; text-align: left; width: 600px;">
 
 
@@ -144,23 +142,25 @@ async function audio_to_frequency_domain() {
 	// const freq_response_db0 = freq_response0.map((val, ind) => { return 20 * Math.log10(val); });
 	// await plot_line_graph_dataObject(f, freq_response_db0, "Frequency response by hand: decibels");
 	
-	// await plot_line_graph_dataObject(f, freq_response1_js, "Frequency response tf: Hz");
 	const freq_response1_js_db = freq_response1_js.map((val, ind) => { return 20 * Math.log10(val); });
-	// await plot_line_graph_dataObject(f, freq_response1_js_db, "Frequency response tf: decibels");
 
 	// --------------------
-	
+
+	await plot_line_graph_dataObject(f, freq_response1_js, "Frequency response tf: Hz");
+	// OR
 	const series1 = freq_response1_js.map((value, index) => ({ x: index*2*Math.PI*0.02, y: value }));
 	const surface1 = { name: 'Line chart', tab: 'Charts' };
 	const data1 = { values: [series1], series: ['Frequency response (Hz)'] };
 	tfvis.render.linechart(surface1, data1);
 
 	// --------------------
-	
-	const series2 = freq_response1_js_db.map((value, index) => ({ x: index*2*Math.PI*0.02, y: value }));
-	const surface2 = { name: 'Line chart', tab: 'Charts' };
-	const data2 = { values: [series2], series: ['Frequency response (Decibels)'] };
-	tfvis.render.linechart(surface2, data2);
+
+	await plot_line_graph_dataObject(f, freq_response1_js_db, "Frequency response tf: decibels");
+	// OR
+	// const series2 = freq_response1_js_db.map((value, index) => ({ x: index*2*Math.PI*0.02, y: value }));
+	// const surface2 = { name: 'Line chart', tab: 'Charts' };
+	// const data2 = { values: [series2], series: ['Frequency response (Decibels)'] };
+	// tfvis.render.linechart(surface2, data2);
 
 	// --------------------
 	
@@ -168,63 +168,6 @@ async function audio_to_frequency_domain() {
 
 // -----------------------------------------------
 
-async function audio_to_spectrogram() {
-	
-	const [t1, x_avg] = await audio_to_timeseries();
-	
-	// --------------------
-
-	// Calculate spectrogram
-	var frameLength = 255;
-	var frameStep = 128;
-
-	// Convert the waveform to a spectrogram using the Short-Time Fourier Transform (STFT)
-	var spectrogram = tf.signal.stft(x_avg, frameLength, frameStep);
-	console.log('spectrogram : ', spectrogram);
-	// dtype: "complex64"
-	// shape: Array [ 0, 129 ]
-	// strides: Array [ 129 ]
-
-	// Obtain the magnitude of the STFT (dtype: "float32")
-	spectrogram = tf.abs(spectrogram);
-	console.log('spectrogram : ', spectrogram);
-	// dtype: "float32"
-	// shape: Array [0, 129]
-	// strides: Array [ 129 ]
-
-	// Add an extra-dimension to view the results as an image
-	spectrogram = spectrogram.expandDims(0);
-	console.log('spectrogram : ', spectrogram);
-	// dtype: "float32"
-	// shape: Array(3) [ 1, 0, 129 ]
-	// strides: Array [ 0, 129 ]
-
-
-	const spectrogramArray = spectrogram.arraySync();
-
-	// --------------------
-
-	// Plot 3D data on canvas
-	var w = frameLength;
-	const ctx = await create_dynamic_canvasElement(w);
-	
-	// Manipulate image data, change the alpha component
-	// Way 0: use the 4D data array
-	let imageDataArray = new Uint8ClampedArray(w * w * 4);
-	for (let i = 0; i < w * w; i++) {
-	     let value = spectrogram.dataSync()[i];
-	     imageDataArray[i * 4] = value > 0.5 ? 255 : 0; // Red component
-	     imageDataArray[i * 4 + 1] = value > 0.5 ? 255 : 0; // Green component
-	     imageDataArray[i * 4 + 2] = value > 0.5 ? 255 : 0; // Blue component
-	     imageDataArray[i * 4 + 3] = 255; // Alpha component, set to 255 to make it fully opaque
-	}
-
-	// Print the manipulated image data on another canvas
-	let imageData = new ImageData(imageDataArray, w, w);
-	
-	// Draw the image data onto the canvas
-	ctx.putImageData(imageData, 0, 0);
-}
 
 // -----------------------------------------------
 	
@@ -353,22 +296,17 @@ async function create_dynamic_canvasElement(w) {
 // -------------------------------------------------
 // AUDIO SUBFUNCTIONS
 // -------------------------------------------------
-async function play_sound_from_a_url(url) {
-  
-  var audioElement = load_audio_from_url(url, mode="nocors");
+async function play_sound_from_a_blob_object(blob_object, file_type) {
 
-}
-
-// -------------------------------------------------
-
-async function play_sound_from_a_blob_object(blob_object) {
-
-  var file_blob_object = new File ([blob_object], 'recorded_audio', {type: "audio/mp3"});
+	// ie: file_type = "audio/mp3"
+	
+	// Putting an array, or mediastream event.data in a blob resulted in a Security Error
+	var file_blob_object = new File ([blob_object], 'recorded_audio', {type: file_type});
 	var url_file_blob_object = URL.createObjectURL(file_blob_object);
-
-  await play_sound_from_a_url(url_file_blob_object);
-
-  URL.revokeObjectURL(url_file_blob_object);
+	
+	await load_audio_from_url(url_file_blob_object, mode="nocors");
+	
+	URL.revokeObjectURL(url_file_blob_object);
   
 }
   
