@@ -104,15 +104,17 @@ async function audio_to_frequency_domain() {
   
 	// Compute frequency domain
 	const freq_response0 = await DFT(x_avg);
-  console.log('freq_response0.length : ', freq_response0.length);
-  
-  // OR
-  
-  var x = tf.tensor1d(x_avg);
-  x = tf.cast(x, 'complex64');
-  const freq_response1 = x.fft();
-	console.log('freq_response1.length : ', freq_response1.length);
-	//  The dtype for tf.spectral.fft() must be complex64 but got float32.
+	console.log('freq_response0.length : ', freq_response0.length);	//  19094
+	
+	// OR
+	
+	const real = tf.tensor1d(x_avg);
+	var x_zeros = Array.from({ length: x_avg.length }, (_, i) => 0);
+	const imag = tf.tensor1d(x_zeros);
+	const x = tf.cast(tf.complex(real, imag), 'complex64');
+	
+	const freq_response1 = tf.spectral.fft(x);
+	console.log('freq_response1.length : ', freq_response1.length); //  undefined
   
 	var freq_arr_char = await obtain_array_characteristics(freq_response1);
 	console.log('freq_arr_char: ', freq_arr_char);
