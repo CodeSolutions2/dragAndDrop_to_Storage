@@ -12,7 +12,7 @@
 <button type="button" id="stop_record_audio" style="display:block">stop_record_audio</button>
 
 
-<h3>C. Modify an existing audio and/or video file from file</h3>
+<h3>C. Modify/Play an existing audio and/or video file from file</h3>
 
 <!-- Dropdown: select a video and/or audio modification -->
 <label for="select_video_andor_audio_file">Select a video and/or audio modification:</label>
@@ -22,6 +22,7 @@
   <option value="Append two audio files">Append two audio files</option>
   <option value="Combine an audio and video file">Combine an audio and video file</option>
   <option value="Append two video files">Append two video files</option>
+  <option value="Play an audio from file">Play an audio from file</option>
 </select>
 
 <!-- Select a video and/or audio -->
@@ -34,11 +35,6 @@
 <input type="file" id="upload_audio_file1" accept="video/*" style="display:none">
 	
 <button type="button" id="modify_existing_audio_and_or_video_from_file" onclick="modify_existing_audio_and_or_video_from_file()" style="display:block">get_image_from_video_at_a_specific_time</button>
-	
-
-<h3>D. Play an audio from file</h3>
-<button type="button" id="play_sound_from_file" onclick="play_sound_from_file()" style="display:block">play_sound_from_file</button>
-
 
 <!-- ---------------------------------------- -->
 	
@@ -109,6 +105,14 @@ async function processEvent_video_andor_audio(event) {
     document.getElementById("upload_video_file1").style.display = 'block';
     document.getElementById("select_audio").style.display = 'none';
     document.getElementById("upload_audio_file0").style.display = 'none';
+    document.getElementById("upload_audio_file1").style.display = 'none';
+	} else if (document.getElementById("video_andor_audio").selectedIndex == 5) {
+    // Play an audio from file
+    document.getElementById("select_video").style.display = 'none';
+    document.getElementById("upload_video_file0").style.display = 'none';
+    document.getElementById("upload_video_file1").style.display = 'none';
+    document.getElementById("select_audio").style.display = 'block';
+    document.getElementById("upload_audio_file0").style.display = 'block';
     document.getElementById("upload_audio_file1").style.display = 'none';
 	}
 	
@@ -243,11 +247,6 @@ function handleDataAvailable_audio(event) {
 	document.getElementById("stop_record_audio").removeEventListener("click", handleDataAvailable_audio);
 
 	download_audio_recording(url);
-	// Works
-	
-	
-	// play_sound_from_a_blob_object(event.data);
-	// Security Error: Content at https://codesolutions2.github.io/temp_repo_js_tests/index3.html may not load data from blob:https://codesolutions2.github.io/06a46a49-f1a9-4b30-b588-477fb9408453.
 }
 
 // -------------------------------------------------
@@ -276,20 +275,20 @@ function download_audio_recording(url) {
 // C. Modify an existing audio and/or video file from file
 // -------------------------------------------------
 async function modify_existing_audio_and_or_video_from_file() {
-
+	
 	// --------------------------
   
 	var modification_type = document.getElementById("video_andor_audio").value;
 
-  // --------------------------
+	// --------------------------
 	
 	if (modification_type == 'Obtain a video frame at a specific time') {
+		
+		// Video to image
+		const url_video0 = await fetch_file(base64_string_video0, file_name_video0, "video/webm");
+		console.log('url_video0: ', url_video0);
     
-    // Video to image
-    const url_video0 = await fetch_file(base64_string_video0, file_name_video0, "video/webm");
-    console.log('url_video0: ', url_video0);
-    
-    const videoElement = await load_video_from_url(url_video0, mode="nocors");
+		const videoElement = await load_video_from_url(url_video0, mode="nocors");
     
 		await transform_video_to_image(videoElement);
 		
@@ -310,13 +309,7 @@ async function modify_existing_audio_and_or_video_from_file() {
 		// 1) url (give url to audioElement.src), 
 		// 2) blob_object via event mediastream (get event.data, which is a blob object. Make a url for the blob object. Give url to audioElement.src.). Sometimes blob_objects fail due to security issues.
 		
-		// Try to play audio as an array by making a blob_object
-		var blob_object = await new Blob(appended_normalArray_normalized, {type: "audio/mp3"});
-		await play_sound_from_a_blob_object(blob_object);
-
-		// OR
-
-		// Try to download the audio array and then play it
+		// Download the audio array and then play it
 		var download_url = URL.createObjectURL(blob_object);
 		await download_audio_recording(download_url);
 
@@ -324,29 +317,33 @@ async function modify_existing_audio_and_or_video_from_file() {
 		
 	} else if (modification_type == 'Combine an audio and video file') {
 
-    const url_audio0 = await fetch_file(base64_string_audio0, file_name_audio0, "video/webm");
-    console.log('url_audio0: ', url_audio0);
-    const audioElement = await load_audio_from_url(url_audio0, mode="nocors");
+		const url_audio0 = await fetch_file(base64_string_audio0, file_name_audio0, "video/webm");
+		console.log('url_audio0: ', url_audio0);
+		const audioElement = await load_audio_from_url(url_audio0, mode="nocors");
 
-    const url_video0 = await fetch_file(base64_string_video0, file_name_video0, "video/webm");
-    console.log('url_video0: ', url_video0);
-    const videoElement = await load_video_from_url(url_video0, mode="nocors");
+		const url_video0 = await fetch_file(base64_string_video0, file_name_video0, "video/webm");
+		console.log('url_video0: ', url_video0);
+		const videoElement = await load_video_from_url(url_video0, mode="nocors");
     
 		await combine_audio_video(videoElement, audioElement);
 
 	} else if (modification_type == 'Append two video files') {
 
-    const url_video0 = await fetch_file(base64_string_video0, file_name_video0, "video/webm");
-    console.log('url_video0: ', url_video0);
-    const videoElement0 = await load_video_from_url(url_video0, mode="nocors");
+		const url_video0 = await fetch_file(base64_string_video0, file_name_video0, "video/webm");
+		console.log('url_video0: ', url_video0);
+		const videoElement0 = await load_video_from_url(url_video0, mode="nocors");
 
-    const url_video1 = await fetch_file(base64_string_video1, file_name_video1, "video/webm");
-    console.log('url_video1: ', url_video1);
-    const videoElement1 = await load_video_from_url(url_video1, mode="nocors");
+		const url_video1 = await fetch_file(base64_string_video1, file_name_video1, "video/webm");
+		console.log('url_video1: ', url_video1);
+		const videoElement1 = await load_video_from_url(url_video1, mode="nocors");
 
-    // Can stream a video to an empty video source
+		// Can stream a video to an empty video source
 
-    
+	} else if (modification_type == 'Play an audio from file') {
+		
+		const url_audio0 = await fetch_file(base64_string_audio0, file_name_audio0, "audio/mp3");
+		console.log('url_audio0: ', url_audio0);
+		const audioElement0 = await load_audio_from_url(url_audio0, mode="nocors");
 		
 	} else {
 		document.getElementById('notification').innerHTML = "Please select an audio and/or video modification type."; 
@@ -355,26 +352,6 @@ async function modify_existing_audio_and_or_video_from_file() {
 }
 
 
-
-
-	
-
-// -------------------------------------------------
-// D. Play an audio from file
-// -------------------------------------------------
-async function play_sound_from_file() {
-
-    document.getElementById("select_audio").style.display = 'block';
-    document.getElementById("upload_audio_file0").style.display = 'block';
-
-const url_audio0 = await fetch_file(base64_string_audio0, file_name_audio0, "video/webm");
-		console.log('url_audio0: ', url_audio0);
-		const audioElement0 = await load_audio_from_url(url_audio0, mode="nocors");
-
-}
-
-
-	
 
 
 
@@ -727,22 +704,17 @@ async function create_dynamic_canvasElement(w) {
 // -------------------------------------------------
 // AUDIO SUBFUNCTIONS
 // -------------------------------------------------
-async function play_sound_from_a_url(url) {
-  
-  var audioElement = load_audio_from_url(url, mode="nocors");
+async function play_sound_from_a_blob_object(blob_object, file_type) {
 
-}
-
-// -------------------------------------------------
-
-async function play_sound_from_a_blob_object(blob_object) {
-
-  var file_blob_object = new File ([blob_object], 'recorded_audio', {type: "audio/mp3"});
+	// ie: file_type = "audio/mp3"
+	
+	// Putting an array, or mediastream event.data in a blob resulted in a Security Error
+	var file_blob_object = new File ([blob_object], 'recorded_audio', {type: file_type});
 	var url_file_blob_object = URL.createObjectURL(file_blob_object);
-
-  await play_sound_from_a_url(url_file_blob_object);
-
-  URL.revokeObjectURL(url_file_blob_object);
+	
+	await load_audio_from_url(url_file_blob_object, mode="nocors");
+	
+	URL.revokeObjectURL(url_file_blob_object);
   
 }
 
