@@ -20,7 +20,9 @@
 <script src='https://d3js.org/d3.v7.min.js'></script>
 
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
- 
+
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-vis@1.5.1/dist/tfjs-vis.umd.min.js" integrity="sha256-qp+MJqHjqWN5L09l6gTFvHhfPvHZAB+c61vy1dOrKs4=" crossorigin="anonymous"></script>
+	
 <script>
 
 	
@@ -104,15 +106,15 @@ async function audio_to_frequency_domain() {
 	// --------------------
   
 	// Compute frequency domain
-	const freq_response0 = await DFT(x_avg);
+	// const freq_response0 = await DFT(x_avg);
 	
 	// console.log('freq_response0 : ', freq_response0)
 	// Array(19094) [ -72.54431124328238, 32.59010471124958, 14.309210661196708, 3.1579146675091225, 9.462934967315036, 2.315147178945272, 4.04138842725728, 4.199653475746481, 1.076700956385753, 4.018576862667111, … ]
 	
 	// console.log('freq_response0.length : ', freq_response0.length);	//  19094
 
-	var freq_arr_char0 = await obtain_array_characteristics(freq_response0);
-	console.log('freq_arr_char0: ', freq_arr_char0);
+	// var freq_arr_char0 = await obtain_array_characteristics(freq_response0);
+	// console.log('freq_arr_char0: ', freq_arr_char0);
 	
 	// OR
 	
@@ -124,9 +126,12 @@ async function audio_to_frequency_domain() {
 
 	// Convert tensorflow.js object to array
 	const freq_response1_js = freq_response1.arraySync();
+	console.log('freq_response1_js.length : ', freq_response1_js.length);
 
-	var freq_arr_char1 = await obtain_array_characteristics(freq_response1_js);
-	console.log('freq_arr_char1: ', freq_arr_char1);
+	// var freq_arr_char1 = await obtain_array_characteristics(freq_response1_js);
+	// console.log('freq_arr_char1: ', freq_arr_char1);
+	// Object { mu: -4407.455090821925, sigma: 1.4284635098976915e-7, max_val: 9990.556640625, min_val: -0.00048828125, max_amp: 9990.556640625 }
+	// But, not correct probably because y-axis on plot goes to 40,000
 	
 	// --------------------
 
@@ -135,13 +140,27 @@ async function audio_to_frequency_domain() {
 
 	// --------------------
 	
-	await plot_line_graph_dataObject(f, freq_response0, "Frequency response by hand: Hz");
-	const freq_response_db0 = freq_response0.map((val, ind) => { return 20 * Math.log10(val); });
-	await plot_line_graph_dataObject(f, freq_response_db0, "Frequency response by hand: decibels");
+	// await plot_line_graph_dataObject(f, freq_response0, "Frequency response by hand: Hz");
+	// const freq_response_db0 = freq_response0.map((val, ind) => { return 20 * Math.log10(val); });
+	// await plot_line_graph_dataObject(f, freq_response_db0, "Frequency response by hand: decibels");
 	
-	await plot_line_graph_dataObject(f, freq_response1_js, "Frequency response tf: Hz");
-	const freq_response_db1 = freq_response1_js.map((val, ind) => { return 20 * Math.log10(val); });
-	await plot_line_graph_dataObject(f, freq_response_db1, "Frequency response tf: decibels");
+	// await plot_line_graph_dataObject(f, freq_response1_js, "Frequency response tf: Hz");
+	const freq_response1_js_db = freq_response1_js.map((val, ind) => { return 20 * Math.log10(val); });
+	// await plot_line_graph_dataObject(f, freq_response1_js_db, "Frequency response tf: decibels");
+
+	// OR
+
+	const series1 = freq_response1_js.map((y, ind) => ({ ind * 2 * Math.PI * 1/audio_information.time_sample_rate_OR_timePeriod, y, }));
+	
+	const series2 = freq_response1_js_db.map((y, ind) => ({ ind * 2 * Math.PI * 1/audio_information.time_sample_rate_OR_timePeriod, y, }));
+
+	const series = ['First', 'Second'];
+	const data = { values: [series1, series2], series }
+	
+	const surface = { name: 'Line chart', tab: 'Charts' };
+	tfvis.render.linechart(surface, data);
+
+
 	
 }
 
