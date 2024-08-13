@@ -108,7 +108,7 @@ async function audio_to_frequency_domain() {
   
   // OR
   
-  const x = tf.tensor1d(x_avg);
+  var x = tf.tensor1d(x_avg);
   x = tf.cast(x, 'complex64');
   const freq_response1 = x.fft();
 	console.log('freq_response1.length : ', freq_response1.length);
