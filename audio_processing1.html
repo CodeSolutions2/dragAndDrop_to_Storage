@@ -150,18 +150,20 @@ async function audio_to_frequency_domain() {
 
 	// OR
 
-	const series1 = freq_response1_js.map((y, ind) => {
-		return {ind*2*Math.PI*1/audio_information.time_sample_rate_OR_timePeriod, y};
-	});
+	// const series1 = freq_response1_js.map((y, ind) => {
+	// 	return {ind*2*Math.PI*1/audio_information.time_sample_rate_OR_timePeriod, y};
+	//});
 	
-	const series2 = freq_response1_js_db.map((y, ind) => {
-		return {ind*2*Math.PI*1/audio_information.time_sample_rate_OR_timePeriod, y};
-	});
-
-	const series = ['First', 'Second'];
-	const data = { values: [series1, series2], series }
+	// const series2 = freq_response1_js_db.map((y, ind) => {
+	// 	return {ind*2*Math.PI*1/audio_information.time_sample_rate_OR_timePeriod, y};
+	// });
+	
+	const series1 = freq_response1_js.map((value, index) => ({ x: index, y: value }));
+	const series2 = freq_response1_js_db.map((value, index) => ({ x: index, y: value }));
 	
 	const surface = { name: 'Line chart', tab: 'Charts' };
+	const data = { values: [series1, series2], series: ['First', 'Second'] };
+	
 	tfvis.render.linechart(surface, data);
 
 
