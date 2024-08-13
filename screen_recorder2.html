@@ -284,11 +284,11 @@ async function modify_existing_audio_and_or_video_from_file() {
     console.log('url_audio0: ', url_audio0);
 		const audioElement0 = await load_audio_from_url(url_audio0, mode="nocors");
 
-    const url_audio1 = await fetch_file(bbase64_string_audio1, file_name_audio1, "video/webm");
+    const url_audio1 = await fetch_file(base64_string_audio1, file_name_audio1, "video/webm");
     console.log('url_audio1: ', url_audio1);
     const audioElement1 = await load_audio_from_url(url_audio1, mode="nocors");
     
-		await append_two_audio_tracks(base64_string_audio0, bbase64_string_audio1);
+		await append_two_audio_tracks(base64_string_audio0, base64_string_audio1);
     
 	} else if (modification_type == 'Combine an audio and video file') {
 
