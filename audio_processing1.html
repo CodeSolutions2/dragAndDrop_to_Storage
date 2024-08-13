@@ -105,24 +105,43 @@ async function audio_to_frequency_domain() {
   
 	// Compute frequency domain
 	const freq_response0 = await DFT(x_avg);
-	console.log('freq_response0 : ', freq_response0)
-	console.log('freq_response0.length : ', freq_response0.length);	//  19094
+	
+	// console.log('freq_response0 : ', freq_response0)
+	// Array(19094) [ -72.54431124328238, 32.59010471124958, 14.309210661196708, 3.1579146675091225, 9.462934967315036, 2.315147178945272, 4.04138842725728, 4.199653475746481, 1.076700956385753, 4.018576862667111, … ]
+	
+	// console.log('freq_response0.length : ', freq_response0.length);	//  19094
+
+	var freq_arr_char0 = await obtain_array_characteristics(freq_response0);
+	console.log('freq_arr_char0: ', freq_arr_char0);
 	
 	// OR
 	
 	var freq_response1 = await tensorflow_FFT(x_avg);
-	console.log('freq_response1 : ', freq_response1)
-	console.log('freq_response1.length : ', freq_response1.length); //  undefined
-  
-	var freq_arr_char = await obtain_array_characteristics(freq_response1);
-	console.log('freq_arr_char: ', freq_arr_char);
-  
-	f = Array.from({ length: freq_response1.length }, (_, i) => i * 2 * Math.PI * 1/audio_information.time_sample_rate_OR_timePeriod);
-	console.log('f.length : ', f.length);
-	await plot_line_graph_dataObject(f, freq_response1, "Frequency response: Hz");
 	
-	const freq_response_db = freq_response1.map((val, ind) => { return 20 * Math.log10(val); });
-	await plot_line_graph_dataObject(f, freq_response_db, "Frequency response: decibels");
+	// console.log('freq_response1 : ', freq_response1)
+	// Object { kept: false, isDisposedInternal: false, shape: (1) […], dtype: "complex64", size: 19094, strides: [], dataId: {…}, id: 7, rankType: "1", scopeId: 3 }
+	// console.log('freq_response1.length : ', freq_response1.length); //  19094
+
+	// Convert tensorflow.js object to array
+	const freq_response1_js = freq_response1.arraySync();
+
+	var freq_arr_char1 = await obtain_array_characteristics(freq_response1_js);
+	console.log('freq_arr_char1: ', freq_arr_char1);
+	
+	// --------------------
+
+	f = Array.from({ length: freq_response1_js.length }, (_, i) => i * 2 * Math.PI * 1/audio_information.time_sample_rate_OR_timePeriod);
+	console.log('f.length : ', f.length);
+
+	// --------------------
+	
+	await plot_line_graph_dataObject(f, freq_response0, "Frequency response by hand: Hz");
+	const freq_response_db0 = freq_response0.map((val, ind) => { return 20 * Math.log10(val); });
+	await plot_line_graph_dataObject(f, freq_response_db0, "Frequency response by hand: decibels");
+	
+	await plot_line_graph_dataObject(f, freq_response1_js, "Frequency response tf: Hz");
+	const freq_response_db1 = freq_response1_js.map((val, ind) => { return 20 * Math.log10(val); });
+	await plot_line_graph_dataObject(f, freq_response_db1, "Frequency response tf: decibels");
 	
 }
 
@@ -141,14 +160,26 @@ async function audio_to_spectrogram() {
 	// Convert the waveform to a spectrogram using the Short-Time Fourier Transform (STFT)
 	var spectrogram = tf.signal.stft(x_avg, frameLength, frameStep);
 	console.log('spectrogram : ', spectrogram);
+	// dtype: "complex64"
+	// shape: Array [ 0, 129 ]
+	// strides: Array [ 129 ]
 
-	// Obtain the magnitude of the STFT
+	// Obtain the magnitude of the STFT (dtype: "float32")
 	spectrogram = tf.abs(spectrogram);
 	console.log('spectrogram : ', spectrogram);
+	// dtype: "float32"
+	// shape: Array [0, 129]
+	// strides: Array [ 129 ]
 
 	// Add an extra-dimension to view the results as an image
 	spectrogram = spectrogram.expandDims(0);
 	console.log('spectrogram : ', spectrogram);
+	// dtype: "float32"
+	// shape: Array(3) [ 1, 0, 129 ]
+	// strides: Array [ 0, 129 ]
+
+
+	const spectrogramArray = spectrogram.arraySync();
 
 	// --------------------
 
