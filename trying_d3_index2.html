@@ -8,16 +8,16 @@
 
 <button id="plot_dataArray_values_to_text" onclick="plot_dataArray_values_to_text()" style="display:block;">plot_dataArray_values_to_text</button>
 
-<button id="plot_bar_graph" onclick="plot_bar_graph()" style="display:block;">plot_bar_graph</button>
+
 <!-- Drop down menu: put in body -->
-<label for="select_dropdown_option_label">Select a drop down option:</label>
+<label for="select_dropdown_option_label">Select a drop down option to plot_bar_graph:</label>
 <select name="dropdown_options" id="dropdown_options" style="display:block">
   <option value="---">Select an option</option>
   <option value="drop_down_option0">drop_down_option0</option>
   <option value="drop_down_option1">drop_down_option1</option>
   <option value="drop_down_option2">drop_down_option2</option>
 </select>
-
+<button id="plot_bar_graph" onclick="plot_bar_graph()" style="display:none;">plot_bar_graph</button>
 	
 <button id="plot_line_graph_dataArray" onclick="plot_line_graph_dataArray()" style="display:block;">plot_line_graph_dataArray</button>
 	
@@ -40,10 +40,11 @@ async function processEvent_dropdown_options(event) {
 	const element = document.getElementById("dropdown_options");
 	console.log('element.selectedIndex: ', element.selectedIndex);
 	
-	if (document.getElementById("dropdown_options").selectedIndex == 1) {
-		document.getElementById("text_input").style.display = 'block';
+	if (document.getElementById("dropdown_options").selectedIndex == 0) {
+		document.getElementById("plot_bar_graph").style.display = 'none';
 	} else {
-		document.getElementById("text_input").style.display = 'none';
+		// Make button appear
+		document.getElementById("plot_bar_graph").style.display = 'block';
 	}
 }
 
