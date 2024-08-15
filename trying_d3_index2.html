@@ -148,7 +148,7 @@ async function plot_bar_graph() {
 	// [SubStep a] Assign the width of the bar based on the height of the data
 	
 	// GOAL: Select a percentage of something (ie: bar width) that one can visualize with respect to something known (ie: max data value)
-	const bar_width_percentage_wrt_max_dataValue = 0.25; // *** USER INPUT ONLY : bar_width is XXX percent of max dataArray value ***
+	const bar_width_percentage_wrt_max_dataValue = 0.5; // *** USER INPUT ONLY : bar_width is XXX percent of max dataArray value ***
 	// OR 
 	// Select it automatically by height statictics of the data
 	
@@ -218,9 +218,9 @@ async function plot_bar_graph() {
 			.enter()
 			.append('rect')
 			.attr('width', bar_width)
-			.attr('height', d => d)
-			.attr('x', (d, i) => (i-2) * w_divided_by_dataPoint_length)
-			.attr('y', d => h-d)
+			.attr('height', (d, i) => if(i>1){d})
+			.attr('x', (d, i) => if(i>1){i * w_divided_by_dataPoint_length})
+			.attr('y', (d, i) => if(i>1){h-d})
 			.attr("fill", "steelblue");
 
 	} else if (dropdown_option_type == 'drop_down_option1') {
