@@ -5,8 +5,13 @@
 
 
 <button id="use_DOM_w_d3" onclick="use_DOM_w_d3()" style="display:block;">use_DOM_w_d3</button>
-<button id="plot_line_graph_dataObject" onclick="plot_line_graph_dataObject()" style="display:block;">plot_line_graph_dataObject</button>
+
+<button id="plot_dataArray_values_to_text" onclick="plot_dataArray_values_to_text()" style="display:block;">plot_dataArray_values_to_text</button>
+
 <button id="plot_line_graph_dataArray" onclick="plot_line_graph_dataArray()" style="display:block;">plot_line_graph_dataArray</button>
+	
+<button id="plot_line_graph_dataObject" onclick="plot_line_graph_dataObject()" style="display:block;">plot_line_graph_dataObject</button>
+	
 <button id="plot_timeseries_data" onclick="plot_timeseries_data()" style="display:block;">plot_timeseries_data</button>
 
 
@@ -95,6 +100,40 @@ async function plot_line_graph_dataObject() {
 }
 
 // -----------------------------------------------
+
+async function plot_dataArray_values_to_text() {
+
+	const dataArray = [30, 50, 80, 120, 200];
+
+	var example = 0;
+
+	if (example == 0) {
+
+		// Append a <paragraph tag> to each value in the dataArray, then append text value to each value in the dataArray
+		
+		d3.select('body')
+		    .selectAll('p') // select all the paragraph tags in the body DOM element
+			// If there are no paragraph tags assigned on the DOM, it returns an empty selection.
+		    .data(dataArray) // put data into "the waiting state" 
+		    .enter() // take one data item one-by-one to perform operations on them
+		    .append('p') // appends paragraph for each data element
+		    .text('text appended to paragraph');
+
+	} else if (example == 1) {
+
+		d3.select('body')
+		    .selectAll('p') // select all the paragraph tags in the body DOM element
+			// If there are no paragraph tags assigned on the DOM, it returns an empty selection.
+		    .data(dataArray) // put data into "the waiting state" 
+		    .enter() // take one data item one-by-one to perform operations on them
+		    .append('p') // appends paragraph for each data element
+		    .text(function(d) { return d; }); // print the value of dataArray to each paragraph item
+
+	} 
+	
+}
+
+// -----------------------------------------------
 	
 async function plot_line_graph_dataArray() {
 
@@ -103,40 +142,49 @@ async function plot_line_graph_dataArray() {
 	const width = 928;
 	const height = 500;
 
-        const svg = d3.select("#data_display")
-		.append("svg")
-		.attr("class", 'line')
-		.attr("width", width)
-		.attr("height", height);
+	var example = 2;
 
-        const x_scale = d3.scaleLinear()
-            .domain([0, d3.max(dataArray, (d,i) => i)])
-            .range([0, width]);
+	if (example == 2) {
+		
+		// [Step 0] Specify the DOM item to assign the figure to
+		// svg is a variable that can be used as a function, to add more specifications to d3
+	        const svg = d3.select("#data_display")
+			.append("svg")  // appends svg for each data element
+			.attr("class", 'line')
+			.attr("width", width)
+			.attr("height", height);
 
-        const y_scale = d3.scaleLinear()
-            .domain([0, d3.max(dataArray, d => d)])
-            .range([height, 0]);
+	        const x_scale = d3.scaleLinear()
+	            .domain([0, d3.max(dataArray, (d,i) => i)])
+	            .range([0, width]);
+	
+	        const y_scale = d3.scaleLinear()
+	            .domain([0, d3.max(dataArray, d => d)])
+	            .range([height, 0]);
+	
+	        const line = d3.line()
+			.x((d, i) => x_scale(i))
+			.y(d => y_scale(d));
+	
+	        svg.append("path")
+	            .datum(dataArray)
+	            .attr("fill", "none")
+	            .attr("stroke", "steelblue")
+	            .attr("stroke-width", 2)
+	            .attr("d", line);
+	
+		// Add the x-axis
+		svg.append("g")
+			.attr('class', 'x-axis')
+			.call(d3.axisBottom(x_scale));
+	
+		// Add the y-axis
+		svg.append("g")
+			.attr('class', 'y-axis')
+			.call(d3.axisLeft(y_scale));
 
-        const line = d3.line()
-		.x((d, i) => x_scale(i))
-		.y(d => y_scale(d));
-
-        svg.append("path")
-            .datum(dataArray)
-            .attr("fill", "none")
-            .attr("stroke", "steelblue")
-            .attr("stroke-width", 2)
-            .attr("d", line);
-
-	// Add the x-axis
-	svg.append("g")
-		.attr('class', 'x-axis')
-		.call(d3.axisBottom(x_scale));
-
-	// Add the y-axis
-	svg.append("g")
-		.attr('class', 'y-axis')
-		.call(d3.axisLeft(y_scale));
+	} 
+	
 }
 
 // -----------------------------------------------
