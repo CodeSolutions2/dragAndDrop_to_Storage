@@ -237,13 +237,13 @@ async function plot_bar_graph() {
 		 	//.range([h, 0]);  // what I had before
 		
 		const bar_chart = svg.selectAll('rect')
-		 	.data(dataArray)
-		 	.enter()
+			.data(dataArray)
+			.enter()
 			.append('rect')
-			.attr("width", x_scale.bandwidth())
-			.attr("height", (d) => y_scale(d))
+			.attr('width', x_scale.bandwidth())
+			.attr('height', (d) => y_scale(d))
 		 	.attr('x', (d,i) => x_scale(i))
-			.attr("y", (d) => h - y_scale(d))
+			.attr('y', (d) => h - y_scale(d))
 		 	.attr("fill", "steelblue");
 
 		//.attr('width', bar_width)  // what I had before
