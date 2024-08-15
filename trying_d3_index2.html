@@ -3,6 +3,8 @@
 <head></head>
 <body>
 
+
+<button id="use_DOM_w_d3" onclick="use_DOM_w_d3()" style="display:block;">use_DOM_w_d3</button>
 <button id="plot_line_graph_dataObject" onclick="plot_line_graph_dataObject()" style="display:block;">plot_line_graph_dataObject</button>
 <button id="plot_line_graph_dataArray" onclick="plot_line_graph_dataArray()" style="display:block;">plot_line_graph_dataArray</button>
 <button id="plot_timeseries_data" onclick="plot_timeseries_data()" style="display:block;">plot_timeseries_data</button>
@@ -16,6 +18,29 @@
 
 <script>
 
+
+async function use_DOM_w_d3() {
+
+	// javascript
+	// const svg = d3.select("#data_display")
+
+	d3.select();
+	d3.selectAll();
+	
+	d3.select('h1').style('color', 'red')
+	.attr('class', 'heading')
+	.text('Updated h1 tag');
+	
+	d3.select('body').append('p').text('First Paragraph');
+	d3.select('body').append('p').text('Second Paragraph');
+	d3.select('body').append('p').text('Third Paragraph');
+	
+	d3.selectAll('p').style('color', 'blue');
+
+}
+	
+// -----------------------------------------------
+	
 const w = 150;
 	
 async function plot_line_graph_dataObject() {
@@ -69,6 +94,8 @@ async function plot_line_graph_dataObject() {
 	
 }
 
+// -----------------------------------------------
+	
 async function plot_line_graph_dataArray() {
 
 	const dataArray = [30, 50, 80, 120, 200];
