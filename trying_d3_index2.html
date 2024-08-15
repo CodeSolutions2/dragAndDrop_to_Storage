@@ -227,9 +227,9 @@ async function plot_bar_graph() {
 			.data(dataArray)
 			.enter()
 			.append('rect')
-			.attr('width', bar_width - padding)  // Class recommendation
-			.attr('height', d => d)  // Class recommendation
-			.attr('y', (d,i) => h-d)  // Class recommendation
+			.attr("y", function(d) { return svgHeight - d; })
+			.attr("height", function(d) { return d; })
+			.attr("width", bar_width - padding)
 			.attr("fill", "steelblue")
 			.attr("transform", function (d, i) { 
 				var translate = [bar_width * i, 0]; 
