@@ -144,25 +144,45 @@ async function plot_bar_graph() {
 
 	// ---------------------------------------------------
 
-	// Assign bar width of each bar, with respect to w
-	const padding_percentage = 0.05; // *** user input only : space between bars is XXX percent of bar_width ***
-
-	// GOAL: Select padding percentage only, and calculate needed bar_width
-	const x_axis_divided = Math.floor((w/dataArray.length));
-	const desired_padding_between_bars = Math.floor(padding_percentage*x_axis_divided);   // The x-axis space between each bar, 5 percent of bar_width
-	const bar_width = x_axis_divided - desired_padding_between_bars;
+	// [Step 0] Assign bar width of each bar [*** choose it with respect to dataArray values ***]
 	
-	// ---------------------------------------------------
+	// GOAL: Select a percentage of something (ie: bar width) that one can visualize with respect to something known (ie: max data value)
+	const bar_width_percentage_wrt_max_dataValue = 0.05; // *** USER INPUT ONLY : bar_width is XXX percent of max dataArray value ***
 	
-	// Assign bar_height of each bar (using dataArray values) with respect to h 
-	const bar_height = dataArray.map((val, ind) => { return h-val; });
-	console.log("bar_height: ", bar_height);
-
-	// ---------------------------------------------------
-	
-	// domain = the y-value range of the bars
 	const arr_sort = dataArray.sort();
 	const [min_val, max_val] = [arr_sort.at(0), arr_sort.at(arr_sort.length-1)];
+	
+	const bar_width = Math.floor(bar_width_percentage_wrt_max_dataValue*max_val);
+	console.log("bar_width: ", bar_width);
+
+	// ---------------------------------------------------
+
+	// [Step 1] Assign the space between each bar (ie: bar_width padding)
+	
+	// GOAL: Select a percentage of something (ie: space between bars) that one can visualize with respect to something known (ie: bar_width)
+	const padding_percentage_wrt_barWidth = 0.05; // *** USER INPUT ONLY : padding/space between bars is XXX percent of bar_width ***
+	
+	const desired_padding_between_bars = Math.floor(padding_percentage_wrt_barWidth*bar_width);
+	const padding = bar_width - desired_padding_between_bars;
+	console.log("padding: ", padding);
+	
+	// ---------------------------------------------------
+
+	// [Step 2] Assign bar_height of each bar [*** choose it with respect to dataArray values ***]
+	const bar_height = dataArray;
+
+	// ---------------------------------------------------
+	
+	// [Step 3] Assign x, the (x-location) of each bar with respect to w
+	const w_divided_by_dataPoint_length = Math.floor(w/dataArray.length);
+	const x = dataArray.map((val, ind) => { return ind * w_divided_by_dataPoint_length; });
+	console.log("x: ", x);
+	
+	// ---------------------------------------------------
+	
+	// [Step 4] Assign y, the (y-location) of each bar with respect to h
+	const y = dataArray.map((val, ind) => { return h-val; });
+	console.log("y: ", y);
 	
 	// ---------------------------------------------------
 
@@ -179,8 +199,8 @@ async function plot_bar_graph() {
 
 	var dropdown_option_type = document.getElementById("dropdown_options").value;
 	
-	// width = bar_width of each bar, with respect to w
-	// height = bar_height of each bar (using dataArray values) with respect to h
+	// width = bar_width of each bar, with respect to w - 
+	// height = bar_height of each bar (using dataArray values) - [choose anything without thining of h] - y scales for it
 	// x = the (x-location) of each bar
 	// y = the (y-location) of each bar
 	
@@ -192,10 +212,9 @@ async function plot_bar_graph() {
 			.enter()
 			.append('rect')
 			.attr('width', bar_width)
-			//.attr('height', bar_height)
-			.attr('height', d => (h-d))
-			.attr('x', (d,i) => i * (bar_width + padding))
-			.attr('y', (d,i) => (h-d))
+			.attr('height', bar_height)
+			.attr('x', x)
+			.attr('y', y)
 			.attr("fill", "steelblue");
 
 	} else if (dropdown_option_type == 'drop_down_option1') {
