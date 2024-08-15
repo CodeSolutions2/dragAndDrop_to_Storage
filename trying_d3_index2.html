@@ -34,6 +34,18 @@
 
 <script>
 
+// -----------------------------------------------
+
+// Ensure that all UI element reset
+window.addEventListener('beforeunload', function() {
+	window.location.href = window.location.href + '?nocache=' + new Date().getTime();
+	
+	// Reset dropdowns
+	document.getElementById("dropdown_options").selectedIndex = 0;
+});
+
+// -----------------------------------------------
+	
 // Put in <script>
 async function processEvent_dropdown_options(event) {
 
