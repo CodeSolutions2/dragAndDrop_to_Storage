@@ -226,35 +226,29 @@ async function plot_bar_graph() {
 	} else if (dropdown_option_type == 'drop_down_option1') {
 		
 		// Way 1: using the scale command - did not work
-		// const x_scale = d3.scaleBand()
-		// 	.domain(dataArray.map((d,i) => i))
-		// 	.range([0, w])
-		// 	.padding(padding);
+		const x_scale = d3.scaleBand()
+		 	.domain(dataArray.map((d,i) => i))
+		 	.range([0, w])
+		 	.padding(padding);
 
-		// const y_scale = d3.scaleLinear()
-		// 	.domain([0, max_val])
-		// 	.range([h, 0]);
+		const y_scale = d3.scaleLinear()
+		 	.domain([0, d3.max(dataArray)])
+			.range([0, h]); 
+		 	//.range([h, 0]);  // what I had before
 		
-		// const bar_chart = svg.selectAll('rect')
-		// 	.data(dataArray)
-		// 	.enter()
-		// 	.append('rect')
-		// 	.attr('width', bar_width)
-		// 	.attr('height', d => y_scale(h-d))
-		// 	.attr('x', (d,i) => x_scale(i))
-		// 	.attr('y', (d,i) => y_scale(d))
-		// 	.attr("fill", "steelblue");
+		const bar_chart = svg.selectAll('rect')
+		 	.data(dataArray)
+		 	.enter()
+			.append('rect')
+			.attr("width", x_scale.bandwidth())
+			.attr("height", (d) => y_scale(d))
+		 	.attr('x', (d,i) => x_scale(i))
+			.attr("y", (d) => h - yScale(d))
+		 	.attr("fill", "steelblue");
 
-		
-		svg.selectAll("rect")
-		    .data(dataArray)
-		    .enter()
-		    .append("rect")
-		    .attr("x", (d, i) => i * 80)
-		    .attr("y", (d) => 200 - d)
-		    .attr("width", 50)
-		    .attr("height", (d) => d)
-		    .attr("fill", "steelblue");
+		//.attr('width', bar_width)  // what I had before
+		//.attr('height', d => d)  // what I had before
+		//.attr('y', (d,i) => y_scale(d)) // what I had before
 
 	} else if (dropdown_option_type == 'drop_down_option2') {
 		
