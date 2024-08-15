@@ -171,7 +171,7 @@ async function test() {
 
 async function test2() {
 
-	const data = [30, 50, 80, 120, 200];
+	const dataArray = [30, 50, 80, 120, 200];
 
 	const w = 400;
 	const h = 400;
@@ -229,7 +229,7 @@ async function test2() {
         const svg = d3.select("svg");
         
         const bar_chart = figureElement.selectAll('rect')
-			.data(data)
+			.data(dataArray)
 			.enter()
 			.append('rect')
 			.attr('width', bar_width)
