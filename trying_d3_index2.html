@@ -8,7 +8,8 @@
 
 <button id="plot_dataArray_values_to_text" onclick="plot_dataArray_values_to_text()" style="display:block;">plot_dataArray_values_to_text</button>
 
-
+<button id="test" onclick="test()" style="display:block;">test</button>
+	
 <!-- Drop down menu: put in body -->
 <label for="select_dropdown_option_label">Select a drop down option to plot_bar_graph:</label>
 <select name="dropdown_options" id="dropdown_options" style="display:block">
@@ -28,7 +29,7 @@
 
 <div id="data_display" style="display:block; text-align: left; width: 600px;"></div>
 
-<svg id="svg_data_display" width="400" height="300"></svg>
+<svg width="400" height="300"></svg>
 	
 
 <script src='https://d3js.org/d3.v7.min.js'></script>
@@ -171,6 +172,13 @@ async function plot_bar_graph() {
 
 	const w = 400;
 	const h = 400;
+
+	var svgElement = document.createElement('svg');
+	svgElement.setAttribute('id', 'svg_data_display');
+	svgElement.setAttribute('width', w); 
+	svgElement.setAttribute('height', h); 
+	
+	document.body.appendChild(h1Element);
 
 	// ---------------------------------------------------
 
