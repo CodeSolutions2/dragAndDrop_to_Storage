@@ -8,6 +8,10 @@
 
 <button id="plot_dataArray_values_to_text" onclick="plot_dataArray_values_to_text()" style="display:block;">plot_dataArray_values_to_text</button>
 
+<button id="plot_bar_graph" onclick="plot_bar_graph()" style="display:block;">plot_bar_graph</button>
+<input type="text" name="barChart_value" id="barChart_value" value="" style="display:block;">
+
+	
 <button id="plot_line_graph_dataArray" onclick="plot_line_graph_dataArray()" style="display:block;">plot_line_graph_dataArray</button>
 	
 <button id="plot_line_graph_dataObject" onclick="plot_line_graph_dataObject()" style="display:block;">plot_line_graph_dataObject</button>
@@ -23,6 +27,7 @@
 
 <script>
 
+// -----------------------------------------------
 
 async function use_DOM_w_d3() {
 
@@ -63,7 +68,7 @@ async function plot_dataArray_values_to_text() {
 			// If there are no paragraph tags assigned on the DOM, it returns an empty selection.
 		    .data(dataArray) // put data into "the waiting state" 
 		    .enter() // take one data item one-by-one to perform operations on them
-		    .append('p') // appends paragraph for each data element
+		    .append('p') // appends <paragraph> tag to each data value
 		    .text('text appended to paragraph');
 
 		// Result: prints 5 times to the DOM body -> paragraph
@@ -89,6 +94,112 @@ async function plot_dataArray_values_to_text() {
 		    .text(function(d) { return d; }); // print the value of dataArray to each paragraph item
 
 	} 
+	
+}
+
+// -----------------------------------------------
+
+async function plot_bar_graph() {
+	
+	const dataArray = [30, 50, 80, 120, 200];
+	
+
+	const w = 400;
+	const h = 400;
+
+	// ---------------------------------------------------
+
+	// Assign bar width
+
+	// Plot data on chart, Add bars to the chart
+	const bar_width = Math.floor((w/dataArray.length)/2);
+	console.log("bar_width: ", bar_width);
+
+	// Class recommendation
+	// const bar_width = Math.floor((w/dataArray.length));
+
+	// ---------------------------------------------------
+
+	// Assign padding between bars
+
+	const padding = Math.floor(0.05*bar_width);   // The x-axis space between each bar, 10 percent of bar_width
+	console.log("padding: ", padding); 
+
+	// ---------------------------------------------------
+	
+	const x_scale = d3.scaleBand()
+		.domain(dataArray.map((d,i) => i))
+		.range([0, w])
+		.padding(padding);
+
+	// domain = the y-value range of the bars
+	const y_scale = d3.scaleLinear()
+		.domain([0, max_val])
+		.range([h, 0]);
+	
+	// ---------------------------------------------------
+
+	// Asign the figure element on the page
+	const svg = d3.select("#data_display")
+		.append("svg")  // appends <svg tag> to each data value
+		.attr('width', w)
+		.attr('height', h);
+	console.log("svg: ", svg);
+
+	// ---------------------------------------------------
+	
+	// Assign the bar chart elements on the figure
+
+	var example = document.getElementById('barChart_value').value;
+	
+	// width = bar_width
+	// height = bar_height, the dataArray values
+	// x = the (x-location) of each bar
+	// y = the (y-location) of each bar
+	if (example == 0) {
+
+		// Way 0: not using the scale command - did not work
+		const bar_chart = svg.selectAll('rect')
+			.data(dataArray)
+			.enter()
+			.append('rect')
+			.attr('width', bar_width)
+			.attr('height', d => h-d)
+			.attr('x', (d,i) => i * (bar_width + padding))
+			.attr('y', (d,i) => d)
+			.attr("fill", "steelblue");
+
+	} else if (example == 1) {
+		
+		// Way 1: using the scale command - did not work
+		const bar_chart = svg.selectAll('rect')
+			.data(dataArray)
+			.enter()
+			.append('rect')
+			.attr('width', bar_width)
+			.attr('height', d => y_scale(h-d))
+			.attr('x', (d,i) => x_scale(i))
+			.attr('y', (d,i) => y_scale(d))
+			.attr("fill", "steelblue");
+
+	} else if (example == 2) {
+		
+		// Way 2: Class recommendation
+		const bar_chart = svg.selectAll('rect')
+			.data(dataArray)
+			.enter()
+			.append('rect')
+			.attr('width', bar_width - padding)  // Class recommendation
+			.attr('height', d => d)  // Class recommendation
+			.attr('y', (d,i) => h-d)  // Class recommendation
+			.attr("fill", "steelblue")
+			.attr("transform", function (d, i) { 
+				var translate = [barWidth * i, 0]; 
+				return "translate("+ translate +")";
+			});
+
+	}
+
 	
 }
 
