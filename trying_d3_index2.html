@@ -227,7 +227,7 @@ async function plot_bar_graph() {
 			.data(dataArray)
 			.enter()
 			.append('rect')
-			.attr("y", function(d) { return svgHeight - d; })
+			.attr("y", function(d) { return h - d; })
 			.attr("height", function(d) { return d; })
 			.attr("width", bar_width - padding)
 			.attr("fill", "steelblue")
