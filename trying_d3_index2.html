@@ -220,7 +220,7 @@ async function plot_bar_graph() {
 			.attr('y', (d,i) => h-d)  // Class recommendation
 			.attr("fill", "steelblue")
 			.attr("transform", function (d, i) { 
-				var translate = [barWidth * i, 0]; 
+				var translate = [bar_width * i, 0]; 
 				return "translate("+ translate +")";
 			});
 
