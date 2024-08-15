@@ -249,11 +249,11 @@ async function plot_bar_graph() {
 	} else if (dropdown_option_type == 'drop_down_option2') {
 		
 		// Way 2: Class recommendation
-		const w_divided_by_dataPoint_length = Math.floor(w/dataArray.length);
-		var bar_width = w_divided_by_dataPoint_length;
+		const w_divided_by_dataPoint_length_way2 = Math.floor(w/dataArray.length);
+		var bar_width_way2 = w_divided_by_dataPoint_length_way2;
 
-		const padding_percentage_wrt_barWidth = 0.05; // *** USER INPUT ONLY : padding/space between bars is XXX percent of bar_width ***
-		const padding = Math.floor(padding_percentage_wrt_barWidth*bar_width);
+		const padding_percentage_wrt_barWidth_way2 = 0.05; // *** USER INPUT ONLY : padding/space between bars is XXX percent of bar_width ***
+		const padding_way2 = Math.floor(padding_percentage_wrt_barWidth_way2 * bar_width_way2);
 		
 		const bar_chart = svg.selectAll('rect')
 			.data(dataArray)
@@ -261,10 +261,10 @@ async function plot_bar_graph() {
 			.append('rect')
 			.attr("y", function(d) { return h - d; })
 			.attr("height", function(d) { return d; })
-			.attr("width", bar_width - padding)
+			.attr("width", bar_width_way2 - padding_way2)
 			.attr("fill", "steelblue")
 			.attr("transform", function (d, i) { 
-				var translate = [bar_width * i, 0]; 
+				var translate = [bar_width_way2 * i, 0]; 
 				return "translate("+ translate +")";
 			});
 
