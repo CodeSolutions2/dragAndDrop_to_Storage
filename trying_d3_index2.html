@@ -232,11 +232,9 @@ async function plot_bar_graph() {
 	// ---------------------------------------------------
 
 	// Asign the figure element on the page
-	const svg = d3.select("#svg_data_display")
-		.append("svg")  // appends <svg tag> to each data value
-		.attr('width', w)
-		.attr('height', h);
-	console.log("svg: ", svg);
+	const svg = d3.select("#svg_data_display");
+		//.attr('width', w)
+		//.attr('height', h);
 
 	// ---------------------------------------------------
 	
