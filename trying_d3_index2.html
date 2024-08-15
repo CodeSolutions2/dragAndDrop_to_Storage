@@ -220,7 +220,7 @@ async function plot_bar_graph() {
 			.append('rect')
 			.attr('width', bar_width)
 			.attr('height', d => d)
-			.attr('x', (d, i) => i * w_divided_by_dataPoint_length)
+			.attr('x', (d, i) => (i-2) * w_divided_by_dataPoint_length)
 			.attr('y', d => h-d)
 			.attr("fill", "steelblue");
 
