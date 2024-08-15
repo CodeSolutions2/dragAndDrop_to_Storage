@@ -145,6 +145,8 @@ async function plot_bar_graph() {
 	// ---------------------------------------------------
 
 	// [Step 0] Assign bar width of each bar [*** choose it with respect to dataArray values ***]
+
+	// [SubStep a] Assign the width of the bar based on the height of the data
 	
 	// GOAL: Select a percentage of something (ie: bar width) that one can visualize with respect to something known (ie: max data value)
 	const bar_width_percentage_wrt_max_dataValue = 0.05; // *** USER INPUT ONLY : bar_width is XXX percent of max dataArray value ***
@@ -152,24 +154,27 @@ async function plot_bar_graph() {
 	const arr_sort = dataArray.sort();
 	const [min_val, max_val] = [arr_sort.at(0), arr_sort.at(arr_sort.length-1)];
 	
-	const bar_width = Math.floor(bar_width_percentage_wrt_max_dataValue*max_val);
-	console.log("bar_width: ", bar_width);
+	const bar_width_wo_padding = Math.floor(bar_width_percentage_wrt_max_dataValue*max_val);
+	console.log("bar_width_wo_padding: ", bar_width_wo_padding);
+	
 
-	// ---------------------------------------------------
-
-	// [Step 1] Assign the space between each bar (ie: bar_width padding)
+	// [SubStep b] Assign the space between each bar based on the width (ie: bar_width padding)
 	
 	// GOAL: Select a percentage of something (ie: space between bars) that one can visualize with respect to something known (ie: bar_width)
 	const padding_percentage_wrt_barWidth = 0.05; // *** USER INPUT ONLY : padding/space between bars is XXX percent of bar_width ***
 	
-	const desired_padding_between_bars = Math.floor(padding_percentage_wrt_barWidth*bar_width);
-	const padding = bar_width - desired_padding_between_bars;
+	const padding = Math.floor(padding_percentage_wrt_barWidth*bar_width);
 	console.log("padding: ", padding);
+
+	// The part of the bar that will be filled in with color is bar_width, the padding part will have no color
+	const bar_width = bar_width_wo_padding - padding;
+	console.log("bar_width: ", bar_width);
 	
 	// ---------------------------------------------------
 
 	// [Step 2] Assign bar_height of each bar [*** choose it with respect to dataArray values ***]
 	const bar_height = dataArray;
+	console.log("bar_height: ", bar_height);
 
 	// ---------------------------------------------------
 	
@@ -199,10 +204,10 @@ async function plot_bar_graph() {
 
 	var dropdown_option_type = document.getElementById("dropdown_options").value;
 	
-	// width = bar_width of each bar, with respect to w - 
-	// height = bar_height of each bar (using dataArray values) - [choose anything without thining of h] - y scales for it
-	// x = the (x-location) of each bar
-	// y = the (y-location) of each bar
+	// width = bar_width of each bar
+	// height = bar_height of each bar (using dataArray values)
+	// x = the (x-location) of each bar with respect to w
+	// y = the (y-location) of each bar with respect to h
 	
 	if (dropdown_option_type == 'drop_down_option0') {
 
@@ -212,9 +217,9 @@ async function plot_bar_graph() {
 			.enter()
 			.append('rect')
 			.attr('width', bar_width)
-			.attr('height', bar_height)
-			.attr('x', x)
-			.attr('y', y)
+			.attr('height', d => d)
+			.attr('x', (d, i) => i * w_divided_by_dataPoint_length)
+			.attr('y', d => h-d)
 			.attr("fill", "steelblue");
 
 	} else if (dropdown_option_type == 'drop_down_option1') {
