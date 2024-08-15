@@ -273,7 +273,6 @@ async function plot_bar_graph() {
 		const y_scale = d3.scaleLinear()
 		 	.domain([0, d3.max(dataArray)])
 			.range([0, h]); 
-		 	//.range([h, 0]);  // what I had before
 		
 		const bar_chart = svg.selectAll('rect')
 			.data(dataArray)
@@ -284,10 +283,6 @@ async function plot_bar_graph() {
 		 	.attr('x', (d,i) => x_scale(i))
 			.attr('y', (d) => h - y_scale(d))
 		 	.attr("fill", "steelblue");
-
-		//.attr('width', bar_width)  // what I had before
-		//.attr('height', d => d)  // what I had before
-		//.attr('y', (d,i) => y_scale(d)) // what I had before
 
 	} else if (dropdown_option_type == 'drop_down_option2') {
 		
