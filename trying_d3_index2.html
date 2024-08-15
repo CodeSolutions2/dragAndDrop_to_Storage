@@ -9,6 +9,8 @@
 <button id="plot_dataArray_values_to_text" onclick="plot_dataArray_values_to_text()" style="display:block;">plot_dataArray_values_to_text</button>
 
 <button id="test" onclick="test()" style="display:block;">test</button>
+
+<button id="test2" onclick="test2()" style="display:block;">test2</button>
 	
 <!-- Drop down menu: put in body -->
 <label for="select_dropdown_option_label">Select a drop down option to plot_bar_graph:</label>
@@ -162,7 +164,81 @@ async function test() {
             .attr("fill", "steelblue");
 
 }
+
+
+
+// -----------------------------------------------
+
+async function test2() {
+
+	const data = [30, 50, 80, 120, 200];
+
+	const w = 400;
+	const h = 400;
 	
+	// ---------------------------------------------------
+
+	// [Step 0] Assign bar width of each bar [*** choose it with respect to dataArray values ***]
+
+	// [SubStep a] Assign the width of the bar based on the height of the data
+	
+	// GOAL: Select a percentage of something (ie: bar width) that one can visualize with respect to something known (ie: max data value)
+	const bar_width_percentage_wrt_max_dataValue = 0.5; // *** USER INPUT ONLY : bar_width is XXX percent of max dataArray value ***
+	// OR 
+	// Select it automatically by height statictics of the data
+	
+	const arr_sort = dataArray.sort();
+	const [min_val, max_val] = [arr_sort.at(0), arr_sort.at(arr_sort.length-1)];
+	
+	const bar_width_wo_padding = Math.floor(bar_width_percentage_wrt_max_dataValue*max_val);
+	console.log("bar_width_wo_padding: ", bar_width_wo_padding);
+	
+
+	// [SubStep b] Assign the space between each bar based on the width (ie: bar_width padding)
+	
+	// GOAL: Select a percentage of something (ie: space between bars) that one can visualize with respect to something known (ie: bar_width)
+	const padding_percentage_wrt_barWidth = 0.05; // *** USER INPUT ONLY : padding/space between bars is XXX percent of bar_width ***
+	
+	const padding = Math.floor(padding_percentage_wrt_barWidth*bar_width_wo_padding);
+	console.log("padding: ", padding);
+
+	// The part of the bar that will be filled in with color is bar_width, the padding part will have no color
+	const bar_width = bar_width_wo_padding - padding;
+	console.log("bar_width: ", bar_width);
+	
+	// ---------------------------------------------------
+
+	// [Step 2] Assign bar_height of each bar [*** choose it with respect to dataArray values ***]
+	const bar_height = dataArray;
+	console.log("bar_height: ", bar_height);
+
+	// ---------------------------------------------------
+	
+	// [Step 3] Assign x, the (x-location) of each bar with respect to w
+	const w_divided_by_dataPoint_length = Math.floor(w/dataArray.length);
+	const x = dataArray.map((val, ind) => { return ind * w_divided_by_dataPoint_length; });
+	console.log("x: ", x);
+	
+	// ---------------------------------------------------
+	
+	// [Step 4] Assign y, the (y-location) of each bar with respect to h
+	const y = dataArray.map((val, ind) => { return h-val; });
+	console.log("y: ", y);
+	
+	
+        const svg = d3.select("svg");
+        
+        const bar_chart = figureElement.selectAll('rect')
+			.data(data)
+			.enter()
+			.append('rect')
+			.attr('width', bar_width)
+			.attr('height', d => d)
+			.attr('x', (d, i) => i * w_divided_by_dataPoint_length)
+			.attr('y', d => h-d)
+			.attr("fill", "steelblue");
+
+}
 // -----------------------------------------------
 
 async function plot_bar_graph() {
