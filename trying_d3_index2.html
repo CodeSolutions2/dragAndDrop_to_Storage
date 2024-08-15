@@ -26,77 +26,24 @@
 
 async function use_DOM_w_d3() {
 
-	// javascript
-	// const svg = d3.select("#data_display")
-
 	d3.select();
 	d3.selectAll();
-	
-	d3.select('h1').style('color', 'red')
-	.attr('class', 'heading')
-	.text('Updated h1 tag');
-	
-	d3.select('body').append('p').text('First Paragraph');
-	d3.select('body').append('p').text('Second Paragraph');
-	d3.select('body').append('p').text('Third Paragraph');
+
+	// h1 has to already exist
+	var h1Element = document.createElement('h1');
+	document.body.appendChild(h1Element);
+	d3.select('h1').style('color', 'red').attr('class', 'heading').text('Updated h1 tag');
+
+	// If h1 does not exist
+	// d3.select('body').append('h1').style('color', 'red').attr('class', 'heading').text('Updated h1 tag');
+
+	// If a paragraph Element does not exist
+	d3.select('body').append('p').text('First Paragraph');  // prints to body -> paragraph
+	d3.select('body').append('p').text('Second Paragraph');	// prints to body -> paragraph
+	d3.select('body').append('p').text('Third Paragraph');	// prints to body -> paragraph
 	
 	d3.selectAll('p').style('color', 'blue');
 
-}
-	
-// -----------------------------------------------
-	
-const w = 150;
-	
-async function plot_line_graph_dataObject() {
-
-	const data = [
-            { x: 0, y: 10 },
-            { x: 1, y: 20 },
-            { x: 2, y: 15 },
-            { x: 3, y: 25 },
-            { x: 4, y: 18 }
-        ];
-
-	const width = 928;
-	const height = 500;
-	// const margin = {top: 20, right: 20, bottom: 20, left: 20};
-	
-        const svg = d3.select("#data_display")
-		.append("svg")
-		.attr("class", 'line')
-		.attr("width", width)
-		.attr("height", height);
-
-        const x_scale = d3.scaleLinear()
-            .domain([0, d3.max(data, d => d.x)])
-            .range([0, width]);
-
-        const y_scale = d3.scaleLinear()
-            .domain([0, d3.max(data, d => d.y)])
-            .range([height, 0]);
-
-        const line = d3.line()
-            .x(d => x_scale(d.x))
-            .y(d => y_scale(d.y));
-
-        svg.append("path")
-            .datum(data)
-            .attr("fill", "none")
-            .attr("stroke", "steelblue")
-            .attr("stroke-width", 2)
-            .attr("d", line);
-
-	// Add the x-axis
-	svg.append("g")
-		.attr('class', 'x-axis')
-		.call(d3.axisBottom(x_scale));
-
-	// Add the y-axis
-	svg.append("g")
-		.attr('class', 'y-axis')
-		.call(d3.axisLeft(y_scale));
-	
 }
 
 // -----------------------------------------------
@@ -119,6 +66,18 @@ async function plot_dataArray_values_to_text() {
 		    .append('p') // appends paragraph for each data element
 		    .text('text appended to paragraph');
 
+		// Result: prints 5 times to the DOM body -> paragraph
+
+		// text appended to paragraph
+
+		// text appended to paragraph
+
+		// text appended to paragraph
+
+		// text appended to paragraph
+
+		// text appended to paragraph
+		
 	} else if (example == 1) {
 
 		d3.select('body')
@@ -184,6 +143,61 @@ async function plot_line_graph_dataArray() {
 			.call(d3.axisLeft(y_scale));
 
 	} 
+	
+}
+
+// -----------------------------------------------
+	
+const w = 150;
+	
+async function plot_line_graph_dataObject() {
+
+	const data = [
+            { x: 0, y: 10 },
+            { x: 1, y: 20 },
+            { x: 2, y: 15 },
+            { x: 3, y: 25 },
+            { x: 4, y: 18 }
+        ];
+
+	const width = 928;
+	const height = 500;
+	// const margin = {top: 20, right: 20, bottom: 20, left: 20};
+	
+        const svg = d3.select("#data_display")
+		.append("svg")
+		.attr("class", 'line')
+		.attr("width", width)
+		.attr("height", height);
+
+        const x_scale = d3.scaleLinear()
+            .domain([0, d3.max(data, d => d.x)])
+            .range([0, width]);
+
+        const y_scale = d3.scaleLinear()
+            .domain([0, d3.max(data, d => d.y)])
+            .range([height, 0]);
+
+        const line = d3.line()
+            .x(d => x_scale(d.x))
+            .y(d => y_scale(d.y));
+
+        svg.append("path")
+            .datum(data)
+            .attr("fill", "none")
+            .attr("stroke", "steelblue")
+            .attr("stroke-width", 2)
+            .attr("d", line);
+
+	// Add the x-axis
+	svg.append("g")
+		.attr('class', 'x-axis')
+		.call(d3.axisBottom(x_scale));
+
+	// Add the y-axis
+	svg.append("g")
+		.attr('class', 'y-axis')
+		.call(d3.axisLeft(y_scale));
 	
 }
 
