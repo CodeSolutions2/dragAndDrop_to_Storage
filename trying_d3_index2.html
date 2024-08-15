@@ -218,9 +218,12 @@ async function plot_bar_graph() {
 			.enter()
 			.append('rect')
 			.attr('width', bar_width)
-			.attr('height', (d, i) => if(i>1){d})
-			.attr('x', (d, i) => if(i>1){i * w_divided_by_dataPoint_length})
-			.attr('y', (d, i) => if(i>1){h-d})
+			//.attr('height', d => d)
+			.attr("height", function(d,i) { if(i>1){return d;} else {return 0;} })
+			//.attr('x', (d, i) => i * w_divided_by_dataPoint_length)
+			.attr("x", function(d,i) { if(i>1){return i * w_divided_by_dataPoint_length;} else {return 0;} })
+			//.attr('y', d => h-d)
+			.attr("y", function(d,i) { if(i>1){return h-d;} else {return 0;} })
 			.attr("fill", "steelblue");
 
 	} else if (dropdown_option_type == 'drop_down_option1') {
@@ -266,6 +269,48 @@ async function plot_bar_graph() {
 				var translate = [bar_width_way2 * i, 0]; 
 				return "translate("+ translate +")";
 			});
+
+	} else if (dropdown_option_type == 'drop_down_option3') {
+
+		var dataset = [80, 100, 56, 120, 180, 30, 40, 120, 160];
+
+var svgWidth = 500, svgHeight = 300, barPadding = 5;
+var barWidth = svgWidth / dataset.length;
+var svg = d3.select('svg')
+    .attr("width", svgWidth)
+    .attr("height", svgHeight);
+    
+var barChart = svg.selectAll("rect")
+    .data(dataset)
+    .enter()
+    .append("rect")
+    .attr("y", function(d) {
+         return svgHeight - d 
+    })
+    .attr("height", function(d) { 
+        return d; 
+    })
+    .attr("width", barWidth - barPadding)
+    .attr("class", "bar")
+    .attr("transform", function (d, i) {
+        var translate = [barWidth * i, 0]; 
+        return "translate("+ translate +")";
+    });
+
+var text = svg.selectAll("text")
+    .data(dataset)
+    .enter()
+    .append("text")
+    .text(function(d) {
+        return d;
+    })
+    .attr("y", function(d, i) {
+        return svgHeight - d - 2;
+    })
+    .attr("x", function(d, i) {
+        return barWidth * i;
+    })
+    .attr("fill", "#A64C38");
 
 	}
 
