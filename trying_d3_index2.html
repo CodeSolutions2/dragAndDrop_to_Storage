@@ -199,7 +199,8 @@ async function test2() {
 	// GOAL: Select a percentage of something (ie: space between bars) that one can visualize with respect to something known (ie: bar_width)
 	const padding_percentage_wrt_barWidth = 0.05; // *** USER INPUT ONLY : padding/space between bars is XXX percent of bar_width ***
 	
-	const padding = Math.floor(padding_percentage_wrt_barWidth*bar_width_wo_padding);
+	var padding = Math.floor(padding_percentage_wrt_barWidth*bar_width_wo_padding);
+	padding = 0.1; 
 	console.log("padding: ", padding);
 
 	// The part of the bar that will be filled in with color is bar_width, the padding part will have no color
@@ -278,7 +279,7 @@ async function plot_bar_graph() {
 	// GOAL: Select a percentage of something (ie: space between bars) that one can visualize with respect to something known (ie: bar_width)
 	const padding_percentage_wrt_barWidth = 0.05; // *** USER INPUT ONLY : padding/space between bars is XXX percent of bar_width ***
 	
-	const padding = Math.floor(padding_percentage_wrt_barWidth*bar_width_wo_padding);
+	var padding = Math.floor(padding_percentage_wrt_barWidth*bar_width_wo_padding);
 	padding = 0.1; 
 	console.log("padding: ", padding);
 
