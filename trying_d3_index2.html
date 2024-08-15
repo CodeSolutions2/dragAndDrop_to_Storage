@@ -144,36 +144,25 @@ async function plot_bar_graph() {
 
 	// ---------------------------------------------------
 
-	// Assign bar width
+	// Assign bar width of each bar, with respect to w
+	const padding_percentage = 0.05; // *** user input only : space between bars is XXX percent of bar_width ***
 
-	// Plot data on chart, Add bars to the chart
-	const bar_width = Math.floor((w/dataArray.length)/2);
-	console.log("bar_width: ", bar_width);
-
-	// Class recommendation
-	// const bar_width = Math.floor((w/dataArray.length));
-
+	// GOAL: Select padding percentage only, and calculate needed bar_width
+	const x_axis_divided = Math.floor((w/dataArray.length));
+	const desired_padding_between_bars = Math.floor(padding_percentage*x_axis_divided);   // The x-axis space between each bar, 5 percent of bar_width
+	const bar_width = x_axis_divided - desired_padding_between_bars;
+	
 	// ---------------------------------------------------
-
-	// Assign padding between bars
-
-	const padding = Math.floor(0.05*bar_width);   // The x-axis space between each bar, 10 percent of bar_width
-	console.log("padding: ", padding); 
+	
+	// Assign bar_height of each bar (using dataArray values) with respect to h 
+	const bar_height = dataArray.map((val, ind) => { return h-val; });
+	console.log("bar_height: ", bar_height);
 
 	// ---------------------------------------------------
 	
-	const x_scale = d3.scaleBand()
-		.domain(dataArray.map((d,i) => i))
-		.range([0, w])
-		.padding(padding);
-
 	// domain = the y-value range of the bars
 	const arr_sort = dataArray.sort();
 	const [min_val, max_val] = [arr_sort.at(0), arr_sort.at(arr_sort.length-1)];
-	
-	const y_scale = d3.scaleLinear()
-		.domain([0, max_val])
-		.range([h, 0]);
 	
 	// ---------------------------------------------------
 
@@ -190,10 +179,11 @@ async function plot_bar_graph() {
 
 	var dropdown_option_type = document.getElementById("dropdown_options").value;
 	
-	// width = bar_width
-	// height = bar_height, the dataArray values
+	// width = bar_width of each bar, with respect to w
+	// height = bar_height of each bar (using dataArray values) with respect to h
 	// x = the (x-location) of each bar
 	// y = the (y-location) of each bar
+	
 	if (dropdown_option_type == 'drop_down_option0') {
 
 		// Way 0: not using the scale command - did not work
@@ -202,14 +192,24 @@ async function plot_bar_graph() {
 			.enter()
 			.append('rect')
 			.attr('width', bar_width)
-			.attr('height', d => h-d)
+			//.attr('height', bar_height)
+			.attr('height', d => (h-d))
 			.attr('x', (d,i) => i * (bar_width + padding))
-			.attr('y', (d,i) => d)
+			.attr('y', (d,i) => (h-d))
 			.attr("fill", "steelblue");
 
 	} else if (dropdown_option_type == 'drop_down_option1') {
 		
 		// Way 1: using the scale command - did not work
+		const x_scale = d3.scaleBand()
+			.domain(dataArray.map((d,i) => i))
+			.range([0, w])
+			.padding(padding);
+
+		const y_scale = d3.scaleLinear()
+			.domain([0, max_val])
+			.range([h, 0]);
+		
 		const bar_chart = svg.selectAll('rect')
 			.data(dataArray)
 			.enter()
