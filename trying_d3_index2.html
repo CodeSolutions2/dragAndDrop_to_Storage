@@ -218,12 +218,9 @@ async function plot_bar_graph() {
 			.enter()
 			.append('rect')
 			.attr('width', bar_width)
-			//.attr('height', d => d)
-			.attr("height", function(d,i) { if(i>1){return d;} else {return 0;} })
-			//.attr('x', (d, i) => i * w_divided_by_dataPoint_length)
-			.attr("x", function(d,i) { if(i>1){return i * w_divided_by_dataPoint_length;} else {return 0;} })
-			//.attr('y', d => h-d)
-			.attr("y", function(d,i) { if(i>1){return h-d;} else {return 0;} })
+			.attr('height', d => d)
+			.attr('x', (d, i) => i * w_divided_by_dataPoint_length)
+			.attr('y', d => h-d)
 			.attr("fill", "steelblue");
 
 	} else if (dropdown_option_type == 'drop_down_option1') {
@@ -250,7 +247,7 @@ async function plot_bar_graph() {
 
 		
 		svg.selectAll("rect")
-		    .data(data)
+		    .data(dataArray)
 		    .enter()
 		    .append("rect")
 		    .attr("x", (d, i) => i * 80)
