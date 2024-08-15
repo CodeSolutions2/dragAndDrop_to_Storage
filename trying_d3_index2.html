@@ -149,7 +149,9 @@ async function plot_bar_graph() {
 	// [SubStep a] Assign the width of the bar based on the height of the data
 	
 	// GOAL: Select a percentage of something (ie: bar width) that one can visualize with respect to something known (ie: max data value)
-	const bar_width_percentage_wrt_max_dataValue = 0.05; // *** USER INPUT ONLY : bar_width is XXX percent of max dataArray value ***
+	const bar_width_percentage_wrt_max_dataValue = 0.25; // *** USER INPUT ONLY : bar_width is XXX percent of max dataArray value ***
+	// OR 
+	// Select it automatically by height statictics of the data
 	
 	const arr_sort = dataArray.sort();
 	const [min_val, max_val] = [arr_sort.at(0), arr_sort.at(arr_sort.length-1)];
@@ -247,6 +249,12 @@ async function plot_bar_graph() {
 	} else if (dropdown_option_type == 'drop_down_option2') {
 		
 		// Way 2: Class recommendation
+		const w_divided_by_dataPoint_length = Math.floor(w/dataArray.length);
+		var bar_width = w_divided_by_dataPoint_length;
+
+		const padding_percentage_wrt_barWidth = 0.05; // *** USER INPUT ONLY : padding/space between bars is XXX percent of bar_width ***
+		const padding = Math.floor(padding_percentage_wrt_barWidth*bar_width);
+		
 		const bar_chart = svg.selectAll('rect')
 			.data(dataArray)
 			.enter()
