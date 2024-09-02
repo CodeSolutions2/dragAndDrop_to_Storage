@@ -18,8 +18,8 @@ async function run() {
 
 	var arr_3d = [[[1], [2]], [[3], [4]]];
 
-	var shape = await shape(arr_3d);
-	console.log('shape: ', shape);  // 2, 2, 1
+	var output_shape = await shape(arr_3d);
+	console.log('output_shape: ', output_shape);  // 2, 2, 1
 	
 	var dims = [2, 1, 2]; // [desired_0th_dim, desired_1st_dim, desired_2nd_dim]
 
