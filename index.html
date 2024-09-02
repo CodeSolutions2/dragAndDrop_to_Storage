@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+	<!DOCTYPE html>
 <html>
 <head></head>
 <body>
@@ -7,16 +7,98 @@
 
 <br>
 	
-<button id="exchange_matrix" onclick="exchange_matrix()">exchange_matrix</button>
+<button id="exchange_3d_dimensions" onclick="exchange_3d_dimensions()">exchange_3d_dimensions</button>
 
 // -----------------------------------------------
 
-async function exchange_matrix() {
+async function zeros(dims) {
 
+	// dims: [desired_0th_dim, desired_1st_dim, desired_2nd_dim]
 
-  
+	var out = [];
+	
+	if (dims.length == 1) {
+		var desired_0th_dim = dims.at(0);
+		
+		out = Array.from({length: desired_0th_dim}, (val, ind) => { return 0; }); 
+
+	} else if (dims.length == 2) {
+		var desired_0th_dim = dims.at(0);
+		var desired_1st_dim = dims.at(1);
+		
+		for (var i=0; i<desired_0th_dim; i++) {
+			var arr = Array.from({length: desired_1st_dim}, (val, ind) => { return 0; }); 
+			out.push(arr);
+		}
+
+	} else if (dims.length == 3) {
+		var desired_0th_dim = dims.at(0);
+		var desired_1st_dim = dims.at(1);
+		var desired_2nd_dim = dims.at(2);
+		
+		for (var i=0; i<desired_0th_dim; i++) {
+			temp = [];
+			for (var j=0; j<desired_1st_dim; j++) {
+				var arr = Array.from({length: desired_2nd_dim}, (val, ind) => { return 0; }); 
+				temp.push(arr);
+			}
+			out.push(temp);
+		}
+		
+	} else {
+		console.log('Enter an array of length 1, 2, or 3. (ie: [desired_0th_dim, desired_1st_dim, desired_2nd_dim])')
+	}
+	
+	return out;
+}
+	
+
+async function exchange_3d_dimensions(arr_3d, [desired_0th_dim, desired_1st_dim, desired_2nd_dim]) {
+
+	// [0] List the original array location_values and values
+	var a = [];
+	var b = [];
+	var c = [];
+	var val = [];
+
+	for (var i=0; i<arr_3d.length; i++) {
+		for (var j=0; j<arr_3d[0].length; j++) {
+			for (var k=0; k<arr_3d[0][0].length; k++) {
+			       a.push(i);
+			       b.push(j);
+			       c.push(k);
+			       val.push(arr_3d[i][j][k])
+			}
+		}
+	}
+
+	// [1] Make the new shape array, filled with zeros
+	var desired_3d = await zeros([desired_0th_dim, desired_1st_dim, desired_2nd_dim]);
+
+	// [2] 
+	for (var i=0; i<desired_0th_dim; i++) {
+		for (var j=0; j<desired_1st_dim; j++) {
+			for (var k=0; k<desired_2nd_dim; k++) {
+			       
+			       for (var ind=0; ind<a.length; ind++) {
+				       if (a.at(ind) == i && b.at(ind) == j && c.at(ind) == k) {
+						desired_3d[i][j][k] = val.at(ind);
+			       			break;
+				       }
+			       }
+			}
+		}
+	}
+			       
+	return desired_3d;       
 }
   
+// -----------------------------------------------
+
+
+// -----------------------------------------------
+
+
 // -----------------------------------------------
 
 </script>
