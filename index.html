@@ -5,9 +5,9 @@
 
 <!-- <input id="input_text" type="text" value="" placeholder="" rows="10" cols="100" style="display:block; text-align: left; width: 600px;"> -->
 
-<br>
-	
 <button id="run" onclick="run()">run</button>
+
+<div id="notification"></div>
 
 	
 <script>
@@ -17,15 +17,24 @@
 async function run() {
 
 	var arr_3d = [[[1], [2]], [[3], [4]]];
+	document.getElementById('notification').innerHTML = arr_3d;
 
 	var output_shape = await shape(arr_3d);
 	console.log('output_shape: ', output_shape);  // 2, 2, 1
+
+	// -------------------------
+
+	document.getElementById('notification').innerHTML += "<br>";
+
+	// -------------------------
 	
 	var dims = [2, 1, 2]; // [desired_0th_dim, desired_1st_dim, desired_2nd_dim]
-
 	var desired_3d = await exchange_3d_dimensions(arr_3d, dims);
 	console.log("desired_3d: ", desired_3d);
-		
+	document.getElementById('notification').innerHTML += desired_3d;
+	
+	output_shape = await shape(desired_3d);
+	console.log('output_shape: ', output_shape);  // 2, 2, 1
 }
 
 // -----------------------------------------------
@@ -131,7 +140,6 @@ async function exchange_3d_dimensions(arr_3d, dims) {
 			       for (var ind=0; ind<a.length; ind++) {
 				       if (a.at(ind) == i && b.at(ind) == j && c.at(ind) == k) {
 						desired_3d[i][j][k] = val.at(ind);
-			       			break;
 				       }
 			       }
 			}
