@@ -1,4 +1,4 @@
-	<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head></head>
 <body>
@@ -7,8 +7,51 @@
 
 <br>
 	
-<button id="exchange_3d_dimensions" onclick="exchange_3d_dimensions()">exchange_3d_dimensions</button>
+<button id="run" onclick="run()">run</button>
 
+	
+<script>
+
+// -----------------------------------------------
+
+async function run() {
+
+	var arr_3d = [[[1], [2]], [[3], [4]]];
+
+	var shape = await shape(arr_3d);
+	console.log('shape: ', shape);  // 2, 2, 1
+	
+	var dims = [2, 1, 2]; // [desired_0th_dim, desired_1st_dim, desired_2nd_dim]
+
+	var desired_3d = await exchange_3d_dimensions(arr_3d, dims);
+	console.log("desired_3d: ", desired_3d);
+		
+}
+
+// -----------------------------------------------
+
+async function recur_func(arr) {
+	if (arr != undefined) {
+		return [arr[0], arr.length];
+	} else {
+		return arr;
+	}
+}
+	
+async function shape(arr) {
+	var out = await recur_func(arr);
+	var shap = [out[1]];
+	var c = 0; // typically work with 4D arrays or less
+	while (out != undefined && c < 4) {
+		out = await recur_func(out[0]);
+		if (out != undefined) {
+			shap.push(out[1]);
+		}
+		c = c + 1;
+	}
+	return shap.slice(0, shap.length-1);
+}
+	
 // -----------------------------------------------
 
 async function zeros(dims) {
@@ -52,8 +95,9 @@ async function zeros(dims) {
 	return out;
 }
 	
-
-async function exchange_3d_dimensions(arr_3d, [desired_0th_dim, desired_1st_dim, desired_2nd_dim]) {
+// -----------------------------------------------
+			
+async function exchange_3d_dimensions(arr_3d, dims) {
 
 	// [0] List the original array location_values and values
 	var a = [];
@@ -73,9 +117,13 @@ async function exchange_3d_dimensions(arr_3d, [desired_0th_dim, desired_1st_dim,
 	}
 
 	// [1] Make the new shape array, filled with zeros
-	var desired_3d = await zeros([desired_0th_dim, desired_1st_dim, desired_2nd_dim]);
+	var desired_3d = await zeros(dims);
 
-	// [2] 
+	// [2] Fill in output shaped 3d array
+	var desired_0th_dim = dims.at(0);
+	var desired_1st_dim = dims.at(1);
+	var desired_2nd_dim = dims.at(2);
+	
 	for (var i=0; i<desired_0th_dim; i++) {
 		for (var j=0; j<desired_1st_dim; j++) {
 			for (var k=0; k<desired_2nd_dim; k++) {
@@ -92,9 +140,6 @@ async function exchange_3d_dimensions(arr_3d, [desired_0th_dim, desired_1st_dim,
 			       
 	return desired_3d;       
 }
-  
-// -----------------------------------------------
-
 
 // -----------------------------------------------
 
