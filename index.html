@@ -30,8 +30,9 @@ async function run() {
 	
 	// var dims = [2, 1, 2]; // [desired_0th_dim, desired_1st_dim, desired_2nd_dim]
 	// OR
-	//var output_dims_index = [0,2,1]; // specifies the [dimension index] of the desired output array
-	var output_dims_index = [2,1,0]; // specifies the [dimension index] of the desired output array 
+	// var output_dims_index = [0,2,1]; // specifies the [dimension index] of the desired output array
+	// var output_dims_index = [2,1,0]; //  [[[1,3],[2,4]]], shape (1,2,2)
+	var output_dims_index = [2,0,1];
 	
 	var desired_3d = await exchange_3d_dimensions(arr_3d, output_dims_index);
 	console.log("desired_3d: ", desired_3d);
@@ -141,12 +142,11 @@ async function exchange_3d_dimensions(arr_3d, output_dims_index) {
 			}
 		}
 	}
-	console.log('org_0th_dim: ', org_0th_dim);
-	console.log('org_1st_dim: ', org_1st_dim);
-	console.log('org_2nd_dim: ', org_2nd_dim);
-	console.log('val: ', val);
-
-
+	// console.log('org_0th_dim: ', org_0th_dim);
+	// console.log('org_1st_dim: ', org_1st_dim);
+	// console.log('org_2nd_dim: ', org_2nd_dim);
+	// console.log('val: ', val);
+	
 	// Need to transform output_dims_index, from index to dimensions
 	var dims_of_org_arr = [arr_3d.length, arr_3d[0].length, arr_3d[0][0].length];
 	var dims = output_dims_index.map((val, i) => { return dims_of_org_arr.at(val); });
@@ -157,12 +157,12 @@ async function exchange_3d_dimensions(arr_3d, output_dims_index) {
 
 	// Exchange notation for desired output index dimensions
 	var all = [org_0th_dim, org_1st_dim, org_2nd_dim];
-	
 	var all_switched = output_dims_index.map((val, i) => { return all.at(val); });
 	org_0th_dim = all_switched.at(0);
 	org_1st_dim = all_switched.at(1);
 	org_2nd_dim = all_switched.at(2);
 
+	
 	// [2] Fill in output shaped 3d array
 	var desired_0th_dim = dims.at(0);
 	var desired_1st_dim = dims.at(1);
