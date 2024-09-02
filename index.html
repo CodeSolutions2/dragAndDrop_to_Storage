@@ -28,8 +28,10 @@ async function run() {
 
 	// -------------------------
 	
-	var dims = [2, 1, 2]; // [desired_0th_dim, desired_1st_dim, desired_2nd_dim]
-	var desired_3d = await exchange_3d_dimensions(arr_3d, dims);
+	// var dims = [2, 1, 2]; // [desired_0th_dim, desired_1st_dim, desired_2nd_dim]
+	// OR
+	var output_dims_index = [0,2,1]; // specifies the [dimension index] of the desired output array 
+	var desired_3d = await exchange_3d_dimensions(arr_3d, output_dims_index);
 	console.log("desired_3d: ", desired_3d);
 	document.getElementById('notification').innerHTML += desired_3d.toString();
 	
