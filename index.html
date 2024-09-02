@@ -17,7 +17,7 @@
 async function run() {
 
 	var arr_3d = [[[1], [2]], [[3], [4]]];
-	document.getElementById('notification').innerHTML = arr_3d.toString();
+	document.getElementById('notification').innerHTML = JSON.stringify(arr_3d);
 
 	var output_shape = await shape(arr_3d);
 	console.log('output_shape: ', output_shape);  // 2, 2, 1
@@ -30,10 +30,12 @@ async function run() {
 	
 	// var dims = [2, 1, 2]; // [desired_0th_dim, desired_1st_dim, desired_2nd_dim]
 	// OR
-	var output_dims_index = [0,2,1]; // specifies the [dimension index] of the desired output array 
+	//var output_dims_index = [0,2,1]; // specifies the [dimension index] of the desired output array
+	var output_dims_index = [2,1,0]; // specifies the [dimension index] of the desired output array 
+	
 	var desired_3d = await exchange_3d_dimensions(arr_3d, output_dims_index);
 	console.log("desired_3d: ", desired_3d);
-	document.getElementById('notification').innerHTML += desired_3d.toString();
+	document.getElementById('notification').innerHTML += JSON.stringify(desired_3d);
 	
 	output_shape = await shape(desired_3d);
 	console.log('output_shape: ', output_shape);  // 2, 2, 1
@@ -167,14 +169,9 @@ async function exchange_3d_dimensions(arr_3d, output_dims_index) {
 	var desired_2nd_dim = dims.at(2);
 	
 	for (var i=0; i<desired_0th_dim; i++) {
-		console.log('i: ', i);
-		
 		for (var j=0; j<desired_1st_dim; j++) {
-			console.log('j: ', j);
-			
 			for (var k=0; k<desired_2nd_dim; k++) {
-				console.log('k: ', k);
-
+				
 				// cycle over the index of a for every i,j,k value
 			       for (var ind=0; ind<org_0th_dim.length; ind++) {
 				       if (org_0th_dim.at(ind) == i && org_1st_dim.at(ind) == j && org_2nd_dim.at(ind) == k) {
