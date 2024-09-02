@@ -106,31 +106,58 @@ async function zeros(dims) {
 	
 // -----------------------------------------------
 			
-async function exchange_3d_dimensions(arr_3d, dims) {
+async function exchange_3d_dimensions(arr_3d, output_dims_index) {
 
+	// dims: [2,1,2] implying the output dimension size
+	// OR
+	// output_dims_index: [0,2,1] implying how to switch the dimension index of arr_3d, this is technically more precise because two dimension indexes could have the same size. So one is specifying exactly which dimension index to use for a particular dimension.
+
+	// Way 0
+	// dims notation [2,2,1] => [2,1,2] 
+	
+	// Way 1
+	// need to say which dimension should switch with, which dimension
+	// output_dims_index specifies the [dimension index] of the desired output array 
+	// [2,2,1] = [org_0th_dim, org_1st_dim, org_2nd_dim] => [2,1,2] = [org_0th_dim, org_2nd_dim, org_1st_dim] = [0,2,1] 
+
+	
 	// [0] List the original array location_values and values
-	var a = [];
-	var b = [];
-	var c = [];
+	var org_0th_dim = [];
+	var org_1st_dim = [];
+	var org_2nd_dim = [];
 	var val = [];
 
 	for (var i=0; i<arr_3d.length; i++) {
 		for (var j=0; j<arr_3d[0].length; j++) {
 			for (var k=0; k<arr_3d[0][0].length; k++) {
-			       a.push(i);
-			       b.push(j);
-			       c.push(k);
+			       org_0th_dim.push(i);
+			       org_1st_dim.push(j);
+			       org_2nd_dim.push(k);
 			       val.push(arr_3d[i][j][k])
 			}
 		}
 	}
-	console.log('a: ', a);
-	console.log('b: ', b);
-	console.log('c: ', c);
+	console.log('org_0th_dim: ', org_0th_dim);
+	console.log('org_1st_dim: ', org_1st_dim);
+	console.log('org_2nd_dim: ', org_2nd_dim);
 	console.log('val: ', val);
 
+
+	// Need to transform output_dims_index, from index to dimensions
+	var dims_of_org_arr = [arr_3d.length, arr_3d[0].length, arr_3d[0][0].length];
+	var dims = output_dims_index.map((val, i) => { return dims_of_org_arr.at(val); });
+	
+	
 	// [1] Make the new shape array, filled with zeros
 	var desired_3d = await zeros(dims);
+
+	// Exchange notation for desired output index dimensions
+	var all = [org_0th_dim, org_1st_dim, org_2nd_dim];
+	
+	var all_switched = output_dims_index.map((val, i) => { return all.at(val); });
+	org_0th_dim = all_switched.at(0);
+	org_1st_dim = all_switched.at(1);
+	org_2nd_dim = all_switched.at(2);
 
 	// [2] Fill in output shaped 3d array
 	var desired_0th_dim = dims.at(0);
@@ -147,8 +174,8 @@ async function exchange_3d_dimensions(arr_3d, dims) {
 				console.log('k: ', k);
 
 				// cycle over the index of a for every i,j,k value
-			       for (var ind=0; ind<a.length; ind++) {
-				       if (a.at(ind) == i && b.at(ind) == j && c.at(ind) == k) {
+			       for (var ind=0; ind<org_0th_dim.length; ind++) {
+				       if (org_0th_dim.at(ind) == i && org_1st_dim.at(ind) == j && org_2nd_dim.at(ind) == k) {
 						desired_3d[i][j][k] = val.at(ind);
 				       }
 			       }
