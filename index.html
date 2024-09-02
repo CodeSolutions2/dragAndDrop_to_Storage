@@ -16,15 +16,17 @@
 
 async function run() {
 
-	var arr_3d = [[[1], [2]], [[3], [4]]];
-	document.getElementById('notification').innerHTML = JSON.stringify(arr_3d);
+	// var arr_3d = [[[1], [2]], [[3], [4]]];
+	var arr_3d = JSON.parse(document.getElementById('input_text').value);
+	document.getElementById('notification').innerHTML = "Original array: " + JSON.stringify(arr_3d);
 
 	var output_shape = await shape(arr_3d);
-	console.log('output_shape: ', output_shape);  // 2, 2, 1
+	// console.log('output_shape: ', output_shape);
+	document.getElementById('notification').innerHTML += "Original array output shape: " + JSON.stringify(output_shape);
 
 	// -------------------------
 
-	document.getElementById('notification').innerHTML += "<br>";
+	document.getElementById('notification').innerHTML += "<br><br>";
 
 	// -------------------------
 	
@@ -35,11 +37,11 @@ async function run() {
 	var output_dims_index = [2,0,1];
 	
 	var desired_3d = await exchange_3d_dimensions(arr_3d, output_dims_index);
-	console.log("desired_3d: ", desired_3d);
-	document.getElementById('notification').innerHTML += JSON.stringify(desired_3d);
+	document.getElementById('notification').innerHTML += "Array with exchanged dimensions: " + JSON.stringify(desired_3d);
 	
 	output_shape = await shape(desired_3d);
-	console.log('output_shape: ', output_shape);  // 2, 2, 1
+	// console.log('output_shape: ', output_shape);
+	document.getElementById('notification').innerHTML += "Array with exchanged dimensions output shape: " + JSON.stringify(output_shape);
 }
 
 // -----------------------------------------------
