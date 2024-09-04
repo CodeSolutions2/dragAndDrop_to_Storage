@@ -60,6 +60,7 @@ async function testing_flat() {
 
 	shap = await shape(xs_test_3d_arr);  
 	console.log('Shape xs_test_3d_arr: ', shap);
+
 	
 	var out = [xs_test_3d_arr[0]];
 
@@ -72,6 +73,11 @@ async function testing_flat() {
 	var out2 = recur_flat(out);
 	console.log('out2: ', out2);
 
+	
+	var str = JSON.stringify(xs_test_3d_arr);
+	const regex = /\b\d+\.\d+\b/g;
+	var matches = str.match(regex);
+	console.log('matches: ', matches);
 }
 
 
@@ -92,7 +98,6 @@ function recur_flat(arr) {
 	
 
 
-	
 
 async function create_correct_batchSize_for_xTest(xs_test_3d_arr, batch_size) {
 
