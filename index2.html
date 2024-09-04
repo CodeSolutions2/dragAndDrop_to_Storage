@@ -39,15 +39,9 @@ async function run_it2() {
 
 async function create_correct_batchSize_for_xTest(xs_test_3d_arr, batch_size) {
 
-	xs_test_3d_arr = xs_test_3d_arr.dataSync(); // Float32Array , [batch_size=1, timesteps=11, num_of_features=1]
-	console.log('xs_test_3d_arr: ', xs_test_3d_arr);
+	var xs_test_flat = await convert_tfarray_to_FlatnormalArray(xs_test_3d_arr);
 
-	// Convert the TypedArray into a normal array
-	const normalArray = await Array.from(xs_test_3d_arr);
-	console.log('normalArray: ', normalArray);
-	
-	var xs_test_flat = normalArray.flat();   // [timesteps=11]
-	console.log('xs_test_flat: ', xs_test_flat);
+	// ------------------------
 
 	var xs_test_1d_arr = xs_test_flat;
 
@@ -74,14 +68,27 @@ async function create_correct_batchSize_for_xTest(xs_test_3d_arr, batch_size) {
 	
 // -----------------------------------------------
 
+async function convert_tfarray_to_FlatnormalArray(xs_test_3d_arr) {
+
+	xs_test_3d_arr = xs_test_3d_arr.dataSync(); // Float32Array , [batch_size=1, timesteps=11, num_of_features=1]
+	console.log('xs_test_3d_arr: ', xs_test_3d_arr);
+
+	// Convert the TypedArray into a normal array
+	const normalArray = await Array.from(xs_test_3d_arr);
+	console.log('normalArray: ', normalArray);
+	
+	var xs_test_flat = normalArray.flat();   // [timesteps=11]
+	console.log('xs_test_flat: ', xs_test_flat);
+
+	return xs_test_flat;
+}
+
+
 async function recur_func(xs_test_3d_arr) {
 	
-	// Reassign xs_test_3d_arr
-	xs_test_3d_arr = xs_test_3d_arr.dataSync()[0]; // convert to array
-	console.log('xs_test_3d_arr: ', xs_test_3d_arr);
-	
-	var xs_test_flat = xs_test_3d_arr.flat();
-	console.log('xs_test_flat: ', xs_test_flat);
+	var xs_test_flat = await convert_tfarray_to_FlatnormalArray(xs_test_3d_arr);
+
+	// ------------------------
 	
 	var repeated_last_value = await Array.from({length: 1}, (val, ind) => { return xs_test_flat.at(xs_test_flat.length-1); });
 	console.log('repeated_last_value: ', repeated_last_value);
