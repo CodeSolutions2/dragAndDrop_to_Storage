@@ -4,7 +4,7 @@
 <body>
 
 <button id="run_it" onclick="run_it()">run_it</button>
-
+<button id="run_it2" onclick="run_it2()">run_it2</button>
 
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
 
@@ -13,30 +13,25 @@
 
 
 async function run_it() {
+	
+	var xs_test_3d_arr = [30.299999237060547, 31, 31.299999237060547, 26.299999237060547, 24.899999618530273, 24.299999237060547, 24, 23.100000381469727, 22.600000381469727, 22.399999618530273, 22];
+	xs_test_3d_arr = tf.tensor(xs_test_3d_arr);
+	
+ 	var batch_size = 19;
+	
+	xs_test_3d_arr = await create_correct_batchSize_for_xTest(xs_test_3d_arr, batch_size);
+	console.log('xs_test_3d_arr: ', xs_test_3d_arr);
 
-  var xs_test_3d_arr = [30.299999237060547
-​
-1: 31
-​
-2: 31.299999237060547
-​
-3: 26.299999237060547
-​
-4: 24.899999618530273
-​
-5: 24.299999237060547
-​
-6: 24
-​
-7: 23.100000381469727
-​
-8: 22.600000381469727
-​
-9: 22.399999618530273
-​
-10: 22]
+}
 
-  var xs_test_3d_arr = await create_correct_batchSize_for_xTest(xs_test_3d_arr, batch_size);
+
+async function run_it2() {
+	
+	var xs_test_3d_arr = [30.299999237060547, 31, 31.299999237060547, 26.299999237060547, 24.899999618530273, 24.299999237060547, 24, 23.100000381469727, 22.600000381469727, 22.399999618530273, 22];
+	xs_test_3d_arr = tf.tensor(xs_test_3d_arr);
+	
+	xs_test_3d_arr = await recur_func(xs_test_3d_arr);
+	console.log('xs_test_3d_arr: ', xs_test_3d_arr);
 
 }
 
