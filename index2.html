@@ -69,17 +69,18 @@ async function testing_flat() {
 	var out1 = out.flat();
 	console.log('out1: ', out1);
 
-	var out2 = recur_flat(out);
+	var out2 = await recur_flat(out);
 	console.log('out2: ', out2);
 }
 
 
-function recur_flat(arr) {
+function async recur_flat(arr) {
 	 var flat_arr = arr.map((val, ind) => {
 		console.log('val: ', val);
 		console.log('Array.isArray(val): ', Array.isArray(val));
 		if (Array.isArray(val)) {
-			return recur_flat(val);
+			var out = async() => { return await recur_flat(val)[0]; };
+			return out;
 		} else {
 			return val;
 		}
@@ -88,6 +89,21 @@ function recur_flat(arr) {
 	console.log('flat_arr: ', flat_arr);
 	return flat_arr;
 }
+
+
+
+function async recur_flat2(arr) {
+
+	var nested_array = await recur_flat(arr);
+	if (nested_array.length == 1) { nested_array = nested_array[0]; };
+
+	var flatArr = out[0];
+	for (var i=1; i<out.length-1; i++) {
+		flatArr = flatArr.concat(out[i]);
+	}
+	return flatArr;
+}
+
 	
 
 async function create_correct_batchSize_for_xTest(xs_test_3d_arr, batch_size) {
