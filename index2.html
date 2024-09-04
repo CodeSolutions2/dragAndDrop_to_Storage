@@ -5,6 +5,7 @@
 
 <button id="run_it" onclick="run_it()">run_it</button>
 <button id="run_it2" onclick="run_it2()">run_it2</button>
+<button id="run_it3" onclick="run_it3()">run_it3</button>
 
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
 
@@ -27,7 +28,7 @@ async function run_it() {
 
 async function run_it2() {
 	
-	var xs_test_3d_arr = [30.299999237060547, 31, 31.299999237060547, 26.299999237060547, 24.899999618530273, 24.299999237060547, 24, 23.100000381469727, 22.600000381469727, 22.399999618530273, 22];
+	var xs_test_3d_arr = [[30.299999237060547, 31, 31.299999237060547, 26.299999237060547, 24.899999618530273, 24.299999237060547, 24, 23.100000381469727, 22.600000381469727, 22.399999618530273, 22], [30.299999237060547, 31, 31.299999237060547, 26.299999237060547, 24.899999618530273, 24.299999237060547, 24, 23.100000381469727, 22.600000381469727, 22.399999618530273, 22]];
 	xs_test_3d_arr = tf.tensor(xs_test_3d_arr);
 	
 	xs_test_3d_arr = await shift_tf_xsTest_array(xs_test_3d_arr);
@@ -35,7 +36,17 @@ async function run_it2() {
 
 }
 
+async function run_it3() {
+	
+	var xs_test_3d_arr = [[[30.299999237060547], [31], [31.299999237060547], [26.299999237060547], [24.899999618530273], [24.299999237060547], [24], [23.100000381469727], [22.600000381469727], [22.399999618530273], [22]], [[30.299999237060547], [31], [31.299999237060547], [26.299999237060547], [24.899999618530273], [24.299999237060547], [24], [23.100000381469727], [22.600000381469727], [22.399999618530273], [22]]];
 
+	shap = await shape(xs_test_3d_arr);  
+	console.log('Shape xs_test_3d_arr: ', shap);
+	
+	var out = xs_test_3d_arr[0][...];
+	console.log('out: ', out);
+}
+	
 
 async function create_correct_batchSize_for_xTest(xs_test_3d_arr, batch_size) {
 
@@ -69,6 +80,12 @@ async function create_correct_batchSize_for_xTest(xs_test_3d_arr, batch_size) {
 
 
 async function shift_tf_xsTest_array(xs_test_3d_arr) {
+
+	// Ensure that the first batch is only used
+	if (xs_test_3d_arr.length > 1) {
+		// only take the first batch
+		xs_test_3d_arr = xs_test_3d_arr[0][...][...];
+	}
 	
 	var xs_test_flat = await convert_tfarray_to_FlatnormalArray(xs_test_3d_arr);
 	console.log('xs_test_flat: ', xs_test_flat);
