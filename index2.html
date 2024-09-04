@@ -43,7 +43,7 @@ async function run_it3() {
 	shap = await shape(xs_test_3d_arr);  
 	console.log('Shape xs_test_3d_arr: ', shap);
 	
-	var out = xs_test_3d_arr[0][...];
+	var out = xs_test_3d_arr[0];
 	console.log('out: ', out);
 }
 	
@@ -84,7 +84,7 @@ async function shift_tf_xsTest_array(xs_test_3d_arr) {
 	// Ensure that the first batch is only used
 	if (xs_test_3d_arr.length > 1) {
 		// only take the first batch
-		xs_test_3d_arr = xs_test_3d_arr[0][...][...];
+		xs_test_3d_arr = xs_test_3d_arr[0];
 	}
 	
 	var xs_test_flat = await convert_tfarray_to_FlatnormalArray(xs_test_3d_arr);
