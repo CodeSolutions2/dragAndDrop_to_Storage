@@ -6,6 +6,8 @@
 <button id="run_it" onclick="run_it()">run_it</button>
 <button id="run_it2" onclick="run_it2()">run_it2</button>
 <button id="run_it3" onclick="run_it3()">run_it3</button>
+<button id="testing_flat" onclick="testing_flat()">testing_flat</button>
+	
 
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
 
@@ -47,6 +49,39 @@ async function run_it3() {
 
 	shap = await shape(out);  
 	console.log('Shape out: ', shap);
+}
+
+
+
+
+async function testing_flat() {
+	
+	var xs_test_3d_arr = [[[30.299999237060547], [31], [31.299999237060547], [26.299999237060547], [24.899999618530273], [24.299999237060547], [24], [23.100000381469727], [22.600000381469727], [22.399999618530273], [22]], [[30.299999237060547], [31], [31.299999237060547], [26.299999237060547], [24.899999618530273], [24.299999237060547], [24], [23.100000381469727], [22.600000381469727], [22.399999618530273], [22]]];
+
+	shap = await shape(xs_test_3d_arr);  
+	console.log('Shape xs_test_3d_arr: ', shap);
+	
+	var out = [xs_test_3d_arr[0]];
+
+	shap = await shape(out);  
+	console.log('Shape out: ', shap);
+
+	var out1 = out.flat();
+	console.log('out1: ', out1);
+
+	var out2 = await recur_flat(out);
+	console.log('out2: ', out2);
+}
+
+
+async function recur_flat(arr) {
+	return arr.map((val, ind) => {
+		if (Array.isArray(val)) {
+			return recur_flat(val);
+		} else {
+			return val;
+		}
+	});
 }
 	
 
