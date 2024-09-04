@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head></head>
+<body>
+
+<button id="run_it" onclick="run_it()">run_it</button>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
+
+
+<script>
+
+
+async function run_it() {
+
+  var xs_test_3d_arr = [30.299999237060547
+​
+1: 31
+​
+2: 31.299999237060547
+​
+3: 26.299999237060547
+​
+4: 24.899999618530273
+​
+5: 24.299999237060547
+​
+6: 24
+​
+7: 23.100000381469727
+​
+8: 22.600000381469727
+​
+9: 22.399999618530273
+​
+10: 22]
+
+  var xs_test_3d_arr = await create_correct_batchSize_for_xTest(xs_test_3d_arr, batch_size);
+
+}
+
+
+
+async function create_correct_batchSize_for_xTest(xs_test_3d_arr, batch_size) {
+
+	xs_test_3d_arr = xs_test_3d_arr.dataSync(); // convert to array , [batch_size=1, timesteps=11, num_of_features=1]
+	console.log('xs_test_3d_arr: ', xs_test_3d_arr);
+	
+	var xs_test_flat = xs_test_3d_arr.flat();   // [timesteps=11]
+	console.log('xs_test_flat: ', xs_test_flat);
+
+	var xs_test_1d_arr = xs_test_flat;
+
+	var xs_test_2d_arr = xs_test_1d_arr.map((val, ind) => { return [val]; });
+	console.log('xs_test_2d_arr: ', xs_test_2d_arr); // [timesteps=11, num_of_features=1]
+
+	shap = await shape(xs_test_2d_arr);  
+	console.log('Shape xs_test_2d_arr: ', shap);
+
+	// -----------------------------
+	
+	// Repeat xs_test batch_size times
+	xs_test_3d_arr = [];
+	for (var i=0; i<batch_size; i++) {
+		xs_test_3d_arr.push(xs_test_2d_arr)
+	}
+	// console.log('xs_test_3d_arr: ', xs_test_3d_arr);  // [batch_size=19, timesteps=11, num_of_features=1]
+
+	shap = await shape(xs_test_3d_arr);  
+	console.log('Shape xs_test_3d_arr: ', shap);
+	
+	return tf.tensor(xs_test_3d_arr);
+}
+	
+// -----------------------------------------------
+
+async function recur_func(xs_test_3d_arr) {
+	
+	// Reassign xs_test_3d_arr
+	xs_test_3d_arr = xs_test_3d_arr.dataSync(); // convert to array
+	console.log('xs_test_3d_arr: ', xs_test_3d_arr);
+	
+	var xs_test_flat = xs_test_3d_arr.flat();
+	console.log('xs_test_flat: ', xs_test_flat);
+	
+	var repeated_last_value = await Array.from({length: 1}, (val, ind) => { return xs_test_flat.at(xs_test_flat.length-1); });
+	console.log('repeated_last_value: ', repeated_last_value);
+	
+	var xs_test_1d_arr = xs_test_flat.slice(1, xs_test_flat.length).concat(repeated_last_value);
+	console.log('xs_test_1d_arr: ', xs_test_1d_arr);
+	
+	// ------------------------
+	
+	var xs_test_2d_arr = xs_test_1d_arr.map((val, ind) => { return [val]; });
+	xs_test_3d_arr = [xs_test_2d_arr];
+	console.log('xs_test_3d_arr: ', xs_test_3d_arr);
+	
+	// Test shape - [ batch_size=1, timesteps, 1 ]
+	shap = await shape(xs_test_3d_arr);  
+	console.log('Shape xs_test_3d_arr: ', shap);
+
+	return tf.tensor(xs_test_3d_arr);
+}
+
+
+
+
+
+</script>
+</body>
+</html>
