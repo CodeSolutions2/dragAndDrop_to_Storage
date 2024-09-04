@@ -69,25 +69,27 @@ async function testing_flat() {
 	var out1 = out.flat();
 	console.log('out1: ', out1);
 
-	var out2 = recur_flat(out);
-	console.log('out2: ', out2);
+	// var out2 = recur_flat(out);
+	// console.log('out2: ', out2);
+
+	var out3 = await recur_flat2(out);
+	console.log('out3: ', out3);
 }
 
 
-// function async recur_flat(arr) {
-// 	 var flat_arr = arr.map(async(val, ind) => {
-// 		console.log('val: ', val);
-// 		console.log('Array.isArray(val): ', Array.isArray(val));
-// 		if (Array.isArray(val)) {
-// 			return await recur_flat(val)[0];
-// 		} else {
-// 			return val;
-// 		}
-// 	});	
-// 	console.log('flat_arr: ', flat_arr);
-// 	return flat_arr;
-// }
-// SyntaxError: missing ( before formal parameters
+function async recur_flat2(arr) {
+	 var flat_arr = await arr.map(async(val, ind) => {
+		 console.log('val: ', val);
+		 console.log('Array.isArray(val): ', Array.isArray(val));
+		 if (Array.isArray(val)) {
+			 return await recur_flat(val)[0];
+		 } else {
+			 return val;
+		 }
+	 });
+	console.log('flat_arr: ', flat_arr);
+	return flat_arr;
+}
 
 function recur_flat(arr) {
 	 var flat_arr = arr.map((val, ind) => {
@@ -104,17 +106,6 @@ function recur_flat(arr) {
 }
 	
 
-function async recur_flat2(arr) {
-
-	var nested_array = await recur_flat(arr);
-	if (nested_array.length == 1) { nested_array = nested_array[0]; };
-
-	var flatArr = out[0];
-	for (var i=1; i<out.length-1; i++) {
-		flatArr = flatArr.concat(out[i]);
-	}
-	return flatArr;
-}
 
 	
 
