@@ -39,10 +39,14 @@ async function run_it2() {
 
 async function create_correct_batchSize_for_xTest(xs_test_3d_arr, batch_size) {
 
-	xs_test_3d_arr = xs_test_3d_arr.dataSync()[0]; // convert to array , [batch_size=1, timesteps=11, num_of_features=1]
+	xs_test_3d_arr = xs_test_3d_arr.dataSync(); // convert to array , [batch_size=1, timesteps=11, num_of_features=1]
 	console.log('xs_test_3d_arr: ', xs_test_3d_arr);
+
+	// Convert the TypedArray into a normal array
+	const normalArray = await Array.from(xs_test_3d_arr);
+	console.log('normalArray: ', normalArray);
 	
-	var xs_test_flat = xs_test_3d_arr.flat();   // [timesteps=11]
+	var xs_test_flat = normalArray.flat();   // [timesteps=11]
 	console.log('xs_test_flat: ', xs_test_flat);
 
 	var xs_test_1d_arr = xs_test_flat;
