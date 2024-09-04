@@ -79,7 +79,9 @@ function async recur_flat(arr) {
 		console.log('val: ', val);
 		console.log('Array.isArray(val): ', Array.isArray(val));
 		if (Array.isArray(val)) {
-			return (async() => { return await recur_flat(val)[0]; })();
+			var out = async() => { return await recur_flat(val); };
+			console.log('out: ', out);
+			return out[0];
 		} else {
 			return val;
 		}
