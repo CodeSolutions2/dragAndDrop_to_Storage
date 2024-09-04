@@ -69,15 +69,15 @@ async function testing_flat() {
 	var out1 = out.flat();
 	console.log('out1: ', out1);
 
-	var out2 = await recur_flat(out);
+	var out2 = recur_flat(out);
 	console.log('out2: ', out2);
 }
 
 
-async function recur_flat(arr) {
+function recur_flat(arr) {
 	return arr.map((val, ind) => {
 		if (Array.isArray(val)) {
-			return await recur_flat(val);
+			return recur_flat(val);
 		} else {
 			return val;
 		}
