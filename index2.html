@@ -39,7 +39,7 @@ async function run_it2() {
 
 async function create_correct_batchSize_for_xTest(xs_test_3d_arr, batch_size) {
 
-	xs_test_3d_arr = xs_test_3d_arr.dataSync(); // convert to array , [batch_size=1, timesteps=11, num_of_features=1]
+	xs_test_3d_arr = xs_test_3d_arr.dataSync(); // Float32Array , [batch_size=1, timesteps=11, num_of_features=1]
 	console.log('xs_test_3d_arr: ', xs_test_3d_arr);
 
 	// Convert the TypedArray into a normal array
@@ -104,7 +104,37 @@ async function recur_func(xs_test_3d_arr) {
 
 
 
+// -----------------------------------------------
+// SUBFUNCTIONS
+// -----------------------------------------------
+async function recur_func(arr) {
+	if (arr != undefined) {
+		return [arr[0], arr.length];
+	} else {
+		return arr;
+	}
+}
+	
+async function shape(arr) {
+	var out = await recur_func(arr);
+	var shap = [out[1]];
+	var c = 0; // typically work with 4D arrays or less
+	while (out != undefined && c < 4) {
+		out = await recur_func(out[0]);
+		if (out != undefined) {
+			shap.push(out[1]);
+		}
+		c = c + 1;
+	}
 
+	if (shap.length > 1) {
+		shap = shap.slice(0, shap.length-1);
+	}
+	
+	return shap;
+}
+
+// -----------------------------------------------
 
 </script>
 </body>
