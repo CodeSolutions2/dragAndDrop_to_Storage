@@ -39,7 +39,7 @@ async function run_it2() {
 
 async function create_correct_batchSize_for_xTest(xs_test_3d_arr, batch_size) {
 
-	xs_test_3d_arr = xs_test_3d_arr.dataSync(); // convert to array , [batch_size=1, timesteps=11, num_of_features=1]
+	xs_test_3d_arr = xs_test_3d_arr.dataSync()[0]; // convert to array , [batch_size=1, timesteps=11, num_of_features=1]
 	console.log('xs_test_3d_arr: ', xs_test_3d_arr);
 	
 	var xs_test_flat = xs_test_3d_arr.flat();   // [timesteps=11]
@@ -73,7 +73,7 @@ async function create_correct_batchSize_for_xTest(xs_test_3d_arr, batch_size) {
 async function recur_func(xs_test_3d_arr) {
 	
 	// Reassign xs_test_3d_arr
-	xs_test_3d_arr = xs_test_3d_arr.dataSync(); // convert to array
+	xs_test_3d_arr = xs_test_3d_arr.dataSync()[0]; // convert to array
 	console.log('xs_test_3d_arr: ', xs_test_3d_arr);
 	
 	var xs_test_flat = xs_test_3d_arr.flat();
