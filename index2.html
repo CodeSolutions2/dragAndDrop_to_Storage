@@ -97,7 +97,6 @@ async function flat_arr(arr) {
 	var floatArray = matches.map((val, ind) => {
 		return Number(val);
 	});
-	console.log('floatArray: ', floatArray);
 	
 	return floatArray;
 }
@@ -107,15 +106,12 @@ async function flat_arr(arr) {
 
 function recur_flat(arr) {
 	 var flat_arr = arr.map((val, ind) => {
-		console.log('val: ', val);
-		console.log('Array.isArray(val): ', Array.isArray(val));
 		if (Array.isArray(val)) {
 			return recur_flat(val);
 		} else {
 			return val;
 		}
 	});
-	console.log('flat_arr: ', flat_arr);
 	return flat_arr;
 }
 	
