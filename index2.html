@@ -89,7 +89,8 @@ async function flat_arr(arr) {
 
 	var str = JSON.stringify(arr);
 	
-	const regex = /\b\d+\.\d+\b/g;
+	//const regex = /\b\d+\.\d+\b/g;
+	const regex = /\d+\.\d+/g;
 	var matches = str.match(regex);
 	console.log('matches: ', matches);
 
@@ -109,7 +110,7 @@ function recur_flat(arr) {
 		console.log('val: ', val);
 		console.log('Array.isArray(val): ', Array.isArray(val));
 		if (Array.isArray(val)) {
-			return recur_flat(val)[0];
+			return recur_flat(val);
 		} else {
 			return val;
 		}
