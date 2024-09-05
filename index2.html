@@ -58,23 +58,37 @@ async function testing_flat() {
 	
 	var xs_test_3d_arr = [[[30.299999237060547], [31], [31.299999237060547], [26.299999237060547], [24.899999618530273], [24.299999237060547], [24], [23.100000381469727], [22.600000381469727], [22.399999618530273], [22]], [[30.299999237060547], [31], [31.299999237060547], [26.299999237060547], [24.899999618530273], [24.299999237060547], [24], [23.100000381469727], [22.600000381469727], [22.399999618530273], [22]]];
 
-	shap = await shape(xs_test_3d_arr);  
-	console.log('Shape xs_test_3d_arr: ', shap);
-
+	// ----------------------
 	
-	var out = [xs_test_3d_arr[0]];
-
-	shap = await shape(out);  
-	console.log('Shape out: ', shap);
-
 	var out1 = out.flat();
 	console.log('out1: ', out1);
 
+	shap = await shape(out1);  
+	console.log('Shape out1: ', shap);
+
+	// ----------------------
+	
 	var out2 = recur_flat(out);
 	console.log('out2: ', out2);
 
+	shap = await shape(out2);  
+	console.log('Shape out2: ', shap);
 	
-	var str = JSON.stringify(xs_test_3d_arr);
+	// ----------------------
+
+	var out3 = flat_arr(xs_test_3d_arr);
+	console.log('out3: ', out3);
+	
+	shap = await shape(out3);  
+	console.log('Shape out3: ', shap);
+	
+}
+
+
+async function flat_arr(arr) {
+
+	var str = JSON.stringify(arr);
+	
 	const regex = /\b\d+\.\d+\b/g;
 	var matches = str.match(regex);
 	console.log('matches: ', matches);
@@ -83,8 +97,11 @@ async function testing_flat() {
 		return Number(val);
 	});
 	console.log('floatArray: ', floatArray);
+	
+	return floatArray;
 }
-
+	
+	
 
 
 function recur_flat(arr) {
