@@ -78,6 +78,11 @@ async function testing_flat() {
 	const regex = /\b\d+\.\d+\b/g;
 	var matches = str.match(regex);
 	console.log('matches: ', matches);
+
+	var floatArray = matches.map((val, ind) => {
+		return Number(val);
+	});
+	console.log('floatArray: ', floatArray);
 }
 
 
