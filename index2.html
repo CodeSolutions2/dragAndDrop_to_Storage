@@ -66,6 +66,9 @@ async function testing_flat() {
 	shap = await shape(out1);  
 	console.log('Shape out1: ', shap);
 
+	var out1_1 = out1.flat();
+	console.log('out1_1: ', out1_1);
+
 	// ----------------------
 	
 	var out2 = recur_flat(xs_test_3d_arr);
@@ -89,7 +92,6 @@ async function flat_arr(arr) {
 
 	var str = JSON.stringify(arr);
 	
-	//const regex = /\b\d+\.\d+\b/g;
 	const regex = /\b\d+\.\d+\b|\b\d+\b/g;
 	var matches = str.match(regex);
 	console.log('matches: ', matches);
@@ -107,7 +109,7 @@ async function flat_arr(arr) {
 function recur_flat(arr) {
 	 var flat_arr = arr.map((val, ind) => {
 		if (Array.isArray(val)) {
-			return recur_flat(val);
+			return val.flat();
 		} else {
 			return val;
 		}
