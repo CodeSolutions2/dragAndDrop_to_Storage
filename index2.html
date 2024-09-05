@@ -107,14 +107,16 @@ async function flat_arr(arr) {
 
 
 function recur_flat(arr) {
-	 var flat_arr = arr.map((val, ind) => {
-		if (Array.isArray(val)) {
-			return val.flat();
+
+	var out = [];
+	for (var i=0; i<arr.length; i++) {
+		if (Array.isArray(arr[i])) {
+			out.push(recur_flat(arr[i]));
 		} else {
-			return val;
+			out.push(arr[i]);
 		}
-	});
-	return flat_arr;
+	}
+	return out;
 }
 	
 
