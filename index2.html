@@ -60,7 +60,7 @@ async function testing_flat() {
 
 	// ----------------------
 	
-	var out1 = out.flat();
+	var out1 = xs_test_3d_arr.flat();
 	console.log('out1: ', out1);
 
 	shap = await shape(out1);  
@@ -68,7 +68,7 @@ async function testing_flat() {
 
 	// ----------------------
 	
-	var out2 = recur_flat(out);
+	var out2 = recur_flat(xs_test_3d_arr);
 	console.log('out2: ', out2);
 
 	shap = await shape(out2);  
