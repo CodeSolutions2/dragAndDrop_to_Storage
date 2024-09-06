@@ -60,86 +60,20 @@ async function testing_flat() {
 
 	// ----------------------
 	
-	var out1 = xs_test_3d_arr.flat();
+	var out1 = recur_flat(xs_test_3d_arr);
 	console.log('out1: ', out1);
 
 	shap = await shape(out1);  
 	console.log('Shape out1: ', shap);
 
-	var out1_1 = out1.flat();
-	console.log('out1_1: ', out1_1);
-
 	// ----------------------
-	
-	var out2 = recur_flat(xs_test_3d_arr);
-	console.log('out2: ', out2);
 
+	var out2 = await flat_arr(xs_test_3d_arr);
+	console.log('out2: ', out2);
+	
 	shap = await shape(out2);  
 	console.log('Shape out2: ', shap);
-
-  // ----------------------
 	
-	var out3 = recur_flat1(xs_test_3d_arr);
-	console.log('out3: ', out3);
-
-	shap = await shape(out3);  
-	console.log('Shape out3: ', shap);
-	
-	// ----------------------
-
-	var out4 = await flat_arr(xs_test_3d_arr);
-	console.log('out4: ', out4);
-	
-	shap = await shape(out4);  
-	console.log('Shape out4: ', shap);
-	
-}
-
-// -----------------------------------------------
-  
-function recur_flat(arr) {
-
-	var out = [];
-	for (var i=0; i<arr.length; i++) {
-		if (Array.isArray(arr[i])) {
-			out.push(recur_flat(arr[i]));
-		} else {
-			out.push(arr[i]);
-		}
-	}
-	return out;
-}
-  
-// -----------------------------------------------
-
-function recur_flat1(arr) {
-
-	var out = [];
-	for (var i=0; i<arr.length; i++) {
-		if (Array.isArray(arr[i])) {
-			out.push(recur_flat1(arr[i].flat()));
-		} else {
-			out.push(arr[i]);
-		}
-	}
-	return out.flat();
-}
-  
-// -----------------------------------------------
-
-async function flat_arr(arr) {
-
-	var str = JSON.stringify(arr);
-	
-	const regex = /\b\d+\.\d+\b|\b\d+\b/g;
-	var matches = str.match(regex);
-	console.log('matches: ', matches);
-
-	var floatArray = matches.map((val, ind) => {
-		return Number(val);
-	});
-	
-	return floatArray;
 }
 
 // -----------------------------------------------
@@ -257,6 +191,45 @@ async function convert_tfarray_to_FlatnormalArray(xs_test_3d_arr) {
 }
 	
 // -----------------------------------------------
+
+function recur_flat(arr) {
+
+	var out = [];
+	for (var i=0; i<arr.length; i++) {
+		if (Array.isArray(arr[i])) {
+			out.push(recur_flat(arr[i].flat()));
+		} else {
+			out.push(arr[i]);
+		}
+	}
+	return out.flat();
+}
+  
+// -----------------------------------------------
+
+async function flat_arr(arr) {
+
+	var str = JSON.stringify(arr);
+	
+	const regex = /\b\d+\.\d+\b|\b\d+\b/g;
+	var matches = str.match(regex);
+	console.log('matches: ', matches);
+
+	var floatArray = matches.map((val, ind) => {
+		return Number(val);
+	});
+	
+	return floatArray;
+}
+
+// -----------------------------------------------
+
+// -----------------------------------------------
+
+// -----------------------------------------------
+
+// -----------------------------------------------
+
 
 </script>
 </body>
