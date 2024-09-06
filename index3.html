@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html>
+<head></head>
+<body>
+
+<button id="run_it" onclick="run_it()">run_it</button>
+<button id="run_it2" onclick="run_it2()">run_it2</button>
+<button id="run_it3" onclick="run_it3()">run_it3</button>
+<button id="testing_flat" onclick="testing_flat()">testing_flat</button>
+	
+
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
+
+
+<script>
+
+
+async function run_it() {
+	
+	var xs_test_3d_arr = [30.299999237060547, 31, 31.299999237060547, 26.299999237060547, 24.899999618530273, 24.299999237060547, 24, 23.100000381469727, 22.600000381469727, 22.399999618530273, 22];
+	xs_test_3d_arr = tf.tensor(xs_test_3d_arr);
+	
+ 	var batch_size = 19;
+	
+	xs_test_3d_arr = await create_correct_batchSize_for_xTest(xs_test_3d_arr, batch_size);
+	console.log('xs_test_3d_arr: ', xs_test_3d_arr);
+
+}
+
+
+async function run_it2() {
+	
+	var xs_test_3d_arr = [[[30.299999237060547], [31], [31.299999237060547], [26.299999237060547], [24.899999618530273], [24.299999237060547], [24], [23.100000381469727], [22.600000381469727], [22.399999618530273], [22]], [[30.299999237060547], [31], [31.299999237060547], [26.299999237060547], [24.899999618530273], [24.299999237060547], [24], [23.100000381469727], [22.600000381469727], [22.399999618530273], [22]]];
+	xs_test_3d_arr = tf.tensor(xs_test_3d_arr);
+	
+	xs_test_3d_arr = await shift_tf_xsTest_array(xs_test_3d_arr);
+	console.log('xs_test_3d_arr: ', xs_test_3d_arr);
+
+}
+
+async function run_it3() {
+	
+	var xs_test_3d_arr = [[[30.299999237060547], [31], [31.299999237060547], [26.299999237060547], [24.899999618530273], [24.299999237060547], [24], [23.100000381469727], [22.600000381469727], [22.399999618530273], [22]], [[30.299999237060547], [31], [31.299999237060547], [26.299999237060547], [24.899999618530273], [24.299999237060547], [24], [23.100000381469727], [22.600000381469727], [22.399999618530273], [22]]];
+
+	shap = await shape(xs_test_3d_arr);  
+	console.log('Shape xs_test_3d_arr: ', shap);
+	
+	var out = [xs_test_3d_arr[0]];
+
+	shap = await shape(out);  
+	console.log('Shape out: ', shap);
+}
+
+
+
+
+async function testing_flat() {
+	
+	var xs_test_3d_arr = [[[30.299999237060547], [31], [31.299999237060547], [26.299999237060547], [24.899999618530273], [24.299999237060547], [24], [23.100000381469727], [22.600000381469727], [22.399999618530273], [22]], [[30.299999237060547], [31], [31.299999237060547], [26.299999237060547], [24.899999618530273], [24.299999237060547], [24], [23.100000381469727], [22.600000381469727], [22.399999618530273], [22]]];
+
+	// ----------------------
+	
+	var out1 = xs_test_3d_arr.flat();
+	console.log('out1: ', out1);
+
+	shap = await shape(out1);  
+	console.log('Shape out1: ', shap);
+
+	var out1_1 = out1.flat();
+	console.log('out1_1: ', out1_1);
+
+	// ----------------------
+	
+	var out2 = recur_flat(xs_test_3d_arr);
+	console.log('out2: ', out2);
+
+	shap = await shape(out2);  
+	console.log('Shape out2: ', shap);
+
+  // ----------------------
+	
+	var out3 = recur_flat1(xs_test_3d_arr);
+	console.log('out3: ', out3);
+
+	shap = await shape(out3);  
+	console.log('Shape out3: ', shap);
+	
+	// ----------------------
+
+	var out4 = await flat_arr(xs_test_3d_arr);
+	console.log('out4: ', out4);
+	
+	shap = await shape(out4);  
+	console.log('Shape out4: ', shap);
+	
+}
+
+
+async function flat_arr(arr) {
+
+	var str = JSON.stringify(arr);
+	
+	const regex = /\b\d+\.\d+\b|\b\d+\b/g;
+	var matches = str.match(regex);
+	console.log('matches: ', matches);
+
+	var floatArray = matches.map((val, ind) => {
+		return Number(val);
+	});
+	
+	return floatArray;
+}
+	
+	
+function recur_flat1(àrr) {
+
+	var out = [];
+	for (var i=0; i<arr.length; i++) {
+		if (Array.isArray(arr[i])) {
+			out.push(recur_flat(arr[i].flat()));
+		} else {
+			out.push(arr[i]);
+		}
+	}
+	return out.flat();
+}
+
+function recur_flat(arr) {
+
+	var out = [];
+	for (var i=0; i<arr.length; i++) {
+		if (Array.isArray(arr[i])) {
+			out.push(recur_flat(arr[i]));
+		} else {
+			out.push(arr[i]);
+		}
+	}
+	return out;
+}
+	
+
+
+
+async function create_correct_batchSize_for_xTest(xs_test_3d_arr, batch_size) {
+
+	var xs_test_flat = await convert_tfarray_to_FlatnormalArray(xs_test_3d_arr);
+
+	// ------------------------
+
+	var xs_test_1d_arr = xs_test_flat;
+
+	var xs_test_2d_arr = xs_test_1d_arr.map((val, ind) => { return [val]; });
+	console.log('xs_test_2d_arr: ', xs_test_2d_arr); // [timesteps=11, num_of_features=1]
+
+	shap = await shape(xs_test_2d_arr);  
+	console.log('Shape xs_test_2d_arr: ', shap);
+
+	// -----------------------------
+	
+	// Repeat xs_test batch_size times
+	xs_test_3d_arr = [];
+	for (var i=0; i<batch_size; i++) {
+		xs_test_3d_arr.push(xs_test_2d_arr)
+	}
+	// console.log('xs_test_3d_arr: ', xs_test_3d_arr);  // [batch_size=19, timesteps=11, num_of_features=1]
+
+	shap = await shape(xs_test_3d_arr);  
+	console.log('Shape xs_test_3d_arr: ', shap);
+	
+	return tf.tensor(xs_test_3d_arr);
+}
+	
+
+
+async function shift_tf_xsTest_array(xs_test_3d_arr) {
+
+	// Ensure that the first batch is only used
+	if (xs_test_3d_arr.length > 1) {
+		// only take the first batch
+		xs_test_3d_arr = [xs_test_3d_arr[0]];
+	}
+	
+	var xs_test_flat = await convert_tfarray_to_FlatnormalArray(xs_test_3d_arr);
+	console.log('xs_test_flat: ', xs_test_flat);
+	
+	// ------------------------
+	
+	var repeated_last_value = await Array.from({length: 1}, (val, ind) => { return xs_test_flat.at(xs_test_flat.length-1); });
+	console.log('repeated_last_value: ', repeated_last_value);
+	
+	var xs_test_1d_arr = xs_test_flat.slice(1, xs_test_flat.length).concat(repeated_last_value);
+	console.log('xs_test_1d_arr: ', xs_test_1d_arr);
+	
+	// ------------------------
+	
+	var xs_test_2d_arr = xs_test_1d_arr.map((val, ind) => { return [val]; });
+	xs_test_3d_arr = [xs_test_2d_arr];
+	console.log('xs_test_3d_arr: ', xs_test_3d_arr);
+	
+	// Test shape - [ batch_size=1, timesteps, 1 ]
+	shap = await shape(xs_test_3d_arr);  
+	console.log('Shape xs_test_3d_arr: ', shap);
+
+	return tf.tensor(xs_test_3d_arr);
+}
+
+
+
+// -----------------------------------------------
+// SUBFUNCTIONS
+// -----------------------------------------------
+async function recur_func(arr) {
+	if (arr != undefined) {
+		return [arr[0], arr.length];
+	} else {
+		return arr;
+	}
+}
+	
+async function shape(arr) {
+	var out = await recur_func(arr);
+	var shap = [out[1]];
+	var c = 0; // typically work with 4D arrays or less
+	while (out != undefined && c < 4) {
+		out = await recur_func(out[0]);
+		if (out != undefined) {
+			shap.push(out[1]);
+		}
+		c = c + 1;
+	}
+
+	if (shap.length > 1) {
+		shap = shap.slice(0, shap.length-1);
+	}
+	
+	return shap;
+}
+
+// -----------------------------------------------
+
+async function convert_tfarray_to_FlatnormalArray(xs_test_3d_arr) {
+
+	xs_test_3d_arr = xs_test_3d_arr.dataSync(); // Float32Array , [batch_size=1, timesteps=11, num_of_features=1]
+	console.log('xs_test_3d_arr: ', xs_test_3d_arr);
+
+	// Convert the TypedArray into a normal array
+	const normalArray = await Array.from(xs_test_3d_arr);
+	console.log('normalArray: ', normalArray);
+	
+	var xs_test_flat = normalArray.flat();   // [timesteps=11]
+	console.log('xs_test_flat: ', xs_test_flat);
+
+	return xs_test_flat;
+}
+	
+// -----------------------------------------------
+
+</script>
+</body>
+</html>
