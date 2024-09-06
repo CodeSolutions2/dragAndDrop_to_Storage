@@ -34,20 +34,7 @@ h1 { color: var(--title-color-light); }
 
 
 <script>
-const toggleMode = () => {
-  const body = document.body;
-  body.classList.toggle('dark-mode');
-  
-  if (body.classList.contains('dark-mode')) {
-    body.style.setProperty('--background-color', var(--background-color-dark));
-    body.style.setProperty('--text-color', var(--text-color-dark));
-  } else {
-    body.style.setProperty('--background-color', var(--background-color-light));
-    body.style.setProperty('--text-color', var(--text-color-light));
-  }
-}
 
-document.getElementById('toggle-button').addEventListener('click', toggleMode);
 
 async function run_it() {
 	
