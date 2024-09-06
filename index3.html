@@ -95,6 +95,37 @@ async function testing_flat() {
 	
 }
 
+// -----------------------------------------------
+  
+function recur_flat(arr) {
+
+	var out = [];
+	for (var i=0; i<arr.length; i++) {
+		if (Array.isArray(arr[i])) {
+			out.push(recur_flat(arr[i]));
+		} else {
+			out.push(arr[i]);
+		}
+	}
+	return out;
+}
+  
+// -----------------------------------------------
+
+function recur_flat1(àrr) {
+
+	var out = [];
+	for (var i=0; i<arr.length; i++) {
+		if (Array.isArray(arr[i])) {
+			out.push(recur_flat1(arr[i].flat()));
+		} else {
+			out.push(arr[i]);
+		}
+	}
+	return out.flat();
+}
+  
+// -----------------------------------------------
 
 async function flat_arr(arr) {
 
@@ -110,36 +141,8 @@ async function flat_arr(arr) {
 	
 	return floatArray;
 }
-	
-	
-function recur_flat1(àrr) {
 
-	var out = [];
-	for (var i=0; i<arr.length; i++) {
-		if (Array.isArray(arr[i])) {
-			out.push(recur_flat(arr[i].flat()));
-		} else {
-			out.push(arr[i]);
-		}
-	}
-	return out.flat();
-}
-
-function recur_flat(arr) {
-
-	var out = [];
-	for (var i=0; i<arr.length; i++) {
-		if (Array.isArray(arr[i])) {
-			out.push(recur_flat(arr[i]));
-		} else {
-			out.push(arr[i]);
-		}
-	}
-	return out;
-}
-	
-
-
+// -----------------------------------------------
 
 async function create_correct_batchSize_for_xTest(xs_test_3d_arr, batch_size) {
 
