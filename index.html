@@ -80,15 +80,14 @@ input:checked + .slider:before {
 function processEvent_checkboxOption(event) {
 	if (this.getAttribute("checked") == false) {
 		// Light
-		document.body.style.backgroundColor = "background-color-light"; // OR "#ffffff"
-		document.body.style.color = "text-color-light"; // OR "#333333"
-		// document.getElementsByTagName("h1").style.color = "title-color-light"; // OR "#333333"
+		document.body.style.backgroundColor = "#ffffff"; // "background-color-light"; 
+		document.body.style.color = "#333333"; // "text-color-light" 
+		document.querySelector("h1").style.color = "#333333"; // "title-color-light";
 	} else  {
 		// Dark
 		document.body.style.backgroundColor = "#333333";
 		document.body.style.color = "#ffffff";
-		var out = document.getElementsByTagName("h1"); // = "#ffffff";
-		console.log('out: ', out);
+		document.querySelector("h1").style.color = "#ffffff";
 	}
 }
 
