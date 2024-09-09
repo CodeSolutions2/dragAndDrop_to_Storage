@@ -35,7 +35,40 @@ async function run_it2() {
 
 	shap = await shape(x);  
 	console.log('Shape x: ', shap);
+
+	// -----------------------------
+
+	// Flatten array
+	var xs_test_flat = await flat_arr(normalArray);   // [timesteps=11]
+	console.log('xs_test_flat: ', xs_test_flat);
+
+	// -----------------------------
+
+	var dims = [2,4,1];
 	
+	var arr = await zeros(dims)
+	
+	// Reshape 1D_flat to [2,4,1]
+	var c = 0;
+	for (var i=0; i<dims[0]; i++) {
+		for (var j=0; j<dims[1]; j++) {
+			for (var k=0; k<dims[2]; k++) {
+			       arr[i][j][k] = xs_test_flat.at(c);
+				c = c + 1;
+			}
+		}
+	}
+
+	// -----------------------------
+
+	console.log('arr: ', arr);
+
+	// -----------------------------
+	
+	shap = await shape(arr);  
+	console.log('Shape arr: ', shap);
+
+	// -----------------------------
 
 }
 
@@ -95,6 +128,12 @@ async function shift_tf_xsTest_array() {
 	console.log('normalArray: ', normalArray);
 
 	// -----------------------------
+
+	// Need a JavaScript reshape
+
+
+
+	// -----------------------------
 	
 	// Ensure that the first batch is only used
 	if (xs_test_3d_arr.length > 1) {
@@ -139,6 +178,12 @@ async function shift_tf_xsTest_array() {
 	// return tf.tensor(xs_test_3d_arr);
 }
 
+
+
+
+
+
+	
 
 
 // -----------------------------------------------
