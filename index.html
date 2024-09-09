@@ -17,13 +17,6 @@
 <!-- CSS -->
 <style>
 
-input[type=radio],
-    input.radio {
-      float: left;
-      clear: none;
-      margin: 2px 0 0 2px;
-    }
-
 .switch {
   position: relative;
   display: inline-block;
@@ -73,7 +66,12 @@ input:checked + .slider:before {
   transform: translateX(26px);
 }
 
-
+label {
+        border: 0.5px solid black;
+        padding: 5px;
+        display: inline-block;
+    }
+	
 </style>
 <!-- ---------------------------------------- -->
 
@@ -86,7 +84,7 @@ document.querySelector('.slider').addEventListener("change", processEvent_Spansl
 
 function processEvent_SpansliderOption(event) {
 	
-	console.log('event: ', event);
+	console.log('slider event: ', event);
 }
 	
 // ----------------------------------------------------
@@ -95,7 +93,7 @@ document.getElementById("toggle_type").addEventListener("click", processEvent_ch
 	
 function processEvent_checkboxOption(event) {
 	
-	console.log('event: ', event);
+	console.log('input event: ', event);
 	
 	if (document.getElementById("toggle_type").checked == false) {
 		// Display Light 
@@ -104,12 +102,12 @@ function processEvent_checkboxOption(event) {
 		document.querySelector("h1").style.color = "#333333"; 
 
 		// console.log('event check in light: ', event.click.target.checked); // Uncaught TypeError: event.click is undefined
-		console.log('event check in light: ', document.getElementById("toggle_type0").checked);
+		console.log('event check in light: ', document.getElementById("toggle_type").checked);
 		
 		
 		// Reset checked state
-		document.getElementById("toggle_type0").checked = false;  // toggle element is able to slide
-		// document.getElementById("toggle_type0").checked = true; // toggle element does not slide
+		document.getElementById("toggle_type").checked = false;  // toggle element is able to slide
+		// document.getElementById("toggle_type").checked = true; // toggle element does not slide
 		
 	} else  {
 		// Dark
@@ -118,11 +116,11 @@ function processEvent_checkboxOption(event) {
 		document.querySelector("h1").style.color = "#ffffff";
 
 		// console.log('event check in dark: ', event.click.target.checked);
-		console.log('event check in light: ', document.getElementById("toggle_type0").checked);
+		console.log('event check in light: ', document.getElementById("toggle_type").checked);
 		
 		// Reset checked state
-		document.getElementById("toggle_type0").checked = true;  // toggle element is able to slide
-		// document.getElementById("toggle_type0").checked = false; // toggle element does not slide
+		document.getElementById("toggle_type").checked = true;  // toggle element is able to slide
+		// document.getElementById("toggle_type").checked = false; // toggle element does not slide
 	}
 }
 
