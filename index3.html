@@ -54,29 +54,6 @@ async function run_it3() {
 
 
 
-
-async function () {
-	
-	var xs_test_3d_arr = [[[30.299999237060547], [31], [31.299999237060547], [26.299999237060547], [24.899999618530273], [24.299999237060547], [24], [23.100000381469727], [22.600000381469727], [22.399999618530273], [22]], [[30.299999237060547], [31], [31.299999237060547], [26.299999237060547], [24.899999618530273], [24.299999237060547], [24], [23.100000381469727], [22.600000381469727], [22.399999618530273], [22]]];
-
-	// ----------------------
-	
-	var out1 = recur_flat(xs_test_3d_arr);
-	console.log('out1: ', out1);
-
-	shap = await shape(out1);  
-	console.log('Shape out1: ', shap);
-
-	// ----------------------
-
-	var out2 = await flat_arr(xs_test_3d_arr);
-	console.log('out2: ', out2);
-	
-	shap = await shape(out2);  
-	console.log('Shape out2: ', shap);
-	
-}
-
 // -----------------------------------------------
 
 async function create_correct_batchSize_for_xTest(xs_test_3d_arr, batch_size) {
