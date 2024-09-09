@@ -74,7 +74,7 @@ function processEvent_checkboxOption(event) {
 	
 	console.log('event: ', event);
 	
-	if (this.getAttribute("checked") == false) {
+	if (document.getElementById("toggle_type0").checked == false) {
 		// Light - unchecked/true
 		document.body.style.backgroundColor = "#ffffff"; // "background-color-light"; 
 		document.body.style.color = "#333333"; // "text-color-light" 
