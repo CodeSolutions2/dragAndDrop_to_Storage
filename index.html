@@ -73,24 +73,28 @@ input:checked + .slider:before {
 function processEvent_checkboxOption(event) {
 	
 	console.log('event: ', event);
-
 	
 	if (this.getAttribute("checked") == false) {
-		// Light
+		// Light - unchecked/true
 		document.body.style.backgroundColor = "#ffffff"; // "background-color-light"; 
 		document.body.style.color = "#333333"; // "text-color-light" 
 		document.querySelector("h1").style.color = "#333333"; // "title-color-light";
 
+		console.log('event check in light: ', event.click.target.checked);
+		
 		// Reset checked state
-		document.getElementById("toggle_type0").checked = true;
+		document.getElementById("toggle_type0").checked = false;
+		
 	} else  {
 		// Dark
 		document.body.style.backgroundColor = "#333333";
 		document.body.style.color = "#ffffff";
 		document.querySelector("h1").style.color = "#ffffff";
 
+		console.log('event check in dark: ', event.click.target.checked);
+		
 		// Reset checked state
-		document.getElementById("toggle_type0").checked = false;
+		document.getElementById("toggle_type0").checked = true;
 	}
 }
 
