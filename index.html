@@ -5,7 +5,7 @@
 
 <h1>Drag and Drop data to a bucket</h1>
 <p>Text</p>
-<label class="switch"><input type="checkbox" id="toggle_type0"><span class="slider">☀️&nbsp🌕</span></label>
+<label class="switch"><input type="checkbox" id="toggle_type0"><span class="slider"></span></label>
 
 
 <!-- ---------------------------------------- -->
@@ -39,7 +39,7 @@
 
 .slider:before {
   position: absolute;
-  content: "";
+  content: "🌕";
   height: 26px;
   width: 26px;
   left: 4px;
@@ -48,6 +48,8 @@
   -webkit-transition: .4s;
   transition: .4s;
 }
+
+.slider:before { content: "☀️" }
 
 input:checked + .slider { background-color: #333333; }
 
@@ -69,6 +71,9 @@ input:checked + .slider:before {
 // ----------------------------------------------------
   
 function processEvent_checkboxOption(event) {
+	
+	console.log('event: ', event);
+	
 	if (this.getAttribute("checked") == false) {
 		// Light
 		document.body.style.backgroundColor = "#ffffff"; // "background-color-light"; 
