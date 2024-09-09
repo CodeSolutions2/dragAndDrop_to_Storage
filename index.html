@@ -5,7 +5,7 @@
 
 <h1>Drag and Drop data to a bucket</h1>
 <p>Text</p>
-<label class="switch"><input type="checkbox" id="toggle_type0" checked><span class="slider"></span></label>
+<label class="switch"><input type="checkbox" id="toggle_type0"><span class="slider"></span></label>
 
 
 <!-- ---------------------------------------- -->
@@ -81,13 +81,16 @@ function processEvent_checkboxOption(event) {
 		document.body.style.color = "#333333"; // "text-color-light" 
 		document.querySelector("h1").style.color = "#333333"; // "title-color-light";
 
-		// Reset checked state to false
-		document.getElementById("toggle_type0").checked = false;
+		// Reset checked state
+		document.getElementById("toggle_type0").checked = true;
 	} else  {
 		// Dark
 		document.body.style.backgroundColor = "#333333";
 		document.body.style.color = "#ffffff";
 		document.querySelector("h1").style.color = "#ffffff";
+
+		// Reset checked state
+		document.getElementById("toggle_type0").checked = false;
 	}
 }
 
