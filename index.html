@@ -15,7 +15,7 @@
 <!-- CSS -->
 <style>
 
-.switchLabelclass { position: relative; display: inline-block; width: 60px; height: 34px; border: 0.25px solid black; border-radius: 15px; }
+.switchLabelclass { position: relative; display: inline-block; width: 60px; height: 34px; border: 0.25px solid black; border-radius: 5px; }
 
 /* .switch input { opacity: 0; width: 0; height: 0; } */
 
@@ -29,13 +29,15 @@
   background-color: #333333;
   -webkit-transition: .4s;
   transition: .4s;
-	border-radius: 15px;
+	border-radius: 5px;
 }
 
 .slider:before {
   position: absolute;
-  content: " ☀️";
-  height: 30px;
+  content: "☀️";
+  justify-content: center;
+  align-items: center;
+  height: 34px;
   width: 30px;
   left: 0px;
   bottom: 0px;
@@ -43,10 +45,12 @@
   background-color: #ffffff;
   -webkit-transition: .4s;
   transition: .4s;
-	border-radius: 15px;
+  border-radius: 5px;
 }
 
-/* .slider:after { content: "☀️" } */
+.slider:after { 
+  content: ""; background-color: #333333;
+}
 
 /* When page is dark, [slider button] is dark, [background of input] is light (setting below) */
 input:checked + .slider { background-color: #ffffff; }
