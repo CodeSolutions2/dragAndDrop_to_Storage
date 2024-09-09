@@ -80,10 +80,13 @@ function processEvent_checkboxOption(event) {
 		document.body.style.color = "#333333"; // "text-color-light" 
 		document.querySelector("h1").style.color = "#333333"; // "title-color-light";
 
-		console.log('event check in light: ', event.click.target.checked);
+		// console.log('event check in light: ', event.click.target.checked); // Uncaught TypeError: event.click is undefined
+		console.log('event check in light: ', document.getElementById("toggle_type0").checked);
+		
 		
 		// Reset checked state
-		document.getElementById("toggle_type0").checked = false;
+		// document.getElementById("toggle_type0").checked = false;  // toggle element is able to slide
+		document.getElementById("toggle_type0").checked = true; 
 		
 	} else  {
 		// Dark
@@ -91,10 +94,12 @@ function processEvent_checkboxOption(event) {
 		document.body.style.color = "#ffffff";
 		document.querySelector("h1").style.color = "#ffffff";
 
-		console.log('event check in dark: ', event.click.target.checked);
+		// console.log('event check in dark: ', event.click.target.checked);
+		console.log('event check in light: ', document.getElementById("toggle_type0").checked);
 		
 		// Reset checked state
-		document.getElementById("toggle_type0").checked = true;
+		// document.getElementById("toggle_type0").checked = true;  // toggle element is able to slide
+		document.getElementById("toggle_type0").checked = false; // should change the bool
 	}
 }
 
