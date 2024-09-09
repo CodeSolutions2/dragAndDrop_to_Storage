@@ -80,7 +80,7 @@ async function shift_tf_xsTest_array() {
 
 	// -----------------------------
 	
-	xs_test_3d_arr = tf.tensor(xs_test_3d_arr);
+	xs_test_3d_arr = tf.tensor3d(xs_test_3d_arr, [19,11,1]);
 	console.log('xs_test_3d_arr: ', xs_test_3d_arr);
 
 	// -----------------------------
