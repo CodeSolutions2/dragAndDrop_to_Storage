@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head></head>
+<body>
+
+<button id="toggle-button">Toggle Mode</button>
+  
+<label class="switch"><input type="checkbox" id="toggle_type0">Dark<span class="slider">Light</span></label>
+
+<input type="checkbox" id="toggle_type1" class="checkbox" />
+<label for="switch" class="toggle"><p>Dark &nbsp;&nbsp; Light</p></label>
+
+
+<!-- ---------------------------------------- -->
+<!-- CSS -->
+<style>
+:root {--background-color-light: #ffffff;
+      --title-color-light: #333333;
+      --text-color-light: #333333;
+}
+	
+body {
+  background-color: var(--background-color-light);
+  color: var(--text-color-light);
+}
+	
+h1 { color: var(--title-color-light); }
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #424240;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: #ffffff;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider { background-color: #333333; }
+
+input:focus + .slider { box-shadow: 0 0 1px #333333; }
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+
+</style>
+<!-- ---------------------------------------- -->
+
+<script>
+
+
+// ----------------------------------------------------
+  
+function processEvent_checkboxOption(event) {
+	if (this.getAttribute("checked") == false) {
+    // Light
+		document.body.style.background-color = "background-color-light"; // OR "#ffffff"
+		document.body.style.color = "text-color-light"; // OR "#333333"
+		document.getElementsByTagName("h1").style.color = "title-color-light"; // OR "#333333"
+	} else  {
+    // Dark
+		document.body.style.background-color = "#333333";
+		document.body.style.color = "#ffffff";
+		document.getElementsByTagName("h1").style.color = "#ffffff";
+	}
+}
+
+document.getElementById("toggle_type0")("click", processEvent_checkboxOption, false);
+
+// ----------------------------------------------------
+
+  
+
+</script>
+</body>
+</html>
