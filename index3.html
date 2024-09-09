@@ -38,36 +38,7 @@ async function run_it2() {
 
 	// -----------------------------
 
-	// Flatten array
-	var xs_test_flat = await flat_arr(x);   // [timesteps=11]
-	console.log('xs_test_flat: ', xs_test_flat);
-
-	// -----------------------------
-
-	var dims = [2,4,1];
 	
-	var arr = await zeros(dims)
-	
-	// Reshape 1D_flat to [2,4,1]
-	var c = 0;
-	for (var i=0; i<dims[0]; i++) {
-		for (var j=0; j<dims[1]; j++) {
-			for (var k=0; k<dims[2]; k++) {
-			       arr[i][j][k] = xs_test_flat.at(c);
-				c = c + 1;
-			}
-		}
-	}
-
-	// -----------------------------
-
-	console.log('arr: ', arr);
-
-	// -----------------------------
-	
-	shap = await shape(arr);  
-	console.log('Shape arr: ', shap);
-
 	// -----------------------------
 
 }
@@ -124,33 +95,32 @@ async function shift_tf_xsTest_array() {
 	// -----------------------------
 	
 	// Convert the TypedArray into a normal array
-	const normalArray = await Array.from(xs_test_3d_arr);
+	var normalArray = await Array.from(xs_test_3d_arr);
 	console.log('normalArray: ', normalArray);
 
 	// -----------------------------
 
 	// Need a JavaScript reshape
-
-
+	var normalArray1 = await reshape_arr(normalArray, dims)
 
 	// -----------------------------
 	
 	// Ensure that the first batch is only used
-	if (xs_test_3d_arr.length > 1) {
+	if (normalArray1.length > 1) {
 		// only take the first batch
-		xs_test_3d_arr = [xs_test_3d_arr[0]];
+		normalArray1 = [normalArray1[0]];
 	}
 
 	// -----------------------------
 
 	// Confirm that shape is [1, 11, 1]
-	shap = await shape(xs_test_3d_arr);  
-	console.log('Shape xs_test_3d_arr: ', shap);
+	shap = await shape(normalArray1);  
+	console.log('Shape normalArray1: ', shap);
 	
 	// -----------------------------
 
 	// Flatten array
-	var xs_test_flat = await flat_arr(normalArray);   // [timesteps=11]
+	var xs_test_flat = await flat_arr(normalArray1);   // [timesteps=11]
 	console.log('xs_test_flat: ', xs_test_flat);
 	
 	// ------------------------
@@ -305,6 +275,64 @@ async function zeros(dims) {
 	
 // -----------------------------------------------
 
+async function reshape_arr(arr, desired_dims) {
+
+	// Flatten array
+	var xs_test_flat = await flat_arr(arr);   // [timesteps=11]
+	console.log('xs_test_flat: ', xs_test_flat);
+
+	// -----------------------------
+	
+	var arr = await zeros(desired_dims);
+
+	shap = await shape(arr);  
+	console.log('Shape arr: ', shap);
+
+	if (shap.length == 2) {
+		// Reshape 1D_flat to 2d
+		var c = 0;
+		for (var i=0; i<dims[0]; i++) {
+			for (var j=0; j<dims[1]; j++) {
+				arr[i][j][k] = xs_test_flat.at(c);
+				c = c + 1;
+			}
+		}
+	} else if (shap.length == 3) {
+		// Reshape 1D_flat to 3d
+		var c = 0;
+		for (var i=0; i<dims[0]; i++) {
+			for (var j=0; j<dims[1]; j++) {
+				for (var k=0; k<dims[2]; k++) {
+				       arr[i][j][k] = xs_test_flat.at(c);
+					c = c + 1;
+				}
+			}
+		}
+	} else if (shap.length == 4) {
+		// Reshape 1D_flat to 4d
+		var c = 0;
+		for (var i=0; i<dims[0]; i++) {
+			for (var j=0; j<dims[1]; j++) {
+				for (var k=0; k<dims[2]; k++) {
+					for (var l=0; l<dims[3]; l++) {
+					       arr[i][j][k][l] = xs_test_flat.at(c);
+						c = c + 1;
+					}
+				}
+			}
+		}
+	} else {
+		arr = xs_test_flat;
+	}
+	// -----------------------------
+
+	console.log('arr: ', arr);
+
+	// -----------------------------
+	
+	return arr;
+}
+	
 // -----------------------------------------------
 
 // -----------------------------------------------
