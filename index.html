@@ -5,7 +5,7 @@
 
 <h1>Drag and Drop data to a bucket</h1>
 <p>Text</p>
-<label class="switch"><input type="checkbox" id="toggle_type0"><span class="slider"></span></label>
+<label class="switch"><input type="checkbox" id="toggle_type"><span class="slider"></span></label>
 
 <!-- Radio button menu: put in body -->
 <fieldset>
@@ -73,13 +73,23 @@ input:checked + .slider:before {
 
 
 // ----------------------------------------------------
-  
+
+document.querySelector('.slider').addEventListener("change", processEvent_SpansliderOption, false);
+
+function processEvent_checkboxOption(event) {
+	
+	console.log('event: ', event);
+}
+	
+// ----------------------------------------------------
+
+document.getElementById("toggle_type0").addEventListener("click", processEvent_checkboxOption, false);
+	
 function processEvent_checkboxOption(event) {
 	
 	console.log('event: ', event);
 	
-	// if (document.getElementById("toggle_type0").checked == false) {
-	if (document.body.style.backgroundColor == "#333333") {
+	if (document.getElementById("toggle_type").checked == false) {
 		// Display Light 
 		document.body.style.backgroundColor = "#ffffff"; // "background-color-light"; 
 		document.body.style.color = "#333333"; // "text-color-light" 
@@ -107,8 +117,6 @@ function processEvent_checkboxOption(event) {
 		// document.getElementById("toggle_type0").checked = false; // toggle element does not slide
 	}
 }
-
-document.getElementById("toggle_type0").addEventListener("click", processEvent_checkboxOption, false);
 
 // ----------------------------------------------------
 
