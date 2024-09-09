@@ -44,7 +44,7 @@
   width: 26px;
   left: 4px;
   bottom: 4px;
-  background-color: #ffffff;
+  background-color: #424240;
   -webkit-transition: .4s;
   transition: .4s;
 }
@@ -86,8 +86,8 @@ function processEvent_checkboxOption(event) {
 		
 		
 		// Reset checked state
-		// document.getElementById("toggle_type0").checked = false;  // toggle element is able to slide
-		document.getElementById("toggle_type0").checked = true; 
+		document.getElementById("toggle_type0").checked = false;  // toggle element is able to slide
+		// document.getElementById("toggle_type0").checked = true; // toggle element does not slide
 		
 	} else  {
 		// Dark
@@ -99,8 +99,8 @@ function processEvent_checkboxOption(event) {
 		console.log('event check in light: ', document.getElementById("toggle_type0").checked);
 		
 		// Reset checked state
-		// document.getElementById("toggle_type0").checked = true;  // toggle element is able to slide
-		document.getElementById("toggle_type0").checked = false; // should change the bool
+		document.getElementById("toggle_type0").checked = true;  // toggle element is able to slide
+		// document.getElementById("toggle_type0").checked = false; // toggle element does not slide
 	}
 }
 
