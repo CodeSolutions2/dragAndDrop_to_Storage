@@ -5,20 +5,19 @@
 
 <h1>Drag and Drop data to a bucket</h1>
 <p>Text</p>
-<label class="switch"><input type="checkbox" id="toggle_type"><span class="slider"></span></label>
+<label class="switchLabelclass"><input type="checkbox" id="toggle_type"><span class="slider"></span></label>
 
 <!-- Radio button menu: put in body -->
-<fieldset style="border=none";">
-<input type="radio" id="light" name="radio_name" value="light" /><label for="light">☀️</label>
-<input type="radio" id="dark" name="radio_name" value="dark" /><label for="dark">☀🌒</label>
-</fieldset>
+<input type="radio" id="light" name="radio_name" value="light" /><label class="radioLabelclass" for="light">☀️</label>
+<input type="radio" id="dark" name="radio_name" value="dark" /><label class="radioLabelclass" for="dark">☀🌒</label>
 
 <!-- ---------------------------------------- -->
 <!-- CSS -->
 <style>
 
-.switch { position: relative; display: inline-block; width: 60px; height: 34px; }
-.switch input { opacity: 0; width: 0; height: 0; }
+.switchLabelclass { position: relative; display: inline-block; width: 60px; height: 34px; border: 0.25px solid black; border-radius: 15px; }
+
+/* .switch input { opacity: 0; width: 0; height: 0; } */
 
 .slider {
   position: absolute;
@@ -27,7 +26,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: #424240;
+  /* background-color: #424240;  */
   -webkit-transition: .4s;
   transition: .4s;
 }
@@ -35,12 +34,12 @@
 .slider:before {
   position: absolute;
   content: "";
-  height: 28px;
-  width: 28px;
-  left: 2px;
-  bottom: 2px;
+  height: 30px;
+  width: 30px;
+  left: 1px;
+  bottom: 1px;
   /* When page is light, [slider button] is light (setting below), [background of input] is dark */
-  background-color: #ffffff;
+  /* background-color: #ffffff; */
   -webkit-transition: .4s;
   transition: .4s;
 }
@@ -59,7 +58,7 @@ input:checked + .slider:before {
 }
 
 /* border: 0.25px solid black */
-label { padding: 0px; display: inline-block; border-radius: 15px; }
+.radioLabelclass { padding: 0px; display: inline-block; }
 	
 </style>
 <!-- ---------------------------------------- -->
