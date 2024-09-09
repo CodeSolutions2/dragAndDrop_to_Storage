@@ -4,6 +4,7 @@
 <body>
 	
 <button id="run_it" onclick="run_it()">run_it</button>
+<button id="run_it2" onclick="run_it2()">run_it2</button>
 <button id="shift_tf_xsTest_array" onclick="shift_tf_xsTest_array()">shift_tf_xsTest_array</button>
 
 	
@@ -27,6 +28,16 @@ async function run_it() {
 
 }
 
+
+async function run_it2() {
+
+	var x = [[[1], [2], [3], [4]], [[5], [6], [7], [8]]];
+
+	shap = await shape(x);  
+	console.log('Shape x: ', shap);
+	
+
+}
 
 // -----------------------------------------------
 
@@ -197,14 +208,9 @@ function recur_flat(arr) {
 async function flat_arr(arr) {
 
 	var str = JSON.stringify(arr);
-	
 	const regex = /\b\d+\.\d+\b|\b\d+\b/g;
 	var matches = str.match(regex);
-	console.log('matches: ', matches);
-
-	var floatArray = matches.map((val, ind) => {
-		return Number(val);
-	});
+	var floatArray = matches.map((val, ind) => { return Number(val); });
 	
 	return floatArray;
 }
