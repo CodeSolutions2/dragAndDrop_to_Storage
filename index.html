@@ -8,7 +8,7 @@
 <label class="switch"><input type="checkbox" id="toggle_type"><span class="slider"></span></label>
 
 <!-- Radio button menu: put in body -->
-<fieldset>
+<fieldset style="border=0";">
 <input type="radio" id="light" name="radio_name" value="light" /><label for="light">☀️</label>
 <input type="radio" id="dark" name="radio_name" value="dark" /><label for="dark">☀🌒</label>
 </fieldset>
@@ -67,9 +67,10 @@ input:checked + .slider:before {
 }
 
 label {
-        border: 0.5px solid black;
-        padding: 5px;
+        /* border: 0.25px solid black;*/
+        padding: 0px;
         display: inline-block;
+	border-radius: 15px;
     }
 	
 </style>
