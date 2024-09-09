@@ -34,11 +34,11 @@
 
 .slider:before {
   position: absolute;
-  content: "";
-  height: 28px;
-  width: 28px;
-  left: 1px;
-  bottom: 1px;
+  content: "☀️|☀🌒";
+  height: 30px;
+  width: 30px;
+  left: 0px;
+  bottom: 0px;
   /* When page is light, [slider button] is light (setting below), [background of input] is dark */
   background-color: #ffffff;
   -webkit-transition: .4s;
@@ -46,7 +46,7 @@
 	border-radius: 15px;
 }
 
-.slider:after { content: "☀️" }
+/* .slider:after { content: "☀️" } */
 
 /* When page is dark, [slider button] is dark, [background of input] is light (setting below) */
 input:checked + .slider { background-color: #ffffff; }
@@ -82,7 +82,7 @@ function processEvent_checkboxOption(event) {
 		document.querySelector("h1").style.color = "#333333";
 
 		// When page is light, [slider button] is light (setting below), [background of input] is dark
-		document.querySelector('.slider').style.backgroundColor = "#ffffff";
+		document.querySelector('.slider').style.backgroundColor = "#333333";
 		
 		console.log('event check in light: ', document.getElementById("toggle_type").checked);
 		
@@ -96,7 +96,7 @@ function processEvent_checkboxOption(event) {
 		document.querySelector("h1").style.color = "#ffffff";
 
 		// When page is dark, [slider button] is dark (setting below), [background of input] is light
-		document.querySelector('.slider').style.backgroundColor = "#333333";
+		document.querySelector('.slider').style.backgroundColor = "#ffffff";
 		
 		console.log('event check in dark: ', document.getElementById("toggle_type").checked);
 		
