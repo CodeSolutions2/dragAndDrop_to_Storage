@@ -17,18 +17,8 @@
 <!-- CSS -->
 <style>
 
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 60px;
-  height: 34px;
-}
-
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
+.switch { position: relative; display: inline-block; width: 60px; height: 34px; }
+.switch input { opacity: 0; width: 0; height: 0; }
 
 .slider {
   position: absolute;
@@ -45,17 +35,19 @@
 .slider:before {
   position: absolute;
   content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  background-color: #333333;
+  height: 28px;
+  width: 28px;
+  left: 2px;
+  bottom: 2px;
+  /* When page is light, [slider button] is light (setting below), [background of input] is dark */
+  background-color: #ffffff;
   -webkit-transition: .4s;
   transition: .4s;
 }
 
 .slider:after { content: "☀️" }
 
+/* When page is dark, [slider button] is dark, [background of input] is light (setting below) */
 input:checked + .slider { background-color: #ffffff; }
 
 input:focus + .slider { box-shadow: 0 0 1px #333333; }
@@ -66,28 +58,14 @@ input:checked + .slider:before {
   transform: translateX(26px);
 }
 
-label {
-        /* border: 0.25px solid black;*/
-        padding: 0px;
-        display: inline-block;
-	border-radius: 15px;
-    }
+/* border: 0.25px solid black */
+label { padding: 0px; display: inline-block; border-radius: 15px; }
 	
 </style>
 <!-- ---------------------------------------- -->
 
 <script>
 
-
-// ----------------------------------------------------
-
-document.querySelector('.slider').addEventListener("change", processEvent_SpansliderOption, false);
-
-function processEvent_SpansliderOption(event) {
-	
-	console.log('slider event: ', event);
-}
-	
 // ----------------------------------------------------
 
 document.getElementById("toggle_type").addEventListener("click", processEvent_checkboxOption, false);
@@ -98,17 +76,17 @@ function processEvent_checkboxOption(event) {
 	
 	if (document.getElementById("toggle_type").checked == false) {
 		// Display Light 
-		document.body.style.backgroundColor = "#ffffff"; // "background-color-light"; 
-		document.body.style.color = "#333333"; // "text-color-light" 
-		document.querySelector("h1").style.color = "#333333"; 
+		document.body.style.backgroundColor = "#ffffff";
+		document.body.style.color = "#333333";
+		document.querySelector("h1").style.color = "#333333";
 
-		// console.log('event check in light: ', event.click.target.checked); // Uncaught TypeError: event.click is undefined
-		console.log('event check in light: ', document.getElementById("toggle_type").checked);
+		// When page is light, [slider button] is light (setting below), [background of input] is dark
+		document.querySelector('slider').style.backgroundColor = "#ffffff";
 		
+		console.log('event check in light: ', document.getElementById("toggle_type").checked);
 		
 		// Reset checked state
 		document.getElementById("toggle_type").checked = false;  // toggle element is able to slide
-		// document.getElementById("toggle_type").checked = true; // toggle element does not slide
 		
 	} else  {
 		// Dark
@@ -116,12 +94,13 @@ function processEvent_checkboxOption(event) {
 		document.body.style.color = "#ffffff";
 		document.querySelector("h1").style.color = "#ffffff";
 
-		// console.log('event check in dark: ', event.click.target.checked);
-		console.log('event check in light: ', document.getElementById("toggle_type").checked);
+		// When page is dark, [slider button] is dark (setting below), [background of input] is light
+		document.querySelector('slider').style.backgroundColor = "#333333";
+		
+		console.log('event check in dark: ', document.getElementById("toggle_type").checked);
 		
 		// Reset checked state
 		document.getElementById("toggle_type").checked = true;  // toggle element is able to slide
-		// document.getElementById("toggle_type").checked = false; // toggle element does not slide
 	}
 }
 
