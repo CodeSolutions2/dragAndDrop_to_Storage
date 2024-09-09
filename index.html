@@ -49,7 +49,7 @@
   transition: .4s;
 }
 
-.slider:before { content: "☀️" }
+.slider:after { content: "☀️" }
 
 input:checked + .slider { background-color: #333333; }
 
@@ -73,12 +73,16 @@ input:checked + .slider:before {
 function processEvent_checkboxOption(event) {
 	
 	console.log('event: ', event);
+
 	
 	if (this.getAttribute("checked") == false) {
 		// Light
 		document.body.style.backgroundColor = "#ffffff"; // "background-color-light"; 
 		document.body.style.color = "#333333"; // "text-color-light" 
 		document.querySelector("h1").style.color = "#333333"; // "title-color-light";
+
+		// Reset checked state to false
+		event.click.target.checked = false;
 	} else  {
 		// Dark
 		document.body.style.backgroundColor = "#333333";
