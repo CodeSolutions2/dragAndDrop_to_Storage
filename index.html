@@ -2,12 +2,8 @@
 <html>
 <head></head>
 <body>
-
-<!-- <button id="toggle-button">Toggle Mode</button> -->
   
-<label class="switch"><input type="checkbox" id="toggle_type0">Dark<span class="slider">Light</span></label>
-
-<!-- <input type="checkbox" id="toggle_type1" class="checkbox" /><label for="switch" class="toggle"><p>Dark &nbsp;&nbsp; Light</p></label> -->
+<label class="switch"><input type="checkbox" id="toggle_type0">🌕<span class="slider">☀️</span></label>
 
 
 <!-- ---------------------------------------- -->
@@ -83,15 +79,16 @@ input:checked + .slider:before {
   
 function processEvent_checkboxOption(event) {
 	if (this.getAttribute("checked") == false) {
-    // Light
+		// Light
 		document.body.style.backgroundColor = "background-color-light"; // OR "#ffffff"
 		document.body.style.color = "text-color-light"; // OR "#333333"
-		document.getElementsByTagName("h1").style.color = "title-color-light"; // OR "#333333"
+		// document.getElementsByTagName("h1").style.color = "title-color-light"; // OR "#333333"
 	} else  {
-    // Dark
+		// Dark
 		document.body.style.backgroundColor = "#333333";
 		document.body.style.color = "#ffffff";
-		document.getElementsByTagName("h1").style.color = "#ffffff";
+		var out = document.getElementsByTagName("h1"); // = "#ffffff";
+		console.log('out: ', out);
 	}
 }
 
