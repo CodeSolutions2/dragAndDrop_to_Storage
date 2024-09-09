@@ -4,8 +4,7 @@
 <body>
 	
 <button id="run_it" onclick="run_it()">run_it</button>
-<button id="run_it2" onclick="run_it2()">run_it2</button>
-<button id="run_it3" onclick="run_it3()">run_it3</button>
+<button id="shift_tf_xsTest_array" onclick="shift_tf_xsTest_array()">shift_tf_xsTest_array</button>
 
 	
 <!-- --------------------------------------------------- -->
@@ -27,31 +26,6 @@ async function run_it() {
 	console.log('xs_test_3d_arr: ', xs_test_3d_arr);
 
 }
-
-
-async function run_it2() {
-	
-	var xs_test_3d_arr = [[[30.299999237060547], [31], [31.299999237060547], [26.299999237060547], [24.899999618530273], [24.299999237060547], [24], [23.100000381469727], [22.600000381469727], [22.399999618530273], [22]], [[30.299999237060547], [31], [31.299999237060547], [26.299999237060547], [24.899999618530273], [24.299999237060547], [24], [23.100000381469727], [22.600000381469727], [22.399999618530273], [22]]];
-	xs_test_3d_arr = tf.tensor(xs_test_3d_arr);
-	
-	xs_test_3d_arr = await shift_tf_xsTest_array(xs_test_3d_arr);
-	console.log('xs_test_3d_arr: ', xs_test_3d_arr);
-
-}
-
-async function run_it3() {
-	
-	var xs_test_3d_arr = [[[30.299999237060547], [31], [31.299999237060547], [26.299999237060547], [24.899999618530273], [24.299999237060547], [24], [23.100000381469727], [22.600000381469727], [22.399999618530273], [22]], [[30.299999237060547], [31], [31.299999237060547], [26.299999237060547], [24.899999618530273], [24.299999237060547], [24], [23.100000381469727], [22.600000381469727], [22.399999618530273], [22]]];
-
-	shap = await shape(xs_test_3d_arr);  
-	console.log('Shape xs_test_3d_arr: ', shap);
-	
-	var out = [xs_test_3d_arr[0]];
-
-	shap = await shape(out);  
-	console.log('Shape out: ', shap);
-}
-
 
 
 // -----------------------------------------------
@@ -87,21 +61,54 @@ async function create_correct_batchSize_for_xTest(xs_test_3d_arr, batch_size) {
 	
 
 
-async function shift_tf_xsTest_array(xs_test_3d_arr) {
+async function shift_tf_xsTest_array() {
 
+	// Make an array that is shape [ 19, 11, 1 ]
+	var dims = [ 19, 11, 1 ];
+	var xs_test_3d_arr = await zeros(dims);
+
+	// -----------------------------
+	
+	xs_test_3d_arr = tf.tensor(xs_test_3d_arr);
+	console.log('xs_test_3d_arr: ', xs_test_3d_arr);
+
+	// -----------------------------
+	
+	xs_test_3d_arr = xs_test_3d_arr.dataSync(); // Float32Array , [batch_size=1, timesteps=11, num_of_features=1]
+	console.log('xs_test_3d_arr: ', xs_test_3d_arr);
+	
+	// -----------------------------
+	
+	// Convert the TypedArray into a normal array
+	const normalArray = await Array.from(xs_test_3d_arr);
+	console.log('normalArray: ', normalArray);
+
+	// -----------------------------
+	
 	// Ensure that the first batch is only used
 	if (xs_test_3d_arr.length > 1) {
 		// only take the first batch
 		xs_test_3d_arr = [xs_test_3d_arr[0]];
 	}
+
+	// -----------------------------
+
+	// Confirm that shape is [1, 11, 1]
+	shap = await shape(xs_test_3d_arr);  
+	console.log('Shape xs_test_3d_arr: ', shap);
 	
-	var xs_test_flat = await convert_tfarray_to_FlatnormalArray(xs_test_3d_arr);
+	// -----------------------------
+
+	// Flatten array
+	var xs_test_flat = await flat_arr(normalArray);   // [timesteps=11]
 	console.log('xs_test_flat: ', xs_test_flat);
 	
 	// ------------------------
 	
 	var repeated_last_value = await Array.from({length: 1}, (val, ind) => { return xs_test_flat.at(xs_test_flat.length-1); });
 	console.log('repeated_last_value: ', repeated_last_value);
+
+	// -----------------------------
 	
 	var xs_test_1d_arr = xs_test_flat.slice(1, xs_test_flat.length).concat(repeated_last_value);
 	console.log('xs_test_1d_arr: ', xs_test_1d_arr);
@@ -111,12 +118,14 @@ async function shift_tf_xsTest_array(xs_test_3d_arr) {
 	var xs_test_2d_arr = xs_test_1d_arr.map((val, ind) => { return [val]; });
 	xs_test_3d_arr = [xs_test_2d_arr];
 	console.log('xs_test_3d_arr: ', xs_test_3d_arr);
+
+	// -----------------------------
 	
-	// Test shape - [ batch_size=1, timesteps, 1 ]
+	// Confirm that shape is [1, 11, 1]
 	shap = await shape(xs_test_3d_arr);  
 	console.log('Shape xs_test_3d_arr: ', shap);
 
-	return tf.tensor(xs_test_3d_arr);
+	// return tf.tensor(xs_test_3d_arr);
 }
 
 
@@ -162,7 +171,7 @@ async function convert_tfarray_to_FlatnormalArray(xs_test_3d_arr) {
 	const normalArray = await Array.from(xs_test_3d_arr);
 	console.log('normalArray: ', normalArray);
 	
-	var xs_test_flat = normalArray.flat();   // [timesteps=11]
+	var xs_test_flat = await flat_arr(normalArray);   // [timesteps=11]
 	console.log('xs_test_flat: ', xs_test_flat);
 
 	return xs_test_flat;
@@ -202,6 +211,47 @@ async function flat_arr(arr) {
 
 // -----------------------------------------------
 
+async function zeros(dims) {
+
+	// dims: [desired_0th_dim, desired_1st_dim, desired_2nd_dim]
+
+	var out = [];
+	
+	if (dims.length == 1) {
+		var desired_0th_dim = dims.at(0);
+		
+		out = Array.from({length: desired_0th_dim}, (val, ind) => { return 0; }); 
+
+	} else if (dims.length == 2) {
+		var desired_0th_dim = dims.at(0);
+		var desired_1st_dim = dims.at(1);
+		
+		for (var i=0; i<desired_0th_dim; i++) {
+			var arr = Array.from({length: desired_1st_dim}, (val, ind) => { return 0; }); 
+			out.push(arr);
+		}
+
+	} else if (dims.length == 3) {
+		var desired_0th_dim = dims.at(0);
+		var desired_1st_dim = dims.at(1);
+		var desired_2nd_dim = dims.at(2);
+		
+		for (var i=0; i<desired_0th_dim; i++) {
+			temp = [];
+			for (var j=0; j<desired_1st_dim; j++) {
+				var arr = Array.from({length: desired_2nd_dim}, (val, ind) => { return 0; }); 
+				temp.push(arr);
+			}
+			out.push(temp);
+		}
+		
+	} else {
+		console.log('Enter an array of length 1, 2, or 3. (ie: [desired_0th_dim, desired_1st_dim, desired_2nd_dim])')
+	}
+	
+	return out;
+}
+	
 // -----------------------------------------------
 
 // -----------------------------------------------
