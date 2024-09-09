@@ -9,12 +9,20 @@
 
 <!-- Radio button menu: put in body -->
 <fieldset>
-<input type="radio" id="light" name="radio_name" value="light" /><label for="light">☀️</label><input type="radio" id="dark" name="radio_name" value="dark" /><label for="dark">☀🌒</label>
+<input type="radio" id="light" name="radio_name" value="light" /><label for="light">☀️</label>
+<input type="radio" id="dark" name="radio_name" value="dark" /><label for="dark">☀🌒</label>
 </fieldset>
 
 <!-- ---------------------------------------- -->
 <!-- CSS -->
 <style>
+
+input[type=radio],
+    input.radio {
+      float: left;
+      clear: none;
+      margin: 2px 0 0 2px;
+    }
 
 .switch {
   position: relative;
