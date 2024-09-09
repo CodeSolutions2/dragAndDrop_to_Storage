@@ -284,8 +284,8 @@ async function reshape_arr(arr, desired_dims) {
 	// -----------------------------
 	
 	var arr = await zeros(desired_dims);
-
-	shap = await shape(arr);  
+	
+	const shap = await shape(arr);  
 	console.log('Shape arr: ', shap);
 
 	if (shap.length == 2) {
