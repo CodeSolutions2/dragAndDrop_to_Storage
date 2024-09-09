@@ -7,6 +7,10 @@
 <p>Text</p>
 <label class="switch"><input type="checkbox" id="toggle_type0"><span class="slider"></span></label>
 
+<!-- Radio button menu: put in body -->
+<fieldset>
+<input type="radio" id="light" name="radio_name" value="light" /><label for="light">☀️</label><input type="radio" id="dark" name="radio_name" value="dark" /><label for="dark">☀🌒</label>
+</fieldset>
 
 <!-- ---------------------------------------- -->
 <!-- CSS -->
@@ -44,7 +48,7 @@
   width: 26px;
   left: 4px;
   bottom: 4px;
-  background-color: #424240;
+  background-color: #333333;
   -webkit-transition: .4s;
   transition: .4s;
 }
@@ -76,10 +80,10 @@ function processEvent_checkboxOption(event) {
 	
 	// if (document.getElementById("toggle_type0").checked == false) {
 	if (document.body.style.backgroundColor == "#333333") {
-		// Light - unchecked/true
+		// Display Light 
 		document.body.style.backgroundColor = "#ffffff"; // "background-color-light"; 
 		document.body.style.color = "#333333"; // "text-color-light" 
-		document.querySelector("h1").style.color = "#333333"; // "title-color-light";
+		document.querySelector("h1").style.color = "#333333"; 
 
 		// console.log('event check in light: ', event.click.target.checked); // Uncaught TypeError: event.click is undefined
 		console.log('event check in light: ', document.getElementById("toggle_type0").checked);
@@ -108,7 +112,39 @@ document.getElementById("toggle_type0").addEventListener("click", processEvent_c
 
 // ----------------------------------------------------
 
-  
+async function processEvent_light(event) {
+	if (this.getAttribute("checked") == false) {
+		console.log('processEvent_light  - checked false');
+	} else  {
+		console.log('processEvent_light  - checked true');
+		
+		// Display Light 
+		document.body.style.backgroundColor = "#ffffff";
+		document.body.style.color = "#333333";
+		document.querySelector("h1").style.color = "#333333"; 
+	}
+}
+
+async function processEvent_dark(event) {
+	if (this.getAttribute("checked") == false) {
+		console.log('processEvent_dark  - checked false');
+	} else  {
+		onsole.log('processEvent_dark  - checked true');
+		
+		// Display Dark
+		document.body.style.backgroundColor = "#333333";
+		document.body.style.color = "#ffffff";
+		document.querySelector("h1").style.color = "#ffffff";
+	}
+}
+	
+document.getElementById("light").addEventListener("click", processEvent_light, false);
+document.getElementById("dark").addEventListener("click", processEvent_dark, false);
+
+// ----------------------------------------------------
+
+
+
 
 </script>
 </body>
