@@ -223,7 +223,7 @@ function processEvent_drop(event) {
 	  event.target.appendChild(dragElement);
 
 	  // Add selected data
-	  filelist2.push([document.getElementById("file_name"), document.getElementById("base64_string")]);
+	  filelist2.push([document.getElementById("file_name").innerHTML, document.getElementById("base64_string").innerHTML]);
   }
 
   // --------------------------
