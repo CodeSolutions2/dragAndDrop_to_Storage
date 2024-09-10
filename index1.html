@@ -18,7 +18,7 @@
 <br><br>
 
 <!-- Copy text and drag it to the dropArea -->
-<div id="File" draggable="true" class="dragElement">File</div>
+<!-- <div id="File" draggable="true" class="dragElement">File</div> -->
 
 <br><br>
   
@@ -173,7 +173,7 @@ async function previewInput(event) {
 
 // OR
 
-document.getElementById("dragElement").addEventListener("dragstart", processEvent_drag, false);
+document.getElementById("base64_string_icon").addEventListener("dragstart", processEvent_drag, false);
 
 function processEvent_drag(event) {
   event.dataTransfer.setData('text/plain', event.target.id);
