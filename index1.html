@@ -11,6 +11,7 @@
 
 <!-- A file to drag to the dropArea -->
 <input type="file" id="upload_file" accept="audio/*" style="display:block" multiple>
+<div id="base64_string" style="display:block" draggable="true" class="dragElement"></div>
 
 <br><br>
 
@@ -158,10 +159,6 @@ async function previewInput(event) {
 		// Save base64_string to DOM 
 		// console.log("e.target.result :", e.target.result);
 
-		const file_divElement = document.createElement("div");
-		file_divElement.id = "base64_string";
-		file_divElement.draggable = "true";
-		file_divElement.class = "dragElement";
 		document.getElementById("base64_string").innerHTML = e.target.result;
 	}
   
