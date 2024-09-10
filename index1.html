@@ -157,6 +157,11 @@ async function previewInput(event) {
 	reader.onload = async function(e){
 		// Save base64_string to DOM 
 		// console.log("e.target.result :", e.target.result);
+
+		const file_divElement = document.createElement("div");
+		file_divElement.id = "base64_string";
+		file_divElement.draggable = "true";
+		file_divElement.class = "dragElement";
 		document.getElementById("base64_string").innerHTML = e.target.result;
 	}
   
@@ -199,6 +204,7 @@ function processEvent_drop(event) {
   // Way 1
   // Retrieve the data that was set during the drag 
   const data = event.dataTransfer.getData('text/plain');
+	console.log('data: ', data);
   
   // find the draggable element based on the data
   const dragElement = document.getElementById(data);
