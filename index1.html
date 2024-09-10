@@ -185,9 +185,9 @@ function processEvent_drag(event) {
 // Drop functionality
 // ----------------------------------------------------
 
-var obj = {};
+var filelist2 = [];
 	
-	var filelist = [];
+var filelist = [];
 document.getElementById("dropArea").addEventListener("drop", processEvent_drop, false);
 
 // OR Way 0
@@ -223,7 +223,7 @@ function processEvent_drop(event) {
 	  event.target.appendChild(dragElement);
 
 	  // Add selected data
-	  obj[document.getElementById(file_name)] = document.getElementById("base64_string");
+	  filelist2.push([document.getElementById("file_name"), document.getElementById("base64_string")]);
   }
 
   // --------------------------
@@ -255,7 +255,7 @@ async function Submit_to_cloudStorage() {
 
 	console.log('filelist: ', filelist);
 
-	console.log('obj: ', obj);
+	console.log('filelist2: ', filelist2);
 }
 
 
