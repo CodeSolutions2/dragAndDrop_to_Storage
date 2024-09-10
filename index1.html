@@ -180,7 +180,8 @@ document.getElementById("dropArea").addEventListener("drop", processEvent_drop, 
 
 // OR Way 0
 // Eventlistener for when a dragElement is being dragged over the dropArea
-document.getElementById("dropArea").addEventListener("dragover", processEvent_dragover_way0, false);
+// document.getElementById("dropArea").addEventListener("dragover", processEvent_dragover_way0, false);
+document.getElementById("dropArea").addEventListener("dragover", processEvent_dragover_way1, false);
 
 function processEvent_drop(event) {
 
@@ -197,13 +198,13 @@ function processEvent_drop(event) {
   
   // Way 1
   // Retrieve the data that was set during the drag 
-  // const data = event.dataTransfer.getData('text/plain');
+  const data = event.dataTransfer.getData('text/plain');
   
   // find the draggable element based on the data
-  // const dragElement = document.getElementById(data);
+  const dragElement = document.getElementById(data);
 
   // Append the draggable element 
-  // event.target.appendChild(dragElement);
+  event.target.appendChild(dragElement);
 
   // Eventlistener for when a dragElement is being dragged over the dropArea
   // document.getElementById("dropArea").addEventListener("dragover", processEvent_dragover_way1, false);
