@@ -11,17 +11,20 @@
 
 <!-- A file to drag to the dropArea -->
 <input type="file" id="upload_file" accept="audio/*" style="display:block" multiple>
-<div id="base64_string" style="display:block" draggable="true" class="dragElement"></div>
-
+<div id="file_name" style="display:none"></div>
+<div id="base64_string" style="display:none"></div>
+<div id="base64_string_icon" draggable="true" class="dragElement" style="display:none">📄</div>
+	
 <br><br>
 
 <!-- Copy text and drag it to the dropArea -->
-<div id="dragElement" draggable="true" class="dragElement">File</div>
+<div id="File" draggable="true" class="dragElement">File</div>
 
 <br><br>
   
 <div id="dropArea" class="dropArea">Drop to Upload</div>
-
+	
+<button id="Submit_to_cloudStorage" onclick="Submit_to_cloudStorage()">Submit_to_cloudStorage</button>
   
 <!-- ---------------------------------------- -->
 <!-- CSS -->
@@ -151,6 +154,8 @@ async function previewInput(event) {
 	const file = event.target.files[0];  // first file in the list of selected files, better for selecting multiple files at one time
 	// console.log("file :", file);
 
+	document.getElementById("file_name").innerHTML = file.name;
+
 	// ---------------------
 
 	const reader = new FileReader();
@@ -160,6 +165,7 @@ async function previewInput(event) {
 		// console.log("e.target.result :", e.target.result);
 
 		document.getElementById("base64_string").innerHTML = e.target.result;
+		document.getElementById("base64_string_icon").style.display = "block";
 	}
   
 	reader.readAsDataURL(file);
@@ -174,10 +180,14 @@ function processEvent_drag(event) {
 }
 
 // ----------------------------------------------------
-  
+
 // ----------------------------------------------------
 // Drop functionality
 // ----------------------------------------------------
+
+var obj = {};
+	
+	var filelist = [];
 document.getElementById("dropArea").addEventListener("drop", processEvent_drop, false);
 
 // OR Way 0
@@ -193,24 +203,29 @@ function processEvent_drop(event) {
   // Stop defaults and allow drop events
   event.preventDefault();
 
+	console.log('event: ', event);
+	
   // --------------------------
-  // Way 0
-  const filelist = event.dataTransfer.files;
-  console.log('filelist: ', filelist);
+  // Way 0: detects files dragged from pc - but does not have base64_string
+	filelist.push(event.dataTransfer.files);
+	console.log('filelist: ', filelist);
   
-  // Way 1
-  // Retrieve the data that was set during the drag 
+  
+  // Detects data from html page - cah link 
   const data = event.dataTransfer.getData('text/plain');
-	console.log('data: ', data);
-  
-  // find the draggable element based on the data
-  const dragElement = document.getElementById(data);
+  console.log('data: ', data); // data:  <empty string>
+  if (data.length != 0) {
+	  // find the draggable element based on the data
+	  const dragElement = document.getElementById(data);
+	  console.log('dragElement: ', dragElement);
+	
+	  // Append the draggable element 
+	  event.target.appendChild(dragElement);
 
-  // Append the draggable element 
-  event.target.appendChild(dragElement);
+	  // Add selected data
+	  obj[document.getElementById(file_name)] =  base64_string;
+  }
 
-  // Eventlistener for when a dragElement is being dragged over the dropArea
-  // document.getElementById("dropArea").addEventListener("dragover", processEvent_dragover_way1, false);
   // --------------------------
 }
 
@@ -236,7 +251,10 @@ function processEvent_dragover_way1(event) {
   
 // ----------------------------------------------------
 
+async function Submit_to_cloudStorage() {
 
+	console.log()
+}
 
 
 </script>
