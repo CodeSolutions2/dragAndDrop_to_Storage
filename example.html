@@ -3,8 +3,6 @@
 <head></head>
 <body>
 
-<label class="switchLabelclass"><input type="checkbox" id="toggle_type"><span class="slider"></span></label>
-
 <h1>Example 0: Drag and Drop HTML text/elements</h1>
 <!-- Copy text and drag it to the dropArea -->
 <div id="HTML_text" draggable="true" class="dragElement">HTML text</div>
@@ -20,79 +18,31 @@
 <br><br>
 
 <h1>Example 2: Drag and drop files</h1>
-<input type="file" id="upload_file_dragdrop" style="display:block" class="dropArea" multiple>
+<input type="file" id="upload_file_dragdrop" style="display:block" class="dropArea1" multiple>
 
-<br><br>
+<br><hr><br>
   
 <div id="dropArea" class="dropArea">Drop to Upload</div>
+
+<br><br>
 	
-<button id="Submit_to_cloudStorage" onclick="Submit_to_cloudStorage()">Submit_to_cloudStorage</button>
+<button id="use_moved_data" onclick="use_moved_data()">use_moved_data</button>
   
 <!-- ---------------------------------------- -->
 <!-- CSS -->
 <style>
-:root {--background-color-light: #ffffff;
-      --title-color-light: #333333;
-      --text-color-light: #333333;
-}
-	
-body {
-  background-color: var(--background-color-light);
-  color: var(--text-color-light);
-}
-	
-h1 { color: var(--title-color-light); }
-  
-.switchLabelclass { position: relative; display: inline-block; width: 60px; height: 34px; border: 0.25px solid black; border-radius: 5px; }
-
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #333333;
-  -webkit-transition: .4s;
-  transition: .4s;
-	border-radius: 5px;
-	border: 0.25px solid black;
-}
-
-.slider:before {
-  position: absolute;
-  content: "☀️";
-  justify-content: center;
-  align-items: center;
-  height: 34px;
-  width: 30px;
-  left: 0px;
-  bottom: 0px;
-  /* When page is light, [slider button] is light (setting below), [background of input] is dark */
-  background-color: #ffffff;
-  -webkit-transition: .4s;
-  transition: .4s;
-  border-radius: 5px;
-	border: 0.25px solid black;
-}
-
-.slider:after { content: "✺"; }
-
-/* When page is dark, [slider button] is dark, [background of input] is light (setting below) */
-input:checked + .slider { background-color: #ffffff; }
-
-input:focus + .slider { box-shadow: 0 0 1px #333333; }
-
-input:checked + .slider:before {
-  -webkit-transform: translateX(26px);
-  -ms-transform: translateX(26px);
-  transform: translateX(26px);
-}
-
 .dropArea { height: 200px;
-  width: 200px;
+	width: 200px;
 	border-radius: 15px;
 	border: 0.25px solid black;
+	background-color: #7084c4;
+}
+
+.dropArea1 { height: 200px;
+	width: 200px;
+	border-radius: 15px;
+	border: 0.25px solid black;
+	background-color: #56b06e;
 }
 
 .HTML_text { cursor: move; }
