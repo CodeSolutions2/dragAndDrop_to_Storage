@@ -11,23 +11,6 @@
 
 <!-- A file to drag to the dropArea -->
 <input type="file" id="upload_file" accept="audio/*" style="display:block" class="dropArea" multiple>
-
-<br><br>
-
-<input id="upload_file_drop" accept="audio/*" style="display:block" class="dropArea" multiple>
-
-<div id="file_name" style="display:none"></div>
-<div id="base64_string" style="display:none"></div>
-<div id="base64_string_icon" draggable="true" class="dragElement" style="display:none">📄</div>
-	
-<br><br>
-
-<!-- Copy text and drag it to the dropArea -->
-<div id="File" draggable="true" class="dragElement">File</div>
-
-<br><br>
-  
-<div id="dropArea" class="dropArea">Drop to Upload</div>
 	
 <button id="Submit_to_cloudStorage" onclick="Submit_to_cloudStorage()">Submit_to_cloudStorage</button>
   
@@ -97,8 +80,6 @@ input:checked + .slider:before {
 	border-radius: 15px;
 	border: 0.25px solid black;
 }
-
-.dragElement { cursor: move; }
   
 </style>
 <!-- ---------------------------------------- -->
@@ -151,11 +132,28 @@ function processEvent_checkboxOption(event) {
 // Input functionality - FileReader type="file"
 // ----------------------------------------------------
 document.getElementById("upload_file").addEventListener("change", previewInput, false);
-  
-// more complex than thought
-// need to trigger a change event of the input id=upload_file by searching with a [file_name from the metadata] - need to figure out how to make a change event for the input using JavaScript code only - need to find the file with the file_name (it could be anywhere, one would need to search over the entire pc to find it to get the base64_string)
-  
+
+var obj = {};
+var filelist_metaData = [];
+	
 async function previewInput(event) {
+
+	console.log("event :", event);
+  
+  // ---------------------
+	
+	// Stop defaults and allow drop events
+  event.preventDefault();
+
+	// Detects files dragged from pc - but does not have base64_string
+	var file_drop_event_data = event.dataTransfer.files;
+	
+	  if (file_drop_event_data.length != 0) { 
+	    // Not empty array - save the metadata (filename, etc)
+	    filelist_metaData.push(file_drop_event_data);
+	    console.log('filelist_metaData: ', filelist_metaData);
+	  }
+	// ---------------------
 	
 	// Take the first file
 	const file = event.target.files[0];  // first file in the list of selected files, better for selecting multiple files at one time
@@ -166,154 +164,13 @@ async function previewInput(event) {
 	const reader = new FileReader();
 	
 	reader.onload = async function(e){
-		// Save base64_string to DOM 
-		// console.log("e.target.result :", e.target.result);
-
-    // document.getElementById("file_name").innerHTML = file.name;
-		// document.getElementById("base64_string").innerHTML = e.target.result;
-		// document.getElementById("base64_string_icon").style.display = "block";
-
-    // OR
-
-    obj[file.name] =  e.target.result;
-    
-	}
-  
-	reader.readAsDataURL(file);
-}
-// ----------------------------------------------------
-
-
-
-
-// ----------------------------------------------------
-// Input functionality - FileReader with drop
-// ----------------------------------------------------
-document.getElementById("upload_file_drop").addEventListener("drop", processEvent_dropInput, false);
-
-async function processEvent_dropInput(event) {
-
-  // ---------------------
-  
-  console.log("event :", event);
-  
-  // ---------------------
-  
-  // Stop defaults and allow drop events
-  event.preventDefault();
-
-  // Way 0: detects files dragged from pc - but does not have base64_string
-  var file_drop_event_data = event.dataTransfer.files;
-  console.log("file_drop_event_data :", file_drop_event_data);
-
-  // ---------------------
-  
-	// Take the first file
-	const file = event.target.files[0];  // first file in the list of selected files, better for selecting multiple files at one time
-	// console.log("file :", file);
-
-	const reader = new FileReader();
-	
-	reader.onload = async function(e){
-		// Save base64_string to DOM 
-		// console.log("e.target.result :", e.target.result);
-
-    // document.getElementById("file_name").innerHTML = file.name;
-		// document.getElementById("base64_string").innerHTML = e.target.result;
-		// document.getElementById("base64_string_icon").style.display = "block";
-
-    // OR
-
-    obj[file.name] =  e.target.result;
-    
+		// Save base64_string
+		obj[file.name] =  e.target.result;
 	}
   
 	reader.readAsDataURL(file);
 }
 
-// ----------------------------------------------------
-
-
-
-
-// ----------------------------------------------------
-// Drag functionality
-// ----------------------------------------------------
-// document.getElementById("dragElement").addEventListener("dragstart", processEvent_drag, false);
-
-// function processEvent_drag(event) {
-//   event.dataTransfer.setData('text/plain', event.target.id);
-// }
-
-// ----------------------------------------------------
-
-
-
-
-// ----------------------------------------------------
-// Drop functionality
-// ----------------------------------------------------
-var obj = {};
-	
-var filelist_metaData = [];
-document.getElementById("dropArea").addEventListener("drop", processEvent_drop, false);
-
-// Eventlistener for when a dragElement is being dragged over the dropArea
-document.getElementById("dropArea").addEventListener("dragover", processEvent_dragover, false);
-
-function processEvent_drop(event) {
-
-  // Stop defaults and allow drop events
-  event.preventDefault();
-
-	console.log('event: ', event);
-	
-  // --------------------------
-  // Way 0: detects files dragged from pc - but does not have base64_string
-  var file_drop_event_data = event.dataTransfer.files;
-  if (file_drop_event_data.length != 0) { 
-    // Not empty array - save the metadata (filename, etc)
-    filelist_metaData.push(file_drop_event_data);
-    console.log('filelist_metaData: ', filelist_metaData);
-
-    // Launch function that performs file reader - to obtain base64_string
-
-    // more complex than thought
-    // need to trigger a change event of the input id=upload_file by searching with a [file_name from the metadata] - need to figure out how to make a change event for the input using JavaScript code only - need to find the file with the file_name (it could be anywhere, one would need to search over the entire pc to find it to get the base64_string)
-  
-
-  }
-  
-  
-  // Detects data from html page - cah link 
-  // const data = event.dataTransfer.getData('text/plain');
-  // console.log('data: ', data); // data:  <empty string>
-  // if (data.length != 0) {
-	  // find the draggable element based on the data
-	  // const dragElement = document.getElementById(data);
-	  // console.log('dragElement: ', dragElement);
-	
-	  // Append the draggable element 
-	  // event.target.appendChild(dragElement);
-
-	  // Add selected data
-	  // obj[document.getElementById(file_name)] =  base64_string;
-  // }
-
-  // --------------------------
-}
-
-// --------------------------
-
-function processEvent_dragover(event) {
-  
-  // Stop defaults and allow drop events
-  event.preventDefault();
-
-  // Style the drag and drop as a "copy" file operation
-  event.dataTransfer.dropEffect = "copy";
-}
-  
 // ----------------------------------------------------
 
 async function Submit_to_cloudStorage() {
