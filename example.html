@@ -3,27 +3,6 @@
 <head></head>
 <body>
 
-<h1>Example 0: Drag and Drop HTML text/elements</h1>
-<!-- Copy text and drag it to the dropArea -->
-<div id="HTML_text" draggable="true" class="dragElement">HTML text</div>
-	
-<br><br>
-
-<h1>Example 1: Click button create drag and drop elements</h1>
-<input type="file" id="upload_file" accept="audio/*" style="display:block" multiple>
-<div id="file_name" style="display:none"></div>
-<div id="base64_string" style="display:none"></div>
-
-<br><br>
-	
-<div id="base64_string_icon" draggable="true" class="dragElement" style="display:none">📄</div>
-	
-<br><br>
-
-<div id="dropArea" class="dropArea"> Drop for Example 0 & 1</div>
-
-<br><hr><br>
-
 <h1>Example 2: Drag and drop files</h1>
 <input type="file" id="upload_file_dragdrop" style="display:block" class="dropArea1" multiple>
 
@@ -34,148 +13,19 @@
 <!-- ---------------------------------------- -->
 <!-- CSS -->
 <style>
-.dropArea { height: 200px;
-	width: 200px;
-	border-radius: 15px;
-	border: 0.25px solid black;
-	background-color: #7084c4;
-}
-
 .dropArea1 { height: 200px;
 	width: 200px;
 	border-radius: 15px;
 	border: 0.25px solid black;
 	background-color: #56b06e;
 }
-
-.HTML_text { cursor: move; }
-  
 </style>
 <!-- ---------------------------------------- -->
 
 <script>
-
-// -----------------------------------------------
-	
-window.addEventListener('beforeunload', function() {
-	window.location.href = window.location.href + '?nocache=' + new Date().getTime();
-});
-
-// -----------------------------------------------
-
-var example;
 var other_data_related_to_dragEvent = {};
 var html_element_drag_list_metaData = [];
-
-
-// ----------------------------------------------------
-// Drag functionality: Example 0
-// ----------------------------------------------------
-document.getElementById("HTML_text").addEventListener("dragstart", processEvent_drag_example0, false);
-
-function processEvent_drag_example0(event) {
-	example = 0;
-  	event.dataTransfer.setData('text/plain', event.target.id);
-}
-// ----------------------------------------------------
-
-
 	
-
-// ----------------------------------------------------
-// Drag functionality: Example 1
-// ----------------------------------------------------
-// The eventlistener needs to be always running, to detect which file the user selected with browse
-document.getElementById("upload_file").addEventListener("change", previewInput_drop, false);
-  
-async function previewInput_drop(event) {
-	
-	// Take the first file
-	const file = event.target.files[0];  // first file in the list of selected files, better for selecting multiple files at one time
-	// console.log("file :", file);
-
-	document.getElementById("file_name").innerHTML = file.name;
-
-	// ---------------------
-
-	const reader = new FileReader();
-	
-	reader.onload = async function(e){
-		document.getElementById("base64_string").innerHTML = e.target.result;
-		document.getElementById("base64_string_icon").style.display = "block";
-	}
-  
-	reader.readAsDataURL(file);
-}
-
-
-document.getElementById("base64_string_icon").addEventListener("dragstart", processEvent_drag_example1, false);
-
-function processEvent_drag_example1(event) {
-	example = 1;
-  	event.dataTransfer.setData('text/plain', event.target.id);
-}
-
-// ----------------------------------------------------
-
-
-
-
-
-// ----------------------------------------------------
-// Drop functionality: Example 0 and 1
-// ----------------------------------------------------
-document.getElementById("dropArea").addEventListener("drop", processEvent_drop, false);
-document.getElementById("dropArea").addEventListener("dragover", processEvent_dragover, false);
-
-function processEvent_drop(event) {
-  
-  // Stop defaults and allow drop events
-  event.preventDefault();
-
-	console.log('event: ', event);
-	
-  // Detects files dragged from pc 
-	html_element_drag_list_metaData.push(event.dataTransfer.files);
-	console.log('html_element_drag_list_metaData: ', html_element_drag_list_metaData);
-  
-  
-  // Detects html elements dragged from the html page
-  const data = event.dataTransfer.getData('text/plain');
-  console.log('data: ', data);
-  if (data.length != 0) {
-	  // find the draggable element based on the data
-	  const dragElement = document.getElementById(data);
-	  console.log('dragElement: ', dragElement);
-	
-	  // Append the draggable element 
-	  event.target.appendChild(dragElement);
-
-	  // Save data from non-html element drag events
-	  if (example == 1) {
-		  // Add selected data
-		  other_data_related_to_dragEvent[document.getElementById("file_name").innerHTML] = document.getElementById("base64_string").innerHTML;
-	  }
-  }
-
-}
-
-// --------------------------
-
-function processEvent_dragover(event) {
-	
-  // Stop defaults and allow drop events
-  event.preventDefault();
-
-  // Style the drag and drop as a "copy" file operation
-  // event.dataTransfer.dropEffect = "copy";
-}
-  
-// ----------------------------------------------------
-
-
-
-
 // ----------------------------------------------------
 // Drag and Drop functionality: Example 2
 // ----------------------------------------------------
@@ -214,15 +64,12 @@ async function obtain_fileInfo(file) {
 	 return base64_string;
 }
 
-
 // ----------------------------------------------------
 	
-
 async function use_moved_data() {
 	console.log('html_element_drag_list_metaData: ', html_element_drag_list_metaData);
 	console.log('other_data_related_to_dragEvent: ', other_data_related_to_dragEvent);
 }
-
 
 </script>
 </body>
