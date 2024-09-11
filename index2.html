@@ -137,7 +137,7 @@ var obj = {};
 	
 async function previewInput(event) {
 
-	console.log("event :", event);
+	// console.log("event :", event);
   
 	// ---------------------
 	
@@ -152,14 +152,12 @@ async function previewInput(event) {
 
 	// For multiple files
 	const allFiles = event.target.files;
-	console.log("allFiles :", allFiles);
+	// console.log("allFiles :", allFiles);
 	
 	for (var i=0; i<allFiles.length; i++) {
-		var file = allFiles[i];
-		
-		(file) => { var reader = new FileReader();
-		reader.onload = async function(e){ obj[file.name] =  e.target.result; };
-		reader.readAsDataURL(file); }
+		const reader = new FileReader();
+		reader.onload = async function(e){ obj[allFiles[i].name] =  e.target.result; };
+		reader.readAsDataURL(allFiles[i]); }
 	}
 
 	// ---------------------
