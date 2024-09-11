@@ -13,6 +13,9 @@
 <input type="file" id="upload_file" accept="audio/*" style="display:block" multiple>
 <div id="file_name" style="display:none"></div>
 <div id="base64_string" style="display:none"></div>
+
+<br><br>
+	
 <div id="base64_string_icon" draggable="true" class="dragElement" style="display:none">📄</div>
 	
 <br><br>
@@ -52,7 +55,18 @@
 
 <script>
 
-var example;
+// -----------------------------------------------
+	
+window.addEventListener('beforeunload', function() {
+	window.location.href = window.location.href + '?nocache=' + new Date().getTime();
+
+	var example;
+	
+});
+
+// -----------------------------------------------
+	
+
 
 // ----------------------------------------------------
 // Drag functionality: Example 0
@@ -61,7 +75,8 @@ document.getElementById("HTML_text").addEventListener("dragstart", processEvent_
 
 function processEvent_drag_example0(event) {
 	example = 0;
-  	event.dataTransfer.setData('text/plain', event.target.id);
+  	var other_data_related_to_dragEvent = {};
+	var html_element_drag_list_metaData = [];
 }
 // ----------------------------------------------------
 
@@ -114,8 +129,7 @@ function processEvent_drag_example1(event) {
 // ----------------------------------------------------
 // Drop functionality: Example 0 and 1
 // ----------------------------------------------------
-var other_data_related_to_dragEvent = {};
-var html_element_drag_list_metaData = [];
+
 	
 document.getElementById("dropArea").addEventListener("drop", processEvent_drop, false);
 document.getElementById("dropArea").addEventListener("dragover", processEvent_dragover, false);
