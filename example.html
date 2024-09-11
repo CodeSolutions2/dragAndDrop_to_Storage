@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head></head>
+<body>
+
+<h1>Example 0: Drag and Drop HTML text/elements</h1>
+<div id="HTML_text" draggable="true" class="dragElement">HTML text</div>
+
+<br><br>
+
+<div id="dropArea" class="dropArea"> Drop for Example 0 & 1</div>
+
+<style>
+.dropArea { height: 200px;
+    width: 200px;
+    border-radius: 15px;
+    border: 0.25px solid black;
+    background-color: #7084c4;
+}
+
+.HTML_text { cursor: move; }
+</style>
+<script>
+var example;
+var other_data_related_to_dragEvent = {};
+var html_element_drag_list_metaData = [];
+
+
+// ----------------------------------------------------
+// Drag functionality: Example 0
+// ----------------------------------------------------
+document.getElementById("HTML_text").addEventListener("dragstart", processEvent_drag_example0, false);
+// document.getElementById("HTML_text").addEventListener("dragend", processEvent_drag_example0, false); // to stop
+
+function processEvent_drag_example0(event) {
+    example = 0;
+    event.dataTransfer.setData('text/plain', event.target.id);
+}
+// ----------------------------------------------------
+
+// ----------------------------------------------------
+// Drop functionality: Example 0 and 1
+// ----------------------------------------------------
+document.getElementById("dropArea").addEventListener("drop", processEvent_drop, false);
+document.getElementById("dropArea").addEventListener("dragover", processEvent_dragover, false);
+
+function processEvent_drop(event) {
+
+    // Stop defaults and allow drop events
+    event.preventDefault();
+
+    // Detects files dragged from pc 
+    html_element_drag_list_metaData.push(event.dataTransfer.files);
+    console.log('html_element_drag_list_metaData: ', html_element_drag_list_metaData);
+
+    // Detects html elements dragged from the html page
+    const data = event.dataTransfer.getData('text/plain');
+    console.log('data: ', data);
+    if (data.length != 0) {
+      // find the draggable element based on the data
+      const dragElement = document.getElementById(data);
+      console.log('dragElement: ', dragElement);
+
+      // Append the draggable element 
+      event.target.appendChild(dragElement);
+
+    }
+}
+
+function processEvent_dragover(event) {
+  // Stop defaults and allow drop events
+  event.preventDefault();
+}
+// -------------------------------------------------
+
+</script>
+</body>
+</html>
