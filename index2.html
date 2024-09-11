@@ -153,13 +153,16 @@ async function previewInput(event) {
 	// For multiple files
 	const allFiles = event.target.files;
 	console.log("allFiles :", allFiles);
+
+	console.log("allFiles.length :", allFiles.length);
 	
-	for (var i=0; i<allFiles.length; i++) {
+	for (let i=0; i<allFiles.length; i++) {
+		console.log("i :", i);
+		
 		const file = allFiles[i];
 		console.log("file :", file);
-		await obtain_fileInfo(file)
-			.then(res => { console.log('a file saved to obj: ', Object.keys(obj)); })
 		
+		await obtain_fileInfo(file).then(res => { console.log('a file saved to obj: ', Object.keys(obj)); })
 	}
 
 	// ---------------------
