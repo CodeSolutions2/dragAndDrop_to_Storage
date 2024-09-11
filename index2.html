@@ -137,58 +137,25 @@ var obj = {};
 	
 async function previewInput(event) {
 
-	// console.log("event :", event);
-  
-	// ---------------------
-	
-	// For a single file
-	// const file = event.target.files[0];  // first file in the list of selected files, better for selecting multiple files at one time
-	// console.log("file :", file);
-	// const reader = new FileReader();
-	// reader.onload = async function(e){ obj[file.name] =  e.target.result; };
-	// reader.readAsDataURL(file);
-
-	// OR
-
 	// For multiple files
 	const allFiles = event.target.files;
-	console.log("allFiles :", allFiles);
-
-	console.log("allFiles.length :", allFiles.length);
+	// console.log("allFiles :", allFiles);
 	
-	// for (let i=0; i<allFiles.length; i++) {
 	var i = 0;
 	while (i < allFiles.length) {
 		
 		const file = allFiles[i];
-		console.log("file :", file);
+		// console.log("file :", file);
 
-		await obtain_fileInfo_way2(file)
-			.then(res => { console.log('res: ', res); })
+		await obtain_fileInfo_way1(file)
+			.then(base64str => { obj[file.name] = base64str; })
 			.catch(error => console.error(error));
-		// OR
-		// await obtain_fileInfo_way1(file)
-		// 	.then(base64str => { obj[file.name] = base64str; })
-		// 	.catch(error => console.error(error));
 		
 		i = i + 1;
-		console.log("i :", i);
+		// console.log("i :", i);
 	}
 
 	// ---------------------
-}
-
-async function obtain_fileInfo_way0(file) {
-	// WORKS!
-	return await new Promise((resolve) => {
-		const reader = new FileReader();
-		reader.onload = async function(e){ 
-			obj[file.name] =  e.target.result;
-			resolve('promise resolved');
-		};
-		reader.readAsDataURL(file);
-	});
-	 
 }
 	
 async function obtain_fileInfo_way1(file) {
@@ -196,19 +163,7 @@ async function obtain_fileInfo_way1(file) {
 	var base64_string = await new Promise((resolve) => {
 		const reader = new FileReader();
 		reader.onload = async function(e){ 
-			resolve(e.target.result);
-		};
-		reader.readAsDataURL(file);
-	});
-	 return base64_string;
-}
-
-async function obtain_fileInfo_way2(file) {
-	
-	var base64_string = await new Promise((resolve) => {
-		const reader = new FileReader();
-		reader.onload = async function(e){ 
-			resolve(reader.result);
+			resolve(e.target.result); // inside resolve is the value that the function returns
 		};
 		reader.readAsDataURL(file);
 	});
@@ -220,6 +175,8 @@ async function obtain_fileInfo_way2(file) {
 async function Submit_to_cloudStorage() {
 
 	console.log('obj: ', obj);
+
+	// 
 }
 
 
