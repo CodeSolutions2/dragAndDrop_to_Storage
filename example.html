@@ -20,10 +20,7 @@
 <br><br>
 
 <h1>Example 2: Drag and drop files</h1>
-<input type="file" id="upload_file" accept="audio/*" style="display:block" multiple>
-<div id="file_name" style="display:none"></div>
-<div id="base64_string" style="display:none"></div>
-<div id="base64_string_icon" draggable="true" class="dragElement" style="display:none">📄</div>
+<input type="file" id="upload_file_dragdrop" style="display:block" class="dropArea" multiple>
 
 <br><br>
   
@@ -148,10 +145,12 @@ function processEvent_checkboxOption(event) {
 
 
 
+var example;
+
 // ----------------------------------------------------
 // Drag functionality: Example 0
 // ----------------------------------------------------
-document.getElementById("HTML_text").addEventListener("dragstart", processEvent_drag, false);
+document.getElementById("HTML_text").addEventListener("dragstart", processEvent_drag_example0, false);
 
 function processEvent_drag_example0(event) {
 	example = 0;
@@ -191,9 +190,8 @@ async function previewInput(event) {
 	reader.readAsDataURL(file);
 }
 
-// OR
 
-document.getElementById("base64_string_icon").addEventListener("dragstart", processEvent_drag, false);
+document.getElementById("base64_string_icon").addEventListener("dragstart", processEvent_drag_example1, false);
 
 function processEvent_drag_example1(event) {
 	example = 1;
@@ -207,10 +205,10 @@ function processEvent_drag_example1(event) {
 
 
 // ----------------------------------------------------
-// Drop functionality
+// Drop functionality: Example 0 and 1
 // ----------------------------------------------------
-var filelist2 = [];
-var filelist = [];
+var other_data_related_to_dragEvent = {};
+var html_element_drag_list_metaData = [];
 	
 document.getElementById("dropArea").addEventListener("drop", processEvent_drop, false);
 document.getElementById("dropArea").addEventListener("dragover", processEvent_dragover, false);
@@ -222,14 +220,14 @@ function processEvent_drop(event) {
 
 	console.log('event: ', event);
 	
-  // Way 0: detects files dragged from pc - but does not have base64_string
-	filelist.push(event.dataTransfer.files);
-	console.log('filelist: ', filelist);
+  // Detects files dragged from pc 
+	html_element_drag_list_metaData.push(event.dataTransfer.files);
+	console.log('html_element_drag_list_metaData: ', html_element_drag_list_metaData);
   
   
-  // Detects data from html page - cah link 
+  // Detects html elements dragged from the html page
   const data = event.dataTransfer.getData('text/plain');
-  console.log('data: ', data); // data:  <empty string>
+  console.log('data: ', data);
   if (data.length != 0) {
 	  // find the draggable element based on the data
 	  const dragElement = document.getElementById(data);
@@ -238,9 +236,10 @@ function processEvent_drop(event) {
 	  // Append the draggable element 
 	  event.target.appendChild(dragElement);
 
+	  // Save data from non-html element drag events
 	  if (example == 1) {
 		  // Add selected data
-		  filelist2.push([document.getElementById("file_name").innerHTML, document.getElementById("base64_string").innerHTML]);
+		  other_data_related_to_dragEvent[document.getElementById("file_name").innerHTML] = document.getElementById("base64_string").innerHTML;
 	  }
   }
 
@@ -257,14 +256,56 @@ function processEvent_dragover(event) {
   // event.dataTransfer.dropEffect = "copy";
 }
   
-  
 // ----------------------------------------------------
 
+
+
+
+// ----------------------------------------------------
+// Drag and Drop functionality: Example 2
+// ----------------------------------------------------
+document.getElementById("upload_file_dragdrop").addEventListener("change", previewInput, false);
+
+async function previewInput(event) {
+
+	// For multiple files
+	const allFiles = event.target.files;
+	// console.log("allFiles :", allFiles);
+	
+	var i = 0;
+	while (i < allFiles.length) {
+		
+		const file = allFiles[i];
+		// console.log("file :", file);
+
+		await obtain_fileInfo(file)
+			.then(base64str => { other_data_related_to_dragEvent[file.name] = base64str; })
+			.catch(error => console.error(error));
+		
+		i = i + 1;
+	}
+
+	// ---------------------
+}
+	
+async function obtain_fileInfo(file) {
+	var base64_string = await new Promise((resolve) => {
+		const reader = new FileReader();
+		reader.onload = async function(e){ 
+			resolve(e.target.result); // inside resolve is the value that the function returns
+		};
+		reader.readAsDataURL(file);
+	});
+	 return base64_string;
+}
+
+
+// ----------------------------------------------------
+	
+
 async function use_moved_data() {
-
-	console.log('filelist: ', filelist);
-
-	console.log('filelist2: ', filelist2);
+	console.log('html_element_drag_list_metaData: ', html_element_drag_list_metaData);
+	console.log('other_data_related_to_dragEvent: ', other_data_related_to_dragEvent);
 }
 
 
