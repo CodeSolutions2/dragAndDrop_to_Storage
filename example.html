@@ -2,74 +2,102 @@
 <html>
 <head></head>
 <body>
-
-<h1>Example 2: Drag and drop files</h1>
-<input type="file" id="upload_file_dragdrop" style="display:block" class="dropArea1" multiple>
-
+	
+<h1>Example 1: Click button create drag and drop elements</h1>
+<input type="file" id="upload_file" accept="audio/*" style="display:block" multiple>
+<div id="file_name" style="display:none"></div>
+<div id="base64_string" style="display:none"></div>
+<div id="base64_string_icon" draggable="true" class="dragElement" style="display:none">📄</div>
+	
 <br><br>
 
-<button id="use_moved_data" onclick="use_moved_data()">use_moved_data</button>
-  
-<!-- ---------------------------------------- -->
-<!-- CSS -->
+<div id="dropArea" class="dropArea"> Drop for Example 0 & 1</div>
+
 <style>
-.dropArea1 { height: 200px;
+.dropArea { height: 200px;
 	width: 200px;
 	border-radius: 15px;
 	border: 0.25px solid black;
-	background-color: #56b06e;
+	background-color: #7084c4;
 }
-</style>
-<!-- ---------------------------------------- -->
 
-<script>
+.HTML_text { cursor: move; }
+</style>
+
+var example;
 var other_data_related_to_dragEvent = {};
 var html_element_drag_list_metaData = [];
-	
+
 // ----------------------------------------------------
-// Drag and Drop functionality: Example 2
+// Drag functionality: Example 1
 // ----------------------------------------------------
-document.getElementById("upload_file_dragdrop").addEventListener("change", previewInput, false);
-
-async function previewInput(event) {
-
-	// For multiple files
-	const allFiles = event.target.files;
-	// console.log("allFiles :", allFiles);
+// The eventlistener needs to be always running, to detect which file the user selected with browse
+document.getElementById("upload_file").addEventListener("change", previewInput_drop, false);
+  
+async function previewInput_drop(event) {
 	
-	var i = 0;
-	while (i < allFiles.length) {
-		
-		const file = allFiles[i];
-		// console.log("file :", file);
+	// Take the first file
+	const file = event.target.files[0];  // first file in the list of selected files, better for selecting multiple files at one time
+	// console.log("file :", file);
 
-		await obtain_fileInfo(file)
-			.then(base64str => { other_data_related_to_dragEvent[file.name] = base64str; })
-			.catch(error => console.error(error));
-		
-		i = i + 1;
-	}
+	document.getElementById("file_name").innerHTML = file.name;
 
 	// ---------------------
-}
+
+	const reader = new FileReader();
 	
-async function obtain_fileInfo(file) {
-	var base64_string = await new Promise((resolve) => {
-		const reader = new FileReader();
-		reader.onload = async function(e){ 
-			resolve(e.target.result); // inside resolve is the value that the function returns
-		};
-		reader.readAsDataURL(file);
-	});
-	 return base64_string;
+	reader.onload = async function(e){
+		document.getElementById("base64_string").innerHTML = e.target.result;
+		document.getElementById("base64_string_icon").style.display = "block";
+	}
+  
+	reader.readAsDataURL(file);
+}
+
+
+document.getElementById("base64_string_icon").addEventListener("dragstart", processEvent_drag_example1, false);
+
+function processEvent_drag_example1(event) {
+	example = 1;
+  	event.dataTransfer.setData('text/plain', event.target.id);
 }
 
 // ----------------------------------------------------
+
+// ----------------------------------------------------
+// Drop functionality: Example 0 and 1
+// ----------------------------------------------------
+document.getElementById("dropArea").addEventListener("drop", processEvent_drop, false);
+document.getElementById("dropArea").addEventListener("dragover", processEvent_dragover, false);
+
+function processEvent_drop(event) {
+  
+	// Stop defaults and allow drop events
+	event.preventDefault();
 	
-async function use_moved_data() {
+	// Detects files dragged from pc 
+	html_element_drag_list_metaData.push(event.dataTransfer.files);
 	console.log('html_element_drag_list_metaData: ', html_element_drag_list_metaData);
-	console.log('other_data_related_to_dragEvent: ', other_data_related_to_dragEvent);
+  
+	// Detects html elements dragged from the html page
+	const data = event.dataTransfer.getData('text/plain');
+	console.log('data: ', data);
+	if (data.length != 0) {
+	  // find the draggable element based on the data
+	  const dragElement = document.getElementById(data);
+	  console.log('dragElement: ', dragElement);
+	
+	  // Append the draggable element 
+	  event.target.appendChild(dragElement);
+
+	}
 }
+
+function processEvent_dragover(event) {
+  // Stop defaults and allow drop events
+  event.preventDefault();
+}
+// -------------------------------------------------
 
 </script>
 </body>
