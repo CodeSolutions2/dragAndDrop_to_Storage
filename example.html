@@ -2,13 +2,10 @@
 <html>
 <head></head>
 <body>
-	
-<h1>Example 1: Click button create drag and drop elements</h1>
-<input type="file" id="upload_file" accept="audio/*" style="display:block" multiple>
-<div id="file_name" style="display:none"></div>
-<div id="base64_string" style="display:none"></div>
-<div id="base64_string_icon" draggable="true" class="dragElement" style="display:none">📄</div>
-	
+
+<h1>Example 0: Drag and Drop HTML text/elements</h1>
+<div id="HTML_text" draggable="true" class="dragElement">HTML text</div>
+
 <br><br>
 
 <div id="dropArea" class="dropArea"> Drop for Example 0 & 1</div>
@@ -23,46 +20,22 @@
 
 .HTML_text { cursor: move; }
 </style>
-	
 <script>
 var example;
 var other_data_related_to_dragEvent = {};
 var html_element_drag_list_metaData = [];
 
+
 // ----------------------------------------------------
-// Drag functionality: Example 1
+// Drag functionality: Example 0
 // ----------------------------------------------------
-// The eventlistener needs to be always running, to detect which file the user selected with browse
-document.getElementById("upload_file").addEventListener("change", previewInput_drop, false);
-  
-async function previewInput_drop(event) {
+document.getElementById("HTML_text").addEventListener("dragstart", processEvent_drag_example0, false);
+// document.getElementById("HTML_text").addEventListener("dragend", processEvent_drag_example0, false); // to stop
 	
-	// Take the first file
-	const file = event.target.files[0];  // first file in the list of selected files, better for selecting multiple files at one time
-	// console.log("file :", file);
-
-	document.getElementById("file_name").innerHTML = file.name;
-
-	// ---------------------
-
-	const reader = new FileReader();
-	
-	reader.onload = async function(e){
-		document.getElementById("base64_string").innerHTML = e.target.result;
-		document.getElementById("base64_string_icon").style.display = "block";
-	}
-  
-	reader.readAsDataURL(file);
-}
-
-
-document.getElementById("base64_string_icon").addEventListener("dragstart", processEvent_drag_example1, false);
-
-function processEvent_drag_example1(event) {
-	example = 1;
+function processEvent_drag_example0(event) {
+	example = 0;
   	event.dataTransfer.setData('text/plain', event.target.id);
 }
-
 // ----------------------------------------------------
 
 // ----------------------------------------------------
