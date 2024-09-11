@@ -86,7 +86,7 @@ function processEvent_drag_example0(event) {
 // Drag functionality: Example 1
 // ----------------------------------------------------
 // The eventlistener needs to be always running, to detect which file the user selected with browse
-document.getElementById("upload_file").addEventListener("drop", previewInput_drop, false);
+document.getElementById("upload_file").addEventListener("change", previewInput_drop, false);
   
 async function previewInput_drop(event) {
 	
