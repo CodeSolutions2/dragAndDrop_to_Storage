@@ -156,19 +156,25 @@ async function previewInput(event) {
 
 	console.log("allFiles.length :", allFiles.length);
 	
-	for (let i=0; i<allFiles.length; i++) {
+	// for (let i=0; i<allFiles.length; i++) {
+	var i = 0;
+	while (i < allFiles.length) {
 		console.log("i :", i);
 		
 		const file = allFiles[i];
 		console.log("file :", file);
 		
-		await obtain_fileInfo(file).then(res => { console.log('a file saved to obj: ', Object.keys(obj)); })
+		await obtain_fileInfo(file).then(res => { console.log('a file saved to obj: ', Object.keys(obj)); });
+		
+		i = i + 1;
+		console.log("i :", i);
 	}
 
 	// ---------------------
 }
 
 async function obtain_fileInfo(file) {
+	console.log('here');
 	return new Promise((resolve, reject) => {
 		const reader = new FileReader();
 		reader.onload = async function(e){ 
