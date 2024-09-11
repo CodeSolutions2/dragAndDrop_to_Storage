@@ -3,13 +3,15 @@
 <head></head>
 <body>
 
-<h1>Drag and Drop data to a bucket</h1>
-
 <label class="switchLabelclass"><input type="checkbox" id="toggle_type"><span class="slider"></span></label>
 
+<h1>Example 0: Drag and Drop HTML text/elements</h1>
+<!-- Copy text and drag it to the dropArea -->
+<div id="HTML_text" draggable="true" class="dragElement">HTML text</div>
+	
 <br><br>
 
-<!-- A file to drag to the dropArea -->
+<h1>Example 1: Click button create drag and drop elements</h1>
 <input type="file" id="upload_file" accept="audio/*" style="display:block" multiple>
 <div id="file_name" style="display:none"></div>
 <div id="base64_string" style="display:none"></div>
@@ -17,8 +19,11 @@
 	
 <br><br>
 
-<!-- Copy text and drag it to the dropArea -->
-<!-- <div id="File" draggable="true" class="dragElement">File</div> -->
+<h1>Example 2: Drag and drop files</h1>
+<input type="file" id="upload_file" accept="audio/*" style="display:block" multiple>
+<div id="file_name" style="display:none"></div>
+<div id="base64_string" style="display:none"></div>
+<div id="base64_string_icon" draggable="true" class="dragElement" style="display:none">📄</div>
 
 <br><br>
   
@@ -93,7 +98,7 @@ input:checked + .slider:before {
 	border: 0.25px solid black;
 }
 
-.dragElement { cursor: move; }
+.HTML_text { cursor: move; }
   
 </style>
 <!-- ---------------------------------------- -->
@@ -142,8 +147,23 @@ function processEvent_checkboxOption(event) {
 // ----------------------------------------------------
 
 
+
 // ----------------------------------------------------
-// Drag functionality
+// Drag functionality: Example 0
+// ----------------------------------------------------
+document.getElementById("HTML_text").addEventListener("dragstart", processEvent_drag, false);
+
+function processEvent_drag_example0(event) {
+	example = 0;
+  	event.dataTransfer.setData('text/plain', event.target.id);
+}
+// ----------------------------------------------------
+
+
+	
+
+// ----------------------------------------------------
+// Drag functionality: Example 1
 // ----------------------------------------------------
 // The eventlistener needs to be always running, to detect which file the user selected with browse
 document.getElementById("upload_file").addEventListener("change", previewInput, false);
@@ -175,37 +195,33 @@ async function previewInput(event) {
 
 document.getElementById("base64_string_icon").addEventListener("dragstart", processEvent_drag, false);
 
-function processEvent_drag(event) {
-  event.dataTransfer.setData('text/plain', event.target.id);
+function processEvent_drag_example1(event) {
+	example = 1;
+  	event.dataTransfer.setData('text/plain', event.target.id);
 }
 
 // ----------------------------------------------------
 
+
+
+
+
 // ----------------------------------------------------
 // Drop functionality
 // ----------------------------------------------------
-
 var filelist2 = [];
-	
 var filelist = [];
+	
 document.getElementById("dropArea").addEventListener("drop", processEvent_drop, false);
-
-// OR Way 0
-// Eventlistener for when a dragElement is being dragged over the dropArea
-// document.getElementById("dropArea").addEventListener("dragover", processEvent_dragover_way0, false);
-document.getElementById("dropArea").addEventListener("dragover", processEvent_dragover_way1, false);
+document.getElementById("dropArea").addEventListener("dragover", processEvent_dragover, false);
 
 function processEvent_drop(event) {
-
-  // This stops the browser from opening the file?
-  event.stopPropagation();
   
   // Stop defaults and allow drop events
   event.preventDefault();
 
 	console.log('event: ', event);
 	
-  // --------------------------
   // Way 0: detects files dragged from pc - but does not have base64_string
 	filelist.push(event.dataTransfer.files);
 	console.log('filelist: ', filelist);
@@ -222,36 +238,29 @@ function processEvent_drop(event) {
 	  // Append the draggable element 
 	  event.target.appendChild(dragElement);
 
-	  // Add selected data
-	  filelist2.push([document.getElementById("file_name").innerHTML, document.getElementById("base64_string").innerHTML]);
+	  if (example == 1) {
+		  // Add selected data
+		  filelist2.push([document.getElementById("file_name").innerHTML, document.getElementById("base64_string").innerHTML]);
+	  }
   }
 
-  // --------------------------
 }
 
 // --------------------------
 
-function processEvent_dragover_way0(event) {
-  // This stops the browser from opening the file?
-  event.stopPropagation();
-  
+function processEvent_dragover(event) {
+	
   // Stop defaults and allow drop events
   event.preventDefault();
 
   // Style the drag and drop as a "copy" file operation
-  event.dataTransfer.dropEffect = "copy";
+  // event.dataTransfer.dropEffect = "copy";
 }
   
-// --------------------------
-  
-function processEvent_dragover_way1(event) {
-  // Stop defaults and allow drop events
-  event.preventDefault();
-}
   
 // ----------------------------------------------------
 
-async function Submit_to_cloudStorage() {
+async function use_moved_data() {
 
 	console.log('filelist: ', filelist);
 
