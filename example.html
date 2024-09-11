@@ -59,14 +59,13 @@
 	
 window.addEventListener('beforeunload', function() {
 	window.location.href = window.location.href + '?nocache=' + new Date().getTime();
-
-	var example;
-	var other_data_related_to_dragEvent = {};
-	var html_element_drag_list_metaData = [];
 });
 
 // -----------------------------------------------
-	
+
+var example;
+var other_data_related_to_dragEvent = {};
+var html_element_drag_list_metaData = [];
 
 
 // ----------------------------------------------------
