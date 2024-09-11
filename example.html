@@ -61,7 +61,8 @@ window.addEventListener('beforeunload', function() {
 	window.location.href = window.location.href + '?nocache=' + new Date().getTime();
 
 	var example;
-	
+	var other_data_related_to_dragEvent = {};
+	var html_element_drag_list_metaData = [];
 });
 
 // -----------------------------------------------
@@ -75,8 +76,7 @@ document.getElementById("HTML_text").addEventListener("dragstart", processEvent_
 
 function processEvent_drag_example0(event) {
 	example = 0;
-  	var other_data_related_to_dragEvent = {};
-	var html_element_drag_list_metaData = [];
+  	event.dataTransfer.setData('text/plain', event.target.id);
 }
 // ----------------------------------------------------
 
@@ -102,9 +102,6 @@ async function previewInput(event) {
 	const reader = new FileReader();
 	
 	reader.onload = async function(e){
-		// Save base64_string to DOM 
-		// console.log("e.target.result :", e.target.result);
-
 		document.getElementById("base64_string").innerHTML = e.target.result;
 		document.getElementById("base64_string_icon").style.display = "block";
 	}
@@ -129,8 +126,6 @@ function processEvent_drag_example1(event) {
 // ----------------------------------------------------
 // Drop functionality: Example 0 and 1
 // ----------------------------------------------------
-
-	
 document.getElementById("dropArea").addEventListener("drop", processEvent_drop, false);
 document.getElementById("dropArea").addEventListener("dragover", processEvent_dragover, false);
 
