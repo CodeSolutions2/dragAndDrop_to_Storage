@@ -52,49 +52,6 @@
 
 <script>
 
-// ----------------------------------------------------
-// Light and dark toggle functionality
-// ----------------------------------------------------
-document.getElementById("toggle_type").addEventListener("click", processEvent_checkboxOption, false);
-	
-function processEvent_checkboxOption(event) {
-	
-	console.log('input event: ', event);
-	
-	if (document.getElementById("toggle_type").checked == false) {
-		// Display Light 
-		document.body.style.backgroundColor = "#ffffff";
-		document.body.style.color = "#333333";
-		document.querySelector("h1").style.color = "#333333";
-
-		// When page is light, [slider button] is light (setting below), [background of input] is dark
-		// document.querySelector('.slider').style.backgroundColor = "#333333";
-		
-		console.log('event check in light: ', document.getElementById("toggle_type").checked);
-		
-		// Reset checked state
-		document.getElementById("toggle_type").checked = false;  // toggle element is able to slide
-		
-	} else  {
-		// Dark
-		document.body.style.backgroundColor = "#333333";
-		document.body.style.color = "#ffffff";
-		document.querySelector("h1").style.color = "#ffffff";
-
-		// When page is dark, [slider button] is dark (setting below), [background of input] is light
-		// document.querySelector('.slider').style.backgroundColor = "#ffffff";
-		
-		console.log('event check in dark: ', document.getElementById("toggle_type").checked);
-		
-		// Reset checked state
-		document.getElementById("toggle_type").checked = true;  // toggle element is able to slide
-	}
-}
-
-// ----------------------------------------------------
-
-
-
 var example;
 
 // ----------------------------------------------------
