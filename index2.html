@@ -159,14 +159,17 @@ async function previewInput(event) {
 	// for (let i=0; i<allFiles.length; i++) {
 	var i = 0;
 	while (i < allFiles.length) {
-		console.log("i :", i);
 		
 		const file = allFiles[i];
 		console.log("file :", file);
-		
-		await obtain_fileInfo_way1(file)
-			.then(base64str => { obj[file.name] = base64str; })
+
+		await obtain_fileInfo_way0(file)
+			.then(res => { console.log('res: ', res); })
 			.catch(error => console.error(error));
+		// OR
+		// await obtain_fileInfo_way1(file)
+		// 	.then(base64str => { obj[file.name] = base64str; })
+		// 	.catch(error => console.error(error));
 		
 		i = i + 1;
 		console.log("i :", i);
@@ -175,7 +178,7 @@ async function previewInput(event) {
 	// ---------------------
 }
 
-async function obtain_fileInfo(file) {
+async function obtain_fileInfo_way0(file) {
 	return await new Promise((resolve) => {
 		const reader = new FileReader();
 		reader.onload = async function(e){ 
