@@ -157,7 +157,7 @@ async function previewInput(event) {
 	for (var i=0; i<allFiles.length; i++) {
 		const reader = new FileReader();
 		reader.onload = async function(e){ obj[allFiles[i].name] =  e.target.result; };
-		reader.readAsDataURL(allFiles[i]); }
+		reader.readAsDataURL(allFiles[i]);
 	}
 
 	// ---------------------
