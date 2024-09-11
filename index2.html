@@ -134,25 +134,11 @@ function processEvent_checkboxOption(event) {
 document.getElementById("upload_file").addEventListener("change", previewInput, false);
 
 var obj = {};
-var filelist_metaData = [];
 	
 async function previewInput(event) {
 
-	console.log("event :", event);
+	// console.log("event :", event);
   
-  // ---------------------
-	
-	// Stop defaults and allow drop events
-  event.preventDefault();
-
-	// Detects files dragged from pc - but does not have base64_string
-	var file_drop_event_data = event.dataTransfer.files;
-	
-	  if (file_drop_event_data.length != 0) { 
-	    // Not empty array - save the metadata (filename, etc)
-	    filelist_metaData.push(file_drop_event_data);
-	    console.log('filelist_metaData: ', filelist_metaData);
-	  }
 	// ---------------------
 	
 	// Take the first file
@@ -174,8 +160,6 @@ async function previewInput(event) {
 // ----------------------------------------------------
 
 async function Submit_to_cloudStorage() {
-
-	console.log('filelist_metaData: ', filelist_metaData);
 
 	console.log('obj: ', obj);
 }
