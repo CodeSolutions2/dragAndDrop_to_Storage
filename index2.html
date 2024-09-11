@@ -163,7 +163,7 @@ async function previewInput(event) {
 		const file = allFiles[i];
 		console.log("file :", file);
 
-		await obtain_fileInfo_way0(file)
+		await obtain_fileInfo_way2(file)
 			.then(res => { console.log('res: ', res); })
 			.catch(error => console.error(error));
 		// OR
@@ -179,6 +179,7 @@ async function previewInput(event) {
 }
 
 async function obtain_fileInfo_way0(file) {
+	// WORKS!
 	return await new Promise((resolve) => {
 		const reader = new FileReader();
 		reader.onload = async function(e){ 
@@ -191,13 +192,23 @@ async function obtain_fileInfo_way0(file) {
 }
 	
 async function obtain_fileInfo_way1(file) {
-	
+	// WORKS!
 	var base64_string = await new Promise((resolve) => {
 		const reader = new FileReader();
 		reader.onload = async function(e){ 
 			resolve(e.target.result);
-			// OR
-			// resolve(reader.result);
+		};
+		reader.readAsDataURL(file);
+	});
+	 return base64_string;
+}
+
+async function obtain_fileInfo_way2(file) {
+	
+	var base64_string = await new Promise((resolve) => {
+		const reader = new FileReader();
+		reader.onload = async function(e){ 
+			resolve(reader.result);
 		};
 		reader.readAsDataURL(file);
 	});
