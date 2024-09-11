@@ -4,4 +4,5 @@ A repository to test out sending data to a several desired Storage location: [0]
 
 The purpose of this module will be to insert it into a webapp for easy file upload.
 
-[Latest working version] https://codesolutions2.github.io/dragAndDrop_to_Storage/index.html *Drag and drop interface in progress*
+[Latest working version] https://codesolutions2.github.io/dragAndDrop_to_Storage/index2.html
+
