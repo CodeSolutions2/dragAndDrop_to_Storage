@@ -137,24 +137,31 @@ var obj = {};
 	
 async function previewInput(event) {
 
-	// console.log("event :", event);
+	console.log("event :", event);
   
 	// ---------------------
 	
-	// Take the first file
-	const file = event.target.files[0];  // first file in the list of selected files, better for selecting multiple files at one time
+	// For a single file
+	// const file = event.target.files[0];  // first file in the list of selected files, better for selecting multiple files at one time
 	// console.log("file :", file);
+	// const reader = new FileReader();
+	// reader.onload = async function(e){ obj[file.name] =  e.target.result; };
+	// reader.readAsDataURL(file);
+
+	// OR
+
+	// For multiple files
+	const allFiles = event.target.files;
+	console.log("allFiles :", allFiles);
+	
+	for (var i=0; i<allFiles.length; i++) {
+		var file = allFiles[i];
+		var reader = new FileReader();
+		reader.onload = async function(e){ obj[file.name] =  e.target.result; };
+		reader.readAsDataURL(file);
+	}
 
 	// ---------------------
-
-	const reader = new FileReader();
-	
-	reader.onload = async function(e){
-		// Save base64_string
-		obj[file.name] =  e.target.result;
-	}
-  
-	reader.readAsDataURL(file);
 }
 
 // ----------------------------------------------------
