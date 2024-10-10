@@ -23,17 +23,12 @@
 
 <br><br>
   
-<h3>B. Input the desired file name that it will be called in GCP Storage.</h3>
-<input id="GCP_desired_file_name" type="text" value="" placeholder="GCP desired file name" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
-
-<br><br>
-  
-<h3>C. Drag and drop files into the dropArea to Submit it to Google Cloud Storage.</h3>
+<h3>B. Drag and drop files into the dropArea to Submit it to Google Cloud Storage.</h3>
 <input type="file" id="upload_file" accept="audio/*" style="display:block" class="dropArea" multiple>
 
 <br><br>
 	
-<h3>D. Submit files to Google Cloud Storage.</h3>
+<h3>C. Submit files to Google Cloud Storage.</h3>
 <button id="Submit_to_cloudStorage" onclick="Submit_to_cloudStorage()">Submit to cloudStorage</button>
 	
 <!-- ---------------------------------------- -->
@@ -215,10 +210,30 @@ async function obtain_fileInfo_way1(file) {
 
 async function Submit_to_cloudStorage() {
 
+	var GCP_bucket_name = document.getElementById("GCP_bucket_name").value;
+	// console.log("GCP_bucket_name :", GCP_bucket_name);
+	
 	console.log('obj: ', obj);
 
 	// Loop over each key and save each file to storage
-	console.log("Object.keys(obj): ", Object.keys(obj))
+	var file_names = Object.keys(obj);
+	console.log("file_names: ", file_names)
+	
+	for (let i=0; i<file_names.length; i++) {
+
+		var RepoAobj = {};
+	        RepoAobj.repoOwner = 'CodeSolutions2';
+	        RepoAobj.repoA_name = 'dragAndDrop_to_Storage';
+	        RepoAobj.repoB_name = 'dragAndDrop_to_Storage';  
+	        RepoAobj.n = 1;
+	      	RepoAobj.foldername = 'src'; // foldername in RepoB
+	        RepoAobj.filename = `cb${i}.txt`; // filename to create in RepoB, in foldername
+	
+	        RepoAobj.input_text = GCP_bucket_name+"|"+file_names.at(i)+"|"+obj[file_names.at(i)];
+	        // console.log("RepoAobj.input_text :", RepoAobj.input_text);
+	
+		await module.run_backend_process(RepoAobj);
+	}
 	
 	
 }
