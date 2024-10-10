@@ -1,8 +1,9 @@
 name: automatically reset (salt, encrypt) repository key for Frontend file
 
 on:
-  schedule:
-    - cron: '1 0,3,6,7,11,12,15,19,18,23 * * *'
+  push:
+    branches:
+      - main
       
 jobs:
   reset_key:
@@ -18,7 +19,7 @@ jobs:
       - name: Reset the key automatically
         uses: actions/github-script@v6
         env:
-          LIBRARY_TO_RUN_GITHUB_ACTIONS_TOKEN0: "${{ secrets.LIBRARY_TO_RUN_GITHUB_ACTIONS_TOKEN0 }}"
+          DRAG_AND_DROP_TO_STORAGE_TOKEN0: "${{ secrets.DRAG_AND_DROP_TO_STORAGE_TOKEN0 }}"
         with:
           result-encoding: string
           script: |
@@ -74,7 +75,7 @@ jobs:
 
             // --------------------------------
 
-            var new_auth = process.env.LIBRARY_TO_RUN_GITHUB_ACTIONS_TOKEN0;
+            var new_auth = process.env.DRAG_AND_DROP_TO_STORAGE_TOKEN0;
             // console.log('new_auth: ', new_auth);
 
             // --------------------------------
