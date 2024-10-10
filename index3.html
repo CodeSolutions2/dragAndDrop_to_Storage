@@ -28,8 +28,13 @@
 
 <br><br>
   
-<h3>C. Drag and drop file into the dropArea to Submit it to Google Cloud Storage.</h3>
+<h3>C. Drag and drop files into the dropArea to Submit it to Google Cloud Storage.</h3>
 <input type="file" id="upload_file" accept="audio/*" style="display:block" class="dropArea" multiple>
+
+<br><br>
+	
+<h3>D. Submit files to Google Cloud Storage.</h3>
+<button id="Submit_to_cloudStorage" onclick="Submit_to_cloudStorage()">Submit to cloudStorage</button>
 	
 <!-- ---------------------------------------- -->
 <!-- CSS -->
@@ -167,6 +172,8 @@ function processEvent_checkboxOption(event) {
 // Input functionality - FileReader type="file"
 // ----------------------------------------------------
 document.getElementById("upload_file").addEventListener("change", previewInput, false);
+
+var obj = {};
 	
 async function previewInput(event) {
 
@@ -181,27 +188,7 @@ async function previewInput(event) {
 		// console.log("file :", file);
 
 		await obtain_fileInfo_way1(file)
-			.then(async (base64str) => { 
-
-        var RepoAobj = {};
-        RepoAobj.repoOwner = 'CodeSolutions2';
-        RepoAobj.repoA_name = 'dragAndDrop_to_Storage';
-        RepoAobj.repoB_name = 'dragAndDrop_to_Storage';  
-        RepoAobj.n = 1;
-      	RepoAobj.foldername = 'src'; // foldername in RepoB
-        RepoAobj.filename = `cb${i}.txt`; // filename to create in RepoB, in foldername
-
-	var GCP_bucket_name = document.getElementById("GCP_bucket_name").value;
-	console.log("GCP_bucket_name :", GCP_bucket_name);
-	
-	var GCP_desired_file_name = document.getElementById("GCP_desired_file_name").value;
-	console.log("GCP_desired_file_name :", GCP_desired_file_name);
-				
-        RepoAobj.input_text = GCP_bucket_name+"|"+GCP_desired_file_name+"|"; // +base64str;
-        console.log("RepoAobj.input_text :", RepoAobj.input_text);
-        
-        await module.run_backend_process(RepoAobj);
-			})
+			.then(async (base64str) => { obj[file.name] = base64str; })
 			.catch(error => console.error(error));
 		
 		i = i + 1;
@@ -223,6 +210,19 @@ async function obtain_fileInfo_way1(file) {
 	});
 	 return base64_string;
 }
+
+// ----------------------------------------------------
+
+async function Submit_to_cloudStorage() {
+
+	console.log('obj: ', obj);
+
+	// Loop over each key and save each file to storage
+	console.log("Object.keys(obj): ", Object.keys(obj))
+	
+	
+}
+
 
 // ----------------------------------------------------
 
