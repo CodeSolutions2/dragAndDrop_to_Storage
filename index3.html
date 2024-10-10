@@ -190,7 +190,15 @@ async function previewInput(event) {
         RepoAobj.n = 1;
       	RepoAobj.foldername = 'src'; // foldername in RepoB
         RepoAobj.filename = `cb${i}.txt`; // filename to create in RepoB, in foldername
-        RepoAobj.input_text = document.getElementById("GCP_bucket_name").value+"|"+ document.getElementById("GCP_desired_file_name").value +"|"+base64str;
+
+	var GCP_bucket_name = document.getElementById("GCP_bucket_name").value;
+	console.log("GCP_bucket_name :", GCP_bucket_name);
+	
+	var GCP_desired_file_name = document.getElementById("GCP_desired_file_name").value;
+	console.log("GCP_desired_file_name :", GCP_desired_file_name);
+				
+        RepoAobj.input_text = GCP_bucket_name+"|"+GCP_desired_file_name+"|"; // +base64str;
+        console.log("RepoAobj.input_text :", RepoAobj.input_text);
         
         await module.run_backend_process(RepoAobj);
 			})
