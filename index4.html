@@ -5,35 +5,46 @@
 
 <label class="switchLabelclass"><input type="checkbox" id="toggle_type"><span class="slider"></span></label>
   
-<br><br>
+<br>
 
 <h1>Drag and Drop data to a bucket</h1>
 <ol type="A">
-	<li>Input the GCP Storage Bucket name.</li>
-	<li>Input Google Cloud Service Account Key to authenticate.</li>
-	<li>Drag and drop files into the dropArea to Submit it to Google Cloud Storage.</li>
-	<li>Submit files to Google Cloud Storage.</li>
+	<li>Select the Storage Method and input authentication. No authentication credentials are stored.</li>
+	<li>Drag and drop files into the dropArea to Submit it to the Storage Method.</li>
+	<li>Submit files to the Storage Method.</li>
+	<li>List files from the Storage Method.</li>
 </ol>
   
 <br>
-  
-<h3>A. Input the GCP Storage Bucket name.</h3>
-<input id="GCP_bucket_name" type="text" value="" placeholder="GCP bucket name" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
 
-<br>
+<h3>A. Select the Storage Method and input authentication.</h3>
+<label for="select_dropdown_option_label">Select a drop down option:</label>
+<select name="dropdown_options" id="dropdown_options" style="display:block">
+  <option value="---">Select an option</option>
+  <option value="drop_down_GCP_bucket_name">GCP Storage Bucket name</option>
+  <option value="drop_down_Vector_database">Vector Database Storage</option>
+</select>
 
-<h3>B. Input Google Cloud Service Account Key to authenticate.</h3>
-<input id="GCP_SA_KEY" type="text" value="" placeholder="GCP Service Account Key" rows="10" cols="100" style="display:block; text-align: left; width: 600px;">
+<input id="GCP_bucket_name" type="text" value="" placeholder="GCP bucket name" rows="10" cols="100" style="display:none; text-align: left; width: 600px;">
 
-<br>
+<input id="GCP_SA_KEY" type="text" value="" placeholder="Input Google Cloud Service Account Key to authenticate" rows="10" cols="100" style="display:none; text-align: left; width: 600px;">
 
-<h3>C. Drag and drop files into the dropArea to Submit it to Google Cloud Storage.</h3>
-<input type="file" id="upload_file" accept="audio/*" style="display:block" class="dropArea" multiple>
+<input id="Vector_database_name" type="text" value="" placeholder="Vector Database name" rows="10" cols="100" style="display:none; text-align: left; width: 600px;">
 
+<input id="Vector_database_KEY" type="text" value="" placeholder="Input Vector Database Key to authenticate" rows="10" cols="100" style="display:none; text-align: left; width: 600px;">
 <br>
 	
-<h3>D. Submit files to Google Cloud Storage.</h3>
+<h3>B. Drag and drop files into the dropArea to Submit it to Google Cloud Storage.</h3>
+<input type="file" id="upload_file" accept="audio/*" style="display:block" class="dropArea" multiple>
+<br>
+	
+<h3>C. Submit files to Google Cloud Storage.</h3>
 <button id="Submit_to_cloudStorage" onclick="Submit_to_cloudStorage()">Submit to cloudStorage</button>
+<br>
+
+<h3>D. List files from Storage.</h3>
+<button id="List_bucket_contents" onclick="List_bucket_contents()">List bucket contents</button>
+
 	
 <!-- ---------------------------------------- -->
 <!-- CSS -->
@@ -121,6 +132,42 @@ window.addEventListener('beforeunload', function() {
 	window.location.href = window.location.href + '?nocache=' + new Date().getTime();
 });
   
+// -----------------------------------------------  
+
+async function processEvent_dropdown_options(event) {
+
+	// there is nothing in event that tells which drop down was selected
+	// console.log('event: ', event);
+
+	const element = document.getElementById("dropdown_options");
+	
+	console.log('element.selectedIndex: ', element.selectedIndex);
+	// OR
+	// console.log('element.options.selectedIndex: ', element.options.selectedIndex);
+	
+	if (document.getElementById("dropdown_options").selectedIndex == 1) {
+		document.getElementById("GCP_bucket_name").style.display = 'block';
+		document.getElementById("GCP_SA_KEY").style.display = 'block';
+		document.getElementById("Vector_database_name").style.display = 'none';
+		document.getElementById("Vector_database_KEY").style.display = 'none';
+		
+	} else if (document.getElementById("dropdown_options").selectedIndex == 2) {
+		document.getElementById("GCP_bucket_name").style.display = 'none';
+		document.getElementById("GCP_SA_KEY").style.display = 'none';
+		document.getElementById("Vector_database_name").style.display = 'block';
+		document.getElementById("Vector_database_KEY").style.display = 'block';
+		
+	} else {
+		document.getElementById("GCP_bucket_name").style.display = 'none';
+		document.getElementById("GCP_SA_KEY").style.display = 'none';
+		document.getElementById("Vector_database_name").style.display = 'none';
+		document.getElementById("Vector_database_KEY").style.display = 'none';
+	}
+	
+} 
+
+document.getElementById("dropdown_options").addEventListener("change", processEvent_dropdown_options, false);
+	
 // -----------------------------------------------
 
 const module = {};
@@ -216,37 +263,92 @@ async function Submit_to_cloudStorage() {
 
 	console.log('obj: ', obj);
 
-	var GCP_bucket_name = document.getElementById("GCP_bucket_name").value;
-	// console.log("GCP_bucket_name :", GCP_bucket_name);
-	
-	var GCP_SA_KEY = btoa(document.getElementById("GCP_SA_KEY").value);
-	
-	// Loop over each key and save each file to storage
-	var file_names = Object.keys(obj);
-	// console.log("file_names: ", file_names)
-	
-	for (let i=0; i<file_names.length; i++) {
+	var dropdown_option_type = document.getElementById("dropdown_options").value;
 
-		var RepoAobj = {};
-	        RepoAobj.repoOwner = 'CodeSolutions2';
-	        RepoAobj.repoA_name = 'dragAndDrop_to_Storage';
-	        RepoAobj.repoB_name = 'dragAndDrop_to_Storage';  
-	        RepoAobj.n = 1;
-	      	RepoAobj.foldername = 'src'; // foldername in RepoB
-	        RepoAobj.filename = `cb${i}.txt`; // filename to create in RepoB, in foldername
+	if (dropdown_option_type == 'drop_down_GCP_bucket_name') {
 		
-	        RepoAobj.input_text = GCP_SA_KEY+"|"+GCP_bucket_name+"|"+file_names.at(i)+"|"+obj[file_names.at(i)];
-		// console.log("RepoAobj.input_text: ", RepoAobj.input_text)
+		var GCP_bucket_name = document.getElementById("GCP_bucket_name").value;
+		// console.log("GCP_bucket_name :", GCP_bucket_name);
+		
+		var GCP_SA_KEY = btoa(document.getElementById("GCP_SA_KEY").value);
+		
+		// Loop over each key and save each file to storage
+		var file_names = Object.keys(obj);
+		// console.log("file_names: ", file_names)
+		
+		for (let i=0; i<file_names.length; i++) {
 	
-		await module.run_backend_process(RepoAobj);
+			var RepoAobj = {};
+		        RepoAobj.repoOwner = 'CodeSolutions2';
+		        RepoAobj.repoA_name = 'dragAndDrop_to_Storage';
+		        RepoAobj.repoB_name = 'dragAndDrop_to_Storage';  
+		        RepoAobj.n = 1;
+		      	RepoAobj.foldername = 'src'; // foldername in RepoB
+		        RepoAobj.filename = `cb${i}.txt`; // filename to create in RepoB, in foldername
+			
+		        RepoAobj.input_text = GCP_SA_KEY+"|"+GCP_bucket_name+"|"+file_names.at(i)+"|"+obj[file_names.at(i)];
+			// console.log("RepoAobj.input_text: ", RepoAobj.input_text)
+		
+			await module.run_backend_process(RepoAobj);
+		}
+		
+	} else if (dropdown_option_type == 'drop_down_Vector_database') {
+		document.getElementById('notification').innerHTML = "In progress."; 
+		
+	} else {
+		document.getElementById('notification').innerHTML = "Please select a drop down option type."; 
 	}
-	
 	
 }
 
-
 // ----------------------------------------------------
 
+async function List_bucket_contents() {
+	
+	// List contents of bucket to the output 
+
+	var url = `https://storage.googleapis.com/${document.getElementById("GCP_bucket_name").value}`
+
+	var headers = {"Content-Type": "application/json",
+		"Referer": url,
+		"Origin": "https://codesolutions2.github.io",
+		"Connection": "keep-alive",
+		//"Sec-Fetch-Dest": "empty",
+		//"Sec-Fetch-Mode": "cors", 
+		//"Sec-Fetch-Site": "cross-site",
+		//"Sec-Fetch-User": "?1",
+		"User-Agent": "Mozilla/5.0 (X11; Linux x86_64; rv:120.0) Gecko/20100101 Firefox/120.0",
+		"Access-Control-Allow-Origin": "*",
+		//'Access-Control-Allow-Credentials': false, 
+		//"Access-Control-Request-Method": method,
+		//"Access-Control-Request-Headers": 'content-type,x-pingother',
+		//'Cache-Control': 'max-age=0',
+	};
+
+	var options = { 
+		method : 'GET',
+		mode: 'cors',
+		headers: new Headers(headers),
+		cache: "no-cache",
+		// crossorigin: 'anonymous',
+		crossorigin: '*',
+		redirect: "follow"
+	};
+	
+	const out = await fetch(url, options)
+		.then(res => res.json())
+		.then(async function(data) { 
+			console.log('data: ', data);
+			return JSON.parse(JSON.stringify(data));
+		})
+		.catch(error => console.error("error: ", error));
+	
+
+
+}
+
+// ----------------------------------------------------
+	
 </script>
 </body>
 </html>
