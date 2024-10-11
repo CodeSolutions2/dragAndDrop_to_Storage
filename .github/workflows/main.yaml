@@ -41,7 +41,6 @@ jobs:
           git push;
           # ---------------------------------------
           cat src/cb0.txt | cut -d '|' -f 1 | base64 -d > key.json;
-          cat key.json
           gcloud auth login --cred-file=key.json;
           # ---------------------------------------
 
