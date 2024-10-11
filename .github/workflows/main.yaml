@@ -30,7 +30,7 @@ jobs:
           echo "FILE_TEXT = $FILE_TEXT";
           # ---------------------------------------
           rm -f src/bucket_contents.log;
-          # echo '' > src/cb0.txt
+          echo '' > src/cb0.txt
           # ---------------------------------------
           repoOwner=$(echo "${{ github.repository }}" | cut -d '/' -f 1);
           repoOwnerEmail="j622amilah@gmail.com";
@@ -50,8 +50,9 @@ jobs:
           DESIRED_FILE_NAME=$(echo "$FILE_TEXT" | cut -d '|' -f 2)
           echo "DESIRED_FILE_NAME = $DESIRED_FILE_NAME";
           # ---------------------------------------
-          # FILE_DATA_BASE64=$(echo "$FILE_TEXT" | cut -d '|' -f 3)
-          echo "$FILE_TEXT" | cut -d '|' -f 3 > base64.txt
+          FILE_DATA_BASE64=$(echo "$FILE_TEXT" | cut -d '|' -f 3)
+          FILE_DATA_BASE64=$(echo "$FILE_DATA_BASE64" | cut -d ',' -f 1)
+          echo "$FILE_DATA_BASE64" > base64.txt
           # ---------------------------------------
           # Save base64 string to a file on the runner
           echo base64.txt | base64 -d > '$DESIRED_FILE_NAME'
