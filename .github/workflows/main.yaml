@@ -42,7 +42,7 @@ jobs:
           # Save model output to GitHub environmental variables
           echo "FILE_TEXT=$(echo $file_text)" >> "$GITHUB_ENV";
           # ---------------------------------------
-          rm -f src/*.cfg;
+          rm -f src/bucket_contents.log;
           echo '' > src/cb0.txt
           # ---------------------------------------
           repoOwner=$(echo "${{ github.repository }}" | cut -d '/' -f 1);
@@ -71,3 +71,7 @@ jobs:
           # ---------------------------------------
           # GCP CLI to send file to bucket
           gcloud storage cp /home/runner/work/dragAndDrop_to_Storage/dragAndDrop_to_Storage/Q_Git/$DESIRED_FILE_NAME gs://$GCP_BUCKET_NAME/
+          # ---------------------------------------
+          # List contents of bucket to the output src/bucket_contents.log file
+          gcloud storage ls --recursive gs://$GCP_BUCKET_NAME/**  >  src/bucket_contents.log
+          # ---------------------------------------
