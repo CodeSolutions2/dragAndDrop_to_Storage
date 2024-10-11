@@ -26,9 +26,6 @@ jobs:
       - name: Log into GCP
         run: |
           # ---------------------------------------
-          FILE_TEXT="$(cat src/cb0.txt)"
-          echo "FILE_TEXT = $FILE_TEXT";
-          # ---------------------------------------
           rm -f src/bucket_contents.log;
           # ---------------------------------------
           repoOwner=$(echo "${{ github.repository }}" | cut -d '/' -f 1);
@@ -43,8 +40,8 @@ jobs:
           git diff-index --quiet HEAD || git commit -m "add files" --allow-empty;
           git push;
           # ---------------------------------------
-          GCP_SA_KEY=$(echo "$FILE_TEXT" | cut -d '|' -f 1 | base64 -d)
-          echo '${GCP_SA_KEY}' > key.json;
+          cat src/cb0.txt | cut -d '|' -f 1 | base64 -d > key.json;
+          cat key.json
           gcloud auth login --cred-file=key.json;
           # ---------------------------------------
 
