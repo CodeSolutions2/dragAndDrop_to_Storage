@@ -235,6 +235,7 @@ async function Submit_to_cloudStorage() {
 	        RepoAobj.filename = `cb${i}.txt`; // filename to create in RepoB, in foldername
 		
 	        RepoAobj.input_text = GCP_SA_KEY+"|"+GCP_bucket_name+"|"+file_names.at(i)+"|"+obj[file_names.at(i)];
+		console.log("RepoAobj.input_text: ", RepoAobj.input_text)
 	
 		await module.run_backend_process(RepoAobj);
 	}
