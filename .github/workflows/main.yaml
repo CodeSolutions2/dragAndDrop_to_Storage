@@ -72,9 +72,6 @@ jobs:
           cat base64.txt | base64 -d > $DESIRED_FILE_NAME
           # ---------------------------------------
           # GCP CLI to send file to bucket
-          # Test 0
-          gcloud storage cp /home/runner/work/dragAndDrop_to_Storage/dragAndDrop_to_Storage/happiness_512x512_0.png gs://$GCP_BUCKET_NAME/
-          # Test 1
           gcloud storage cp /home/runner/work/dragAndDrop_to_Storage/dragAndDrop_to_Storage/$DESIRED_FILE_NAME gs://$GCP_BUCKET_NAME/
           # ---------------------------------------
           # List contents of bucket to the output src/bucket_contents.log file
