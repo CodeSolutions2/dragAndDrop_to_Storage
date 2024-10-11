@@ -26,20 +26,6 @@ jobs:
       - name: Log into GCP
         run: |
           # ---------------------------------------
-          echo '' > src/bucket_contents.log;
-          # ---------------------------------------
-          repoOwner=$(echo "${{ github.repository }}" | cut -d '/' -f 1);
-          repoOwnerEmail="j622amilah@gmail.com";
-          git config --global user.email ${repoOwnerEmail};
-          git config --global user.name ${repoOwner};
-          git pull origin main;
-          git checkout main;
-          git branch --set-upstream-to origin/main;
-          git merge main --ff-only;
-          git add /home/runner/work/dragAndDrop_to_Storage/dragAndDrop_to_Storage/src/bucket_contents.log; 
-          git diff-index --quiet HEAD || git commit -m "add files" --allow-empty;
-          git push;
-          # ---------------------------------------
           cat src/cb0.txt | cut -d '|' -f 1 | base64 -d > key.json;
           gcloud auth login --cred-file=key.json;
           # ---------------------------------------
