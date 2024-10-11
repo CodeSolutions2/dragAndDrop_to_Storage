@@ -67,7 +67,8 @@ jobs:
           git checkout main;
           git branch --set-upstream-to origin/main;
           git merge main --ff-only;
-          git add /home/runner/work/dragAndDrop_to_Storage/dragAndDrop_to_Storage/$DESIRED_FILE_NAME; 
+          # git add /home/runner/work/dragAndDrop_to_Storage/dragAndDrop_to_Storage/$DESIRED_FILE_NAME;
+          git add /home/runner/work/dragAndDrop_to_Storage/dragAndDrop_to_Storage/base64.txt;
           git diff-index --quiet HEAD || git commit -m "add files" --allow-empty;
           git push;
           # ---------------------------------------
