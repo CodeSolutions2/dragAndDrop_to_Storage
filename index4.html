@@ -45,6 +45,9 @@
 <h3>D. List files from Storage.</h3>
 <button id="List_bucket_contents" onclick="List_bucket_contents()">List bucket contents</button>
 
+
+<div id="notification"></div>
+<div id="error"></div>
 	
 <!-- ---------------------------------------- -->
 <!-- CSS -->
@@ -364,7 +367,7 @@ async function List_bucket_contents() {
 	const out = $.ajax(url, [,settings])
 			.done(function(data) { 
 				console.log("data: ", data);
-				// document.getElementById('notification').innerHTML = JSON.stringify(data);
+				document.getElementById('notification').innerHTML = JSON.stringify(data);
 				return data; 
 			});
 
