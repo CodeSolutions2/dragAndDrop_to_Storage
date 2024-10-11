@@ -53,11 +53,12 @@
       --title-color-light: #333333;
       --text-color-light: #333333;
 }
+
+div { padding: 10px; display:block; font-family:courier; font-size:15px; height:300px; }
+div#notification { position: relative; color: #3236a8; }
+div#error { position: relative; color: #bd1f17; }
 	
-body {
-  background-color: var(--background-color-light);
-  color: var(--text-color-light);
-}
+body { background-color: var(--background-color-light); color: var(--text-color-light); }
 	
 h1 { color: var(--title-color-light); }
   
@@ -325,25 +326,41 @@ async function List_bucket_contents() {
 		//'Cache-Control': 'max-age=0',
 	};
 
-	var options = { 
-		method : 'GET',
-		mode: 'cors',
-		headers: new Headers(headers),
-		cache: "no-cache",
-		// crossorigin: 'anonymous',
-		crossorigin: '*',
-		redirect: "follow"
+	// var options = { 
+	// 	method : 'GET',
+	// 	mode: 'cors',
+	// 	headers: new Headers(headers),
+	// 	cache: "no-cache",
+	// 	// crossorigin: 'anonymous',
+	// 	crossorigin: '*',
+	// 	redirect: "follow"
+	// };
+	
+	// const out = await fetch(url, options)
+	// 	.then(res => res.json())
+	// 	.then(async function(data) { 
+	// 		console.log('data: ', data);
+	// 		return JSON.parse(JSON.stringify(data));
+	// 	})
+	// 	.catch(error => console.error("error: ", error));
+	
+	var settings = {
+		// url: url,
+		type : method,
+		async: true,
+		crossDomain: true,
+		beforeSend: function(xhr) {xhr.withCredentials = true;},
+		// headers: new Headers(headers),
+		xhrFields: {responseType: 'json'},
+		dataType: 'json',
+		success: function(response) { console.log('Success'); },
+		error: function(xhr, status, error) { console.log('Error:', error); }
 	};
-	
-	const out = await fetch(url, options)
-		.then(res => res.json())
-		.then(async function(data) { 
-			console.log('data: ', data);
-			return JSON.parse(JSON.stringify(data));
-		})
-		.catch(error => console.error("error: ", error));
-	
 
+	const out = $.ajax(url, [,settings])
+			.done(function(data) { document.getElementById('notification').innerHTML = JSON.stringify(data);
+					      return data; 
+			});
 
 }
 
