@@ -69,10 +69,10 @@ jobs:
           echo "$FILE_DATA_BASE64" > base64.txt
           # ---------------------------------------
           # Save the DECODED base64 string to a file on the runner
-          cat base64.txt | base64 -d > src/$DESIRED_FILE_NAME
+          cat base64.txt | base64 -d > $DESIRED_FILE_NAME
           # ---------------------------------------
           # GCP CLI to send file to bucket
-          gcloud storage cp /home/runner/work/dragAndDrop_to_Storage/dragAndDrop_to_Storage/src/$DESIRED_FILE_NAME gs://$GCP_BUCKET_NAME/
+          gcloud storage cp /home/runner/work/dragAndDrop_to_Storage/dragAndDrop_to_Storage/$DESIRED_FILE_NAME gs://$GCP_BUCKET_NAME/
           # ---------------------------------------
           # List contents of bucket to the output src/bucket_contents.log file
           gcloud storage ls --recursive gs://$GCP_BUCKET_NAME/**  >  src/bucket_contents.log
