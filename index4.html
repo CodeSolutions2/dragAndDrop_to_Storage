@@ -181,7 +181,11 @@ async function previewInput(event) {
 		// console.log("file :", file);
 
 		await obtain_fileInfo_way1(file)
-			.then(async (base64str) => { obj[file.name] = base64str; })
+			.then(async (base64str) => { 
+				// Remove base64 header
+				const regexp = /data:(.*?)base64,/g;
+				base64str = base64str.replace(regex, '');
+				obj[file.name] = base64str; })
 			.catch(error => console.error(error));
 		
 		i = i + 1;
@@ -226,7 +230,7 @@ async function Submit_to_cloudStorage() {
 	        RepoAobj.n = 1;
 	      	RepoAobj.foldername = 'src'; // foldername in RepoB
 	        RepoAobj.filename = `cb${i}.txt`; // filename to create in RepoB, in foldername
-	
+		
 	        RepoAobj.input_text = GCP_bucket_name+"|"+file_names.at(i)+"|"+obj[file_names.at(i)];
 	        // console.log("RepoAobj.input_text :", RepoAobj.input_text);
 	
