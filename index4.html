@@ -181,11 +181,7 @@ async function previewInput(event) {
 		// console.log("file :", file);
 
 		await obtain_fileInfo_way1(file)
-			.then(async (base64str) => { 
-				// Remove base64 header
-				const regexp = /data:(.*?)base64,/g;
-				base64str = base64str.replace(regex, '');
-				obj[file.name] = base64str; })
+			.then(async (base64str) => { obj[file.name] = base64str; })
 			.catch(error => console.error(error));
 		
 		i = i + 1;
