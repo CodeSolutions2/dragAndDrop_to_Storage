@@ -123,7 +123,9 @@ import { run_backend_process } from "https://cdn.jsdelivr.net/npm/library_to_run
 module.run_backend_process = run_backend_process;
 </script>
 
-<!-- --------------------------------------------------- -->	  
+<!-- --------------------------------------------------- -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   
 <script>
 
@@ -346,7 +348,7 @@ async function List_bucket_contents() {
 	
 	var settings = {
 		// url: url,
-		type : method,
+		type : 'GET',
 		async: true,
 		crossDomain: true,
 		beforeSend: function(xhr) {xhr.withCredentials = true;},
