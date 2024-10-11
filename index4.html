@@ -320,14 +320,10 @@ async function List_bucket_contents() {
 	var out = await fetch_on_cloud_storage_return_contents_list(url)
 			.then(async function(xmlDocument) {
 				console.log('xmlDocument: ', xmlDocument);
-		
-				var HTMLCollection = xmlDocument.getElementsByTagName("Key");
-				console.log('HTMLCollection: ', HTMLCollection);
-
-				// Test global variable scope: reassign file_array
+				
 				file_array = [];
-				for (var i=0; i<HTMLCollection.length; i++) {
-					file_array.push(HTMLCollection[i].textContent);
+				for (var i=0; i<xmlDocument.items.length; i++) {
+					file_array.push(xmlDocument.items[i].name);
 				}
 				console.log('file_array: ', file_array);
 				return file_array;
@@ -337,8 +333,6 @@ async function List_bucket_contents() {
 
 async function fetch_on_cloud_storage_return_contents_list(url) {
 
-	// Example url of a Cloud Storage folder: https://storage.googleapis.com/question-quiz-storage
-
 	var settings = {
 		type : 'GET',
 		async: true,
@@ -353,26 +347,6 @@ async function fetch_on_cloud_storage_return_contents_list(url) {
 
 // -------------------------------------------------
 
-async function fetch_file_from_cloud_storage(url) {
-
-	// Example file url in Cloud Storage: https://storage.googleapis.com/question-quiz-storage/out0.txt
-	
-	var settings = {
-		type : 'GET',
-		async: true,
-		crossDomain: true,
-		xhrFields: {responseType: 'text'},
-		dataType: 'text',
-		beforeSend: function(xhr) { xhr.withCredentials = true; },
-		success: function(response) { console.log('Success'); },
-		error: function(xhr, status, error) { console.log('Error:', error); }
-	};
-	
-	return $.ajax(url, [,settings]).done(function(response) { return response; });
-	
-}
-
-// -------------------------------------------------
 	
 </script>
 </body>
