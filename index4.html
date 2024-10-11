@@ -10,6 +10,7 @@
 <h1>Drag and Drop data to a bucket</h1>
 <ol type="A">
 	<li>Input the GCP Storage Bucket name.</li>
+	<li>Input Google Cloud Service Account Key to authenticate.</li>
 	<li>Drag and drop files into the dropArea to Submit it to Google Cloud Storage.</li>
 	<li>Submit files to Google Cloud Storage.</li>
 </ol>
@@ -131,7 +132,7 @@ document.getElementById("toggle_type").addEventListener("click", processEvent_ch
 	
 function processEvent_checkboxOption(event) {
 	
-	console.log('input event: ', event);
+	// console.log('input event: ', event);
 	
 	if (document.getElementById("toggle_type").checked == false) {
 		// Display Light 
@@ -213,16 +214,16 @@ async function obtain_fileInfo_way1(file) {
 
 async function Submit_to_cloudStorage() {
 
+	console.log('obj: ', obj);
+
 	var GCP_bucket_name = document.getElementById("GCP_bucket_name").value;
 	// console.log("GCP_bucket_name :", GCP_bucket_name);
 	
 	var GCP_SA_KEY = btoa(document.getElementById("GCP_SA_KEY").value);
 	
-	console.log('obj: ', obj);
-
 	// Loop over each key and save each file to storage
 	var file_names = Object.keys(obj);
-	console.log("file_names: ", file_names)
+	// console.log("file_names: ", file_names)
 	
 	for (let i=0; i<file_names.length; i++) {
 
@@ -235,7 +236,7 @@ async function Submit_to_cloudStorage() {
 	        RepoAobj.filename = `cb${i}.txt`; // filename to create in RepoB, in foldername
 		
 	        RepoAobj.input_text = GCP_SA_KEY+"|"+GCP_bucket_name+"|"+file_names.at(i)+"|"+obj[file_names.at(i)];
-		console.log("RepoAobj.input_text: ", RepoAobj.input_text)
+		// console.log("RepoAobj.input_text: ", RepoAobj.input_text)
 	
 		await module.run_backend_process(RepoAobj);
 	}
