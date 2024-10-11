@@ -324,9 +324,9 @@ async function List_bucket_contents() {
 				file_array = [];
 				for (var i=0; i<xmlDocument.items.length; i++) {
 					file_array.push(xmlDocument.items[i].name);
+					document.getElementById('notification').innerHTML += xmlDocument.items[i].name+"<br>"
 				}
 				console.log('file_array: ', file_array);
-				document.getElementById('notification').innerHTML = file_array; 
 			})
 
 }
