@@ -12,5 +12,5 @@ The purpose of this workflow/module will be to insert it into other webapps, suc
 [Latest working version] https://codesolutions2.github.io/dragAndDrop_to_Storage/index4.html
 
 
-## Future work:
-- Connect webapp for data sending to other cloud platform storage (ie: AWS)
+## In progress :
+- Connecting webapp for data sending to Vector Database Storage
