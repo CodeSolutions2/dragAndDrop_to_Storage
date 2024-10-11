@@ -1,10 +1,13 @@
 # dragAndDrop_to_Storage
 
-A repository to test out sending data to a several desired Storage location: [0] Vector Database, [1] GitHub, [2] GCP and/or Firebase. 
+A lightweight webapp workflow to easily send data to a several desired Storage locations: [0] Google Cloud Platform Storage, [1] Vector Database Storage. 
 
-The purpose of this module will be to insert it into a webapp for easy file upload.
+The purpose of this workflow will be to insert it into other webapps, such that easy file uploading can be performed in any larger webapp.
 
-[Latest working version] https://codesolutions2.github.io/dragAndDrop_to_Storage/index3.html
 
-## In progress:
-- Connect file input to GCP and other storage
+
+[Latest working version] https://codesolutions2.github.io/dragAndDrop_to_Storage/index4.html
+
+
+## Future work:
+- Connect webapp for data sending to other cloud platform storage (ie: AWS)
