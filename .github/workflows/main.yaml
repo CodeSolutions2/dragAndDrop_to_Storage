@@ -42,7 +42,7 @@ jobs:
           row_len=$(echo cat temp2 | wc -l);
           echo "row_len = $row_len";
           c=0; 
-          while [[ $c < row_len ]]; do
+          while [[ $c < $row_len ]]; do
             # ---------------------------------------
             echo "c = $c";
             # ---------------------------------------
