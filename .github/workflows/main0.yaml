@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'src/cb00.txt'
+      - 'src/cb10.txt'
       
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions: write-all
@@ -31,7 +31,7 @@ jobs:
       - name: Log into GCP
         run: |
           # ---------------------------------------
-          cat src/cb00.txt | cut -d '|' -f 1 | base64 -d > key.json;
+          cat src/cb10.txt | cut -d '|' -f 1 | base64 -d > key.json;
           gcloud auth login --cred-file=key.json;
           # ---------------------------------------
 
@@ -39,19 +39,19 @@ jobs:
         run: |
           ls /home/runner/work/dragAndDrop_to_Storage/dragAndDrop_to_Storage/src > file_list.txt
           cat file_list.txt;
-          row_len=$(echo cat temp2 | wc -l);
+          row_len=$(grep -c '^cb1' file_list.txt);
           echo "row_len = $row_len";
           c=0; 
           while [[ $c < $row_len ]]; do
             # ---------------------------------------
             echo "c = $c";
             # ---------------------------------------
-            FILE_TEXT="$(cat src/cb0${c}.txt)"
+            FILE_TEXT="$(cat src/cb1${c}.txt)"
             # ---------------------------------------
             if [[ $c == 0 ]]; then;
-              echo '' > src/cb0${c}.txt
+              echo '' > src/cb1${c}.txt
             else
-              rm -rf src/cb0${c}.txt
+              rm -rf src/cb1${c}.txt
             fi
             # ---------------------------------------
             repoOwner=$(echo "${{ github.repository }}" | cut -d '/' -f 1);
@@ -62,7 +62,7 @@ jobs:
             git checkout main;
             git branch --set-upstream-to origin/main;
             git merge main --ff-only;
-            git add /home/runner/work/dragAndDrop_to_Storage/dragAndDrop_to_Storage/src/cb0${c}.txt; 
+            git add /home/runner/work/dragAndDrop_to_Storage/dragAndDrop_to_Storage/src/cb1${c}.txt; 
             git diff-index --quiet HEAD || git commit -m "add files" --allow-empty;
             git push;
             # ---------------------------------------
