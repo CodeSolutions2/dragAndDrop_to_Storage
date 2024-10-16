@@ -35,7 +35,7 @@
 <br>
 	
 <h3>B. Drag and drop files into the dropArea to Submit it to Google Cloud Storage.</h3>
-<input type="file" id="upload_file" accept="audio/*" style="display:block" class="dropArea" multiple>
+<input type="file" id="upload_file" style="display:block" class="dropArea" multiple>
 <br>
 	
 <h3>C. Submit files to Google Cloud Storage.</h3>
@@ -138,6 +138,13 @@ window.addEventListener('beforeunload', function() {
 	window.location.href = window.location.href + '?nocache=' + new Date().getTime();
 
 	document.getElementById("dropdown_options").selectedIndex = 0;
+
+	// document.getElementById("GCP_bucket_name").value = "";
+	// document.getElementById("GCP_SA_KEY").value = "";
+	// document.getElementById("Vector_database_name").value = "";
+	// document.getElementById("Vector_database_KEY").value = "";
+
+	// document.getElementById("upload_file").
 });
   
 // -----------------------------------------------  
@@ -224,6 +231,7 @@ function processEvent_checkboxOption(event) {
 
 // ----------------------------------------------------
 // Input functionality - FileReader type="file"
+	
 // ----------------------------------------------------
 document.getElementById("upload_file").addEventListener("change", previewInput, false);
 
@@ -231,6 +239,9 @@ var obj = {};
 	
 async function previewInput(event) {
 
+	const element = document.getElementById("upload_file");
+	console.log('element: ', element);
+	
 	// For multiple files
 	const allFiles = event.target.files;
 	// console.log("allFiles :", allFiles);
