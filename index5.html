@@ -320,13 +320,16 @@ async function List_bucket_contents() {
 	await fetch_on_cloud_storage_return_contents_list(url)
 			.then(async function(xmlDocument) {
 				console.log('xmlDocument: ', xmlDocument);
+
+				// Clear notification
+				document.getElementById('notification').innerHTML = "";
 				
 				file_array = [];
 				for (var i=0; i<xmlDocument.items.length; i++) {
 					file_array.push(xmlDocument.items[i].name);
-					document.getElementById('notification').innerHTML = xmlDocument.items[i].name+"<br>"
+					document.getElementById('notification').innerHTML += xmlDocument.items[i].name+"<br>"
 				}
-				console.log('file_array: ', file_array);
+				// console.log('file_array: ', file_array);
 			})
 
 }
