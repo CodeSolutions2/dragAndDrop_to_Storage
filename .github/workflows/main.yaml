@@ -37,54 +37,40 @@ jobs:
 
       - name: Save files to GCP Storage
         run: |
-          ls /home/runner/work/dragAndDrop_to_Storage/dragAndDrop_to_Storage/src > file_list.txt
-          cat file_list.txt;
-          row_len=$(echo cat temp2 | wc -l);
-          echo "row_len = $row_len";
-          c=0; 
-          while [[ $c < $row_len ]]; do
-            # ---------------------------------------
-            echo "c = $c";
-            # ---------------------------------------
-            FILE_TEXT="$(cat src/cb${c}.txt)"
-            # ---------------------------------------
-            if [[ $c == 0 ]]; then;
-              echo '' > src/cb${c}.txt
-            else
-              rm -rf src/cb${c}.txt
-            fi
-            # ---------------------------------------
-            repoOwner=$(echo "${{ github.repository }}" | cut -d '/' -f 1);
-            repoOwnerEmail="j622amilah@gmail.com";
-            git config --global user.email ${repoOwnerEmail};
-            git config --global user.name ${repoOwner};
-            git pull origin main;
-            git checkout main;
-            git branch --set-upstream-to origin/main;
-            git merge main --ff-only;
-            git add /home/runner/work/dragAndDrop_to_Storage/dragAndDrop_to_Storage/src/cb${c}.txt; 
-            git diff-index --quiet HEAD || git commit -m "add files" --allow-empty;
-            git push;
-            # ---------------------------------------
-            GCP_BUCKET_NAME=$(echo "$FILE_TEXT" | cut -d '|' -f 2)
-            echo "GCP_BUCKET_NAME = $GCP_BUCKET_NAME";
-            # ---------------------------------------
-            DESIRED_FILE_NAME=$(echo "$FILE_TEXT" | cut -d '|' -f 3)
-            echo "DESIRED_FILE_NAME = $DESIRED_FILE_NAME";
-            # ---------------------------------------
-            FILE_DATA_BASE64=$(echo "$FILE_TEXT" | cut -d '|' -f 4)
-            # ---------------------------------------
-            # Remove header from file
-            FILE_DATA_BASE64=$(echo "$FILE_DATA_BASE64" | cut -d ',' -f 2)
-            # ---------------------------------------
-            # Save the ENCODED base64 string to a file on the runner
-            echo "$FILE_DATA_BASE64" > base64.txt
-            # ---------------------------------------
-            # Save the DECODED base64 string to a file on the runner
-            cat base64.txt | base64 -d > $DESIRED_FILE_NAME
-            # ---------------------------------------
-            # GCP CLI to send file to bucket
-            gcloud storage cp /home/runner/work/dragAndDrop_to_Storage/dragAndDrop_to_Storage/$DESIRED_FILE_NAME gs://$GCP_BUCKET_NAME/
-            # ---------------------------------------
-            c=$(($c + 1));
-          done;
+          # ---------------------------------------
+          FILE_TEXT="$(cat src/cb0.txt)"
+          # ---------------------------------------
+          echo '' > src/cb0.txt
+          # ---------------------------------------
+          repoOwner=$(echo "${{ github.repository }}" | cut -d '/' -f 1);
+          repoOwnerEmail="j622amilah@gmail.com";
+          git config --global user.email ${repoOwnerEmail};
+          git config --global user.name ${repoOwner};
+          git pull origin main;
+          git checkout main;
+          git branch --set-upstream-to origin/main;
+          git merge main --ff-only;
+          git add /home/runner/work/dragAndDrop_to_Storage/dragAndDrop_to_Storage/src/cb0.txt; 
+          git diff-index --quiet HEAD || git commit -m "add files" --allow-empty;
+          git push;
+          # ---------------------------------------
+          GCP_BUCKET_NAME=$(echo "$FILE_TEXT" | cut -d '|' -f 2)
+          echo "GCP_BUCKET_NAME = $GCP_BUCKET_NAME";
+          # ---------------------------------------
+          DESIRED_FILE_NAME=$(echo "$FILE_TEXT" | cut -d '|' -f 3)
+          echo "DESIRED_FILE_NAME = $DESIRED_FILE_NAME";
+          # ---------------------------------------
+          FILE_DATA_BASE64=$(echo "$FILE_TEXT" | cut -d '|' -f 4)
+          # ---------------------------------------
+          # Remove header from file
+          FILE_DATA_BASE64=$(echo "$FILE_DATA_BASE64" | cut -d ',' -f 2)
+          # ---------------------------------------
+          # Save the ENCODED base64 string to a file on the runner
+          echo "$FILE_DATA_BASE64" > base64.txt
+          # ---------------------------------------
+          # Save the DECODED base64 string to a file on the runner
+          cat base64.txt | base64 -d > $DESIRED_FILE_NAME
+          # ---------------------------------------
+          # GCP CLI to send file to bucket
+          gcloud storage cp /home/runner/work/dragAndDrop_to_Storage/dragAndDrop_to_Storage/$DESIRED_FILE_NAME gs://$GCP_BUCKET_NAME/
+          # ---------------------------------------
