@@ -22,18 +22,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v2'
+        with:
+          version: '>= 363.0.0'
+          
       - name: Log into GCP
         run: |
           # ---------------------------------------
           cat src/cb0.txt | cut -d '|' -f 1 | base64 -d > key.json;
           gcloud auth login --cred-file=key.json;
           # ---------------------------------------
-
-      - name: 'Set up Cloud SDK'
-        uses: 'google-github-actions/setup-gcloud@v2'
-        with:
-          version: '>= 363.0.0'
 
       - name: Save files to GCP Storage
         run: |
