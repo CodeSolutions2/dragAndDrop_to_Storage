@@ -43,7 +43,7 @@
 <br>
 
 <h3>D. List files from Storage.</h3>
-<button id="List_bucket_contents" onclick="List_bucket_contents()">List bucket contents</button>
+<button id="List_bucket_contents" onclick="List_bucket_contents(true)">List bucket contents</button>
 
 
 <div id="notification"></div>
@@ -285,7 +285,9 @@ async function Submit_to_cloudStorage() {
 		// console.log("file_names: ", file_names)
 		
 		for (let i=0; i<file_names.length; i++) {
-	
+
+			console.log('file_names.at(i): ', file_names.at(i));
+			
 			var RepoAobj = {};
 		        RepoAobj.repoOwner = 'CodeSolutions2';
 		        RepoAobj.repoA_name = 'dragAndDrop_to_Storage';
@@ -298,6 +300,18 @@ async function Submit_to_cloudStorage() {
 			// console.log("RepoAobj.input_text: ", RepoAobj.input_text)
 		
 			await module.run_backend_process(RepoAobj);
+
+			// Need a confirmation that the file/s were uploaded
+			// It could do REST API to the list bucket endpoint to confirm that the file is present
+			var file_array = await List_bucket_contents(false);
+			
+			let regexp = new RegExp(`${file_names.at(i)}`, 'g');
+			let match = file_array.join(' ').match(regexp) ?? [];
+			while (match.length == 0) {
+				file_array = await List_bucket_contents(false);
+				match = file_array.join(' ').match(regexp) ?? [];
+			}
+			document.getElementById('notification').innerHTML = `File ${file_names.at(i)} was successfully put in the bucket ${GCP_bucket_name}`; 
 		}
 		
 	} else if (dropdown_option_type == 'drop_down_Vector_database') {
@@ -311,13 +325,13 @@ async function Submit_to_cloudStorage() {
 
 // ----------------------------------------------------
 
-async function List_bucket_contents() {
+async function List_bucket_contents(print_contents) {
 	
 	// List contents of bucket to the output 
 
 	var url = `https://storage.googleapis.com/storage/v1/b/${document.getElementById("GCP_bucket_name").value}/o`
 	
-	await fetch_on_cloud_storage_return_contents_list(url)
+	return await fetch_on_cloud_storage_return_contents_list(url)
 			.then(async function(xmlDocument) {
 				console.log('xmlDocument: ', xmlDocument);
 
@@ -327,11 +341,14 @@ async function List_bucket_contents() {
 				file_array = [];
 				for (var i=0; i<xmlDocument.items.length; i++) {
 					file_array.push(xmlDocument.items[i].name);
-					document.getElementById('notification').innerHTML += xmlDocument.items[i].name+"<br>"
+					if (print_contents == true) {
+						document.getElementById('notification').innerHTML += xmlDocument.items[i].name+"<br>"
+					}
 				}
 				// console.log('file_array: ', file_array);
+				return file_array;
 			})
-
+			.catch(error => console.error(error));
 }
 
 async function fetch_on_cloud_storage_return_contents_list(url) {
