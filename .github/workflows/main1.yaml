@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'src1/cb0.txt'
+      - 'src1/start_workflow.txt'
       
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions: write-all
@@ -20,6 +20,9 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Wait for all the files to be saved to the repository
+        run: |
+        
       - name: Checkout
         uses: actions/checkout@v4
 
@@ -49,6 +52,9 @@ jobs:
             FILE_TEXT="$(cat src1/cb${c}.txt)";
             # ---------------------------------------
             if [[ $c == 0 ]]; then
+              if [ -f src1/start_workflow.txt ]; then
+                rm -rf src1/start_workflow.txt;
+              fi;
               echo '' > src1/cb${c}.txt;
             else
               if [ -f src1/cb${c}.txt ]; then
