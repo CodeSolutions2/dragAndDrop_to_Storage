@@ -353,28 +353,14 @@ async function Submit_to_cloudStorage() {
 		
 		// Detect when the backend workflow ends, by checking the list bucket contents for each file
 		console.log('file_names.length: ', file_names.length);
-		for (let i=0; i<file_names.length; i++) {
-
-			console.log('i: ', i);
+		file_names.map((file_name, i) => {
+			console.log('file_name: ', file_name);
 			
-			var file_array = await List_bucket_contents(false);
-			let regexp = new RegExp(`${file_names.at(i)}`, 'g');
-			let match = file_array.join(' ').match(regexp) ?? [];
-			var c = 0;
-			while (match.length == 0  && c < 10) {
-				file_array = await List_bucket_contents(false);
-				match = file_array.join(' ').match(regexp) ?? [];
-	
-				await new Promise(r => setTimeout(r, 5000));
-				
-				console.log('match: ', match);
-				console.log('c: ', c);
-				c = c + 1;
-			}
+			var match = await run_confirmation_function(file_name);
+			console.log('match: ', match);
 			
-			await confirmation_notification(match, file_names.at(i), GCP_bucket_name);
-			
-		}
+			await confirmation_notification(match, file_name);
+		})
 		
 		// --------------------------
 		
@@ -389,12 +375,31 @@ async function Submit_to_cloudStorage() {
 
 // ----------------------------------------------------
 	
-async function confirmation_notification(match, file_names_at_i, GCP_bucket_name) {
+async function run_confirmation_function(file_name) {
 	
-	if ( match.at(0) == file_names_at_i ) {
-		document.getElementById('notification').innerHTML += `File ${match.at(0)} was successfully put in the bucket ${GCP_bucket_name}`+"<br>";
+	let file_array = await List_bucket_contents(false);
+	let regexp = new RegExp(`${file_name}`, 'g');
+	let match = file_array.join(' ').match(regexp) ?? [];
+	let c = 0;
+	while (match.length == 0  && c < 10) {
+		file_array = await List_bucket_contents(false);
+		match = file_array.join(' ').match(regexp) ?? [];
+		await new Promise(r => setTimeout(r, 5000));
+		console.log('c: ', c);
+		c = c + 1;
+	}
+
+	return match;
+}
+	
+// ----------------------------------------------------
+	
+async function confirmation_notification(match, file_name) {
+	
+	if ( match.at(0) == file_name ) {
+		document.getElementById('notification').innerHTML += `File ${match.at(0)} was successfully put in the bucket ${document.getElementById("GCP_bucket_name").value}`+"<br>";
 	} else {
-		document.getElementById('notification').innerHTML += `File ${file_names_at_i} was not successfully put in the bucket ${GCP_bucket_name}`+"<br>";
+		document.getElementById('notification').innerHTML += `File ${file_name} was not successfully put in the bucket ${document.getElementById("GCP_bucket_name").value}`+"<br>";
 	}
 }
 	
