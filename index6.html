@@ -284,6 +284,9 @@ async function Submit_to_cloudStorage() {
 
 	var dropdown_option_type = document.getElementById("dropdown_options").value;
 
+	// Clear notification
+	document.getElementById('notification').innerHTML = "";
+
 	if (dropdown_option_type == 'drop_down_GCP_bucket_name') {
 		
 		var GCP_bucket_name = document.getElementById("GCP_bucket_name").value;
@@ -368,14 +371,8 @@ async function Submit_to_cloudStorage() {
 				console.log('c: ', c);
 				c = c + 1;
 			}
-
-			await function() { 
-				if ( match.at(0) == file_names.at(i) ) {
-					document.getElementById('notification').innerHTML = `File ${match.at(0)} was successfully put in the bucket ${GCP_bucket_name}`;
-				} else {
-					document.getElementById('notification').innerHTML = `File ${file_names.at(i)} was not successfully put in the bucket ${GCP_bucket_name}`;
-				}
-			}
+			
+			await confirmation_notification(match, file_names);
 			
 		}
 		
@@ -388,6 +385,17 @@ async function Submit_to_cloudStorage() {
 		document.getElementById('notification').innerHTML = "Please select a drop down option type."; 
 	}
 	
+}
+
+// ----------------------------------------------------
+	
+async function confirmation_notification(match, file_names) {
+	
+	if ( match.at(0) == file_names.at(i) ) {
+		document.getElementById('notification').innerHTML += `File ${match.at(0)} was successfully put in the bucket ${GCP_bucket_name}`+"<br>";
+	} else {
+		document.getElementById('notification').innerHTML += `File ${file_names.at(i)} was not successfully put in the bucket ${GCP_bucket_name}`+"<br>";
+	}
 }
 	
 // ----------------------------------------------------
@@ -409,7 +417,7 @@ async function List_bucket_contents(print_contents) {
 				for (var i=0; i<xmlDocument.items.length; i++) {
 					file_array.push(xmlDocument.items[i].name);
 					if (print_contents == true) {
-						document.getElementById('notification').innerHTML += xmlDocument.items[i].name+"<br>"
+						document.getElementById('notification').innerHTML += xmlDocument.items[i].name+"<br>";
 					}
 				}
 				// console.log('file_array: ', file_array);
