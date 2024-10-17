@@ -291,7 +291,7 @@ async function Submit_to_cloudStorage() {
 		
 		var GCP_SA_KEY = btoa(document.getElementById("GCP_SA_KEY").value);
 		
-		// Loop over each key and save each file to storage
+		// Loop over each key and save each file to repository
 		var file_names = Object.keys(obj);
 		// console.log("file_names: ", file_names)
 		
@@ -309,26 +309,52 @@ async function Submit_to_cloudStorage() {
 			
 		        RepoAobj.input_text = file_names.length+"|"+GCP_SA_KEY+"|"+GCP_bucket_name+"|"+file_names.at(i)+"|"+obj[file_names.at(i)];
 			// console.log("RepoAobj.input_text: ", RepoAobj.input_text)
-		
-			await module.run_backend_process(RepoAobj);
 
-			// Need a confirmation that the file/s were uploaded
-			// It could do REST API to the list bucket endpoint to confirm that the file is present
-			var file_array = await List_bucket_contents(false);
+			// Save the file in the repository
+			await module.run_backend_process(RepoAobj);
+		}
+
+		// --------------------------
+		
+		// Save the start_workflow.txt file to the repository to start the backend workflow
+		var RepoAobj = {};
+		RepoAobj.repoOwner = 'CodeSolutions2';
+		RepoAobj.repoA_name = 'dragAndDrop_to_Storage';
+		RepoAobj.repoB_name = 'dragAndDrop_to_Storage';  
+		RepoAobj.n = 1;
+		RepoAobj.foldername = 'src1'; // foldername in RepoB
+		RepoAobj.filename = 'start_workflow.txt'; // filename to create in RepoB, in foldername
+		RepoAobj.input_text = 'start_workflow';
+		await module.run_backend_process(RepoAobj);
+
+		// --------------------------
+		
+		// Detect when the backend workflow ends, by checking the list bucket contents for each file
+		for (let i=0; i<file_names.length; i++) {
 			
+			var file_array = await List_bucket_contents(false);
 			let regexp = new RegExp(`${file_names.at(i)}`, 'g');
 			let match = file_array.join(' ').match(regexp) ?? [];
-			
-			while (match.length == 0) {
+			var c = 0;
+			while (match.length == 0  && c < 15) {
 				file_array = await List_bucket_contents(false);
 				match = file_array.join(' ').match(regexp) ?? [];
-
+	
 				await new Promise(r => setTimeout(r, 5000));
 				
 				console.log('match: ', match);
+				c = c + 1;
 			}
-			document.getElementById('notification').innerHTML = `File ${file_names.at(i)} was successfully put in the bucket ${GCP_bucket_name}`; 
+
+			if ( match.length == 0 ) {
+				document.getElementById('notification').innerHTML = `File ${file_names.at(i)} was not successfully put in the bucket ${GCP_bucket_name}`;
+			} else {
+				document.getElementById('notification').innerHTML = `File ${file_names.at(i)} was successfully put in the bucket ${GCP_bucket_name}`;
+			}
+			
 		}
+		
+		// --------------------------
 		
 	} else if (dropdown_option_type == 'drop_down_Vector_database') {
 		document.getElementById('notification').innerHTML = "In progress."; 
