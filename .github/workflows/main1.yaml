@@ -41,6 +41,10 @@ jobs:
       - name: Save files to GCP Storage
         run: |
           # ---------------------------------------
+          if [ -f src1/start_workflow.txt ]; then
+            rm -rf src1/start_workflow.txt;
+          fi;
+          # ---------------------------------------
           ROW_LEN=$(cat src1/cb0.txt | cut -d '|' -f 1);
           echo "ROW_LEN = $ROW_LEN";
           # ---------------------------------------
@@ -52,9 +56,6 @@ jobs:
             FILE_TEXT="$(cat src1/cb${c}.txt)";
             # ---------------------------------------
             if [[ $c == 0 ]]; then
-              if [ -f src1/start_workflow.txt ]; then
-                rm -rf src1/start_workflow.txt;
-              fi;
               echo '' > src1/cb${c}.txt;
             else
               if [ -f src1/cb${c}.txt ]; then
