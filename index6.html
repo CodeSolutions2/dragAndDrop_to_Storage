@@ -304,8 +304,8 @@ async function Submit_to_cloudStorage() {
 		        RepoAobj.repoA_name = 'dragAndDrop_to_Storage';
 		        RepoAobj.repoB_name = 'dragAndDrop_to_Storage';  
 		        RepoAobj.n = 1;
-		      	RepoAobj.foldername = 'src'; // foldername in RepoB
-		        RepoAobj.filename = `cb1${i}.txt`; // filename to create in RepoB, in foldername
+		      	RepoAobj.foldername = 'src1'; // foldername in RepoB
+		        RepoAobj.filename = `cb${i}.txt`; // filename to create in RepoB, in foldername
 			
 		        RepoAobj.input_text = file_names.length+"|"+GCP_SA_KEY+"|"+GCP_bucket_name+"|"+file_names.at(i)+"|"+obj[file_names.at(i)];
 			// console.log("RepoAobj.input_text: ", RepoAobj.input_text)
