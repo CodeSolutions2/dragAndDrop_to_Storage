@@ -361,9 +361,9 @@ async function Submit_to_cloudStorage() {
 			let match = [];
 			let c = 0;
 			while (match.length == 0  && c < 10) {
-				file_array = await List_bucket_contents(false);
+				file_array = List_bucket_contents(false);
 				match = file_array.join(' ').match(regexp) ?? [];
-				await new Promise(r => setTimeout(r, 5000));
+				new Promise(r => setTimeout(r, 5000));
 				console.log('c: ', c);
 				c = c + 1;
 			}
@@ -424,13 +424,13 @@ async function confirmation_notification(match, file_name) {
 	
 // ----------------------------------------------------
 
-async function List_bucket_contents(print_contents) {
+function List_bucket_contents(print_contents) {
 	
 	// List contents of bucket to the output 
 
 	var url = `https://storage.googleapis.com/storage/v1/b/${document.getElementById("GCP_bucket_name").value}/o`
 	
-	return await fetch_on_cloud_storage_return_contents_list(url)
+	return fetch_on_cloud_storage_return_contents_list(url)
 			.then(async function(xmlDocument) {
 				console.log('xmlDocument: ', xmlDocument);
 
@@ -450,7 +450,7 @@ async function List_bucket_contents(print_contents) {
 			.catch(error => console.error(error));
 }
 
-async function fetch_on_cloud_storage_return_contents_list(url) {
+function fetch_on_cloud_storage_return_contents_list(url) {
 
 	var settings = {
 		type : 'GET',
