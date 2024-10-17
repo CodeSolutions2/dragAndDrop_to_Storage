@@ -290,6 +290,8 @@ async function Submit_to_cloudStorage() {
 		// console.log("GCP_bucket_name :", GCP_bucket_name);
 		
 		var GCP_SA_KEY = btoa(document.getElementById("GCP_SA_KEY").value);
+
+		// --------------------------
 		
 		// Loop over each key and save each file to repository
 		var file_names = Object.keys(obj);
@@ -340,7 +342,7 @@ async function Submit_to_cloudStorage() {
 				file_array = await List_bucket_contents(false);
 				match = file_array.join(' ').match(regexp) ?? [];
 	
-				await new Promise(r => setTimeout(r, 5000));
+				await new Promise(r => setTimeout(r, 7000));
 				
 				console.log('match: ', match);
 				c = c + 1;
