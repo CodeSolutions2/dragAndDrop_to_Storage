@@ -352,15 +352,15 @@ async function Submit_to_cloudStorage() {
 		// --------------------------
 		
 		// Detect when the backend workflow ends, by checking the list bucket contents for each file
-		console.log('file_names.length: ', file_names.length);
-		file_names.map((file_name, i) => {
+		await file_names.map((file_name, i) => {
 			console.log('file_name: ', file_name);
 			
 			var match = await run_confirmation_function(file_name);
 			console.log('match: ', match);
 			
 			await confirmation_notification(match, file_name);
-		})
+			return "";
+		});
 		
 		// --------------------------
 		
