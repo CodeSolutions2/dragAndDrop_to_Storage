@@ -362,6 +362,7 @@ async function Submit_to_cloudStorage() {
 			let c = 0;
 			while (match.length == 0  && c < 10) {
 				var file_array = List_bucket_contents(false);
+				console.log('file_array: ', file_array);
 				match = file_array.join(' ').match(regexp) ?? [];
 				new Promise(r => setTimeout(r, 5000));
 				console.log('c: ', c);
