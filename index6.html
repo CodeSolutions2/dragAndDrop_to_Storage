@@ -292,6 +292,23 @@ async function Submit_to_cloudStorage() {
 		var GCP_SA_KEY = btoa(document.getElementById("GCP_SA_KEY").value);
 
 		// --------------------------
+
+		// Generate random characters to make files different for each run, even if the same files are selected.
+		// The workflow will copy over the previous run files, if they were not deleted.
+		var random_chars_padded = [];
+		const chars = 'abcdefghijklmnopqrstuvwxyz0123456789_-';
+		const chars_arr = chars.split('');
+		for (let i=0; i<10; i++) {
+			ind = Math.floor(Math.random()*chars_arr.length);
+			while (i == 0 && ind > 26) {
+				ind = Math.floor(Math.random()*chars_arr.length);
+			}
+			random_chars_padded.push(chars_arr.at(ind));
+		}
+		random_chars_padded = random_chars_padded.join('');
+		console.log("random_chars_padded: ", random_chars_padded);
+
+		// --------------------------
 		
 		// Loop over each key and save each file to repository
 		var file_names = Object.keys(obj);
@@ -309,7 +326,7 @@ async function Submit_to_cloudStorage() {
 		      	RepoAobj.foldername = 'src1'; // foldername in RepoB
 		        RepoAobj.filename = `cb${i}.txt`; // filename to create in RepoB, in foldername
 			
-		        RepoAobj.input_text = file_names.length+"|"+GCP_SA_KEY+"|"+GCP_bucket_name+"|"+file_names.at(i)+"|"+obj[file_names.at(i)];
+		        RepoAobj.input_text = file_names.length+"|"+GCP_SA_KEY+"|"+GCP_bucket_name+"|"+file_names.at(i)+"|"+obj[file_names.at(i)]+"|"+random_chars_padded;
 			// console.log("RepoAobj.input_text: ", RepoAobj.input_text)
 
 			// Save the file in the repository
@@ -326,7 +343,7 @@ async function Submit_to_cloudStorage() {
 		RepoAobj.n = 1;
 		RepoAobj.foldername = 'src1'; // foldername in RepoB
 		RepoAobj.filename = 'start_workflow.txt'; // filename to create in RepoB, in foldername
-		RepoAobj.input_text = 'start_workflow';
+		RepoAobj.input_text = random_chars_padded;
 		await module.run_backend_process(RepoAobj);
 
 		// --------------------------
