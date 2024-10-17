@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'src/cb10.txt'
+      - 'src1/cb0.txt'
       
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions: write-all
