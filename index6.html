@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html>
+<head></head>
+<body>
+
+<label class="switchLabelclass"><input type="checkbox" id="toggle_type"><span class="slider"></span></label>
+  
+<br>
+
+<h1>Drag and Drop data to a bucket</h1>
+<ol type="A">
+	<li>Select the Storage Method and input authentication. No authentication credentials are stored.</li>
+	<li>Drag and drop files into the dropArea to Submit it to the Storage Method.</li>
+	<li>Submit files to the Storage Method.</li>
+	<li>List files from the Storage Method.</li>
+</ol>
+  
+<br>
+
+<h3>A. Select the Storage Method and input authentication.</h3>
+<label for="select_dropdown_option_label">Select a drop down option:</label>
+<select name="dropdown_options" id="dropdown_options" style="display:block">
+  <option value="---">Select an option</option>
+  <option value="drop_down_GCP_bucket_name">GCP Storage Bucket name</option>
+  <option value="drop_down_Vector_database">Vector Database Storage</option>
+</select>
+
+<input id="GCP_bucket_name" type="text" value="" placeholder="GCP bucket name" rows="10" cols="100" style="display:none; text-align: left; width: 600px;">
+
+<input id="GCP_SA_KEY" type="text" value="" placeholder="Input Google Cloud Service Account Key to authenticate" rows="10" cols="100" style="display:none; text-align: left; width: 600px;">
+
+<input id="Vector_database_name" type="text" value="" placeholder="Vector Database name" rows="10" cols="100" style="display:none; text-align: left; width: 600px;">
+
+<input id="Vector_database_KEY" type="text" value="" placeholder="Input Vector Database Key to authenticate" rows="10" cols="100" style="display:none; text-align: left; width: 600px;">
+<br>
+	
+<h3>B. Drag and drop files into the dropArea to Submit it to Google Cloud Storage.</h3>
+<input type="file" id="upload_file" style="display:block" class="dropArea" multiple>
+<br>
+	
+<h3>C. Submit files to Google Cloud Storage.</h3>
+<button id="Submit_to_cloudStorage" onclick="Submit_to_cloudStorage()">Submit to cloudStorage</button>
+<br>
+
+<h3>D. List files from Storage.</h3>
+<button id="List_bucket_contents" onclick="List_bucket_contents(true)">List bucket contents</button>
+
+
+<div id="notification"></div>
+<div id="error"></div>
+	
+<!-- ---------------------------------------- -->
+<!-- CSS -->
+<style>
+:root {--background-color-light: #ffffff;
+      --title-color-light: #333333;
+      --text-color-light: #333333;
+}
+
+div { padding: 10px; display:block; font-family:courier; font-size:15px; height:300px; }
+div#notification { position: relative; color: #3236a8; }
+div#error { position: relative; color: #bd1f17; }
+	
+body { background-color: var(--background-color-light); color: var(--text-color-light); }
+	
+h1 { color: var(--title-color-light); }
+  
+.switchLabelclass { position: relative; display: inline-block; width: 60px; height: 34px; border: 0.25px solid black; border-radius: 5px; }
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #333333;
+  -webkit-transition: .4s;
+  transition: .4s;
+	border-radius: 5px;
+	border: 0.25px solid black;
+}
+
+.slider:before {
+  position: absolute;
+  content: "☀️";
+  justify-content: center;
+  align-items: center;
+  height: 34px;
+  width: 30px;
+  left: 0px;
+  bottom: 0px;
+  /* When page is light, [slider button] is light (setting below), [background of input] is dark */
+  background-color: #ffffff;
+  -webkit-transition: .4s;
+  transition: .4s;
+  border-radius: 5px;
+	border: 0.25px solid black;
+}
+
+.slider:after { content: "✺"; }
+
+/* When page is dark, [slider button] is dark, [background of input] is light (setting below) */
+input:checked + .slider { background-color: #ffffff; }
+
+input:focus + .slider { box-shadow: 0 0 1px #333333; }
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+.dropArea { height: 200px;
+  width: 200px;
+	border-radius: 15px;
+	border: 0.25px solid black;
+}
+  
+</style>
+<!-- ---------------------------------------- -->
+
+
+<script type="module" crossorigin="*" redirect="follow" mode="cors">
+import { run_backend_process } from "https://cdn.jsdelivr.net/npm/library_to_run_github_actions@1.0.1/dist/library_to_run_GitHub_Actions.js";
+module.run_backend_process = run_backend_process;
+</script>
+
+<!-- --------------------------------------------------- -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" integrity="sha512-v2CJ7UaYy4JwqLDIrZUI/4hqeoQieOmAZNXBeQyjo21dadnwR+8ZaIJVT8EE2iyI61OV8e6M8PP2/4hpQINQ/g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  
+<script>
+
+// -----------------------------------------------
+	
+window.addEventListener('beforeunload', function() {
+	window.location.href = window.location.href + '?nocache=' + new Date().getTime();
+
+	document.getElementById("dropdown_options").selectedIndex = 0;
+
+	// document.getElementById("GCP_bucket_name").value = "";
+	// document.getElementById("GCP_SA_KEY").value = "";
+	// document.getElementById("Vector_database_name").value = "";
+	// document.getElementById("Vector_database_KEY").value = "";
+
+	document.getElementById("upload_file").value = "";
+});
+  
+// -----------------------------------------------  
+
+async function processEvent_dropdown_options(event) {
+
+	// there is nothing in event that tells which drop down was selected
+	// console.log('event: ', event);
+
+	const element = document.getElementById("dropdown_options");
+	
+	console.log('element.selectedIndex: ', element.selectedIndex);
+	// OR
+	// console.log('element.options.selectedIndex: ', element.options.selectedIndex);
+	
+	if (document.getElementById("dropdown_options").selectedIndex == 1) {
+		document.getElementById("GCP_bucket_name").style.display = 'block';
+		document.getElementById("GCP_SA_KEY").style.display = 'block';
+		document.getElementById("Vector_database_name").style.display = 'none';
+		document.getElementById("Vector_database_KEY").style.display = 'none';
+		
+	} else if (document.getElementById("dropdown_options").selectedIndex == 2) {
+		document.getElementById("GCP_bucket_name").style.display = 'none';
+		document.getElementById("GCP_SA_KEY").style.display = 'none';
+		document.getElementById("Vector_database_name").style.display = 'block';
+		document.getElementById("Vector_database_KEY").style.display = 'block';
+		
+	} else {
+		document.getElementById("GCP_bucket_name").style.display = 'none';
+		document.getElementById("GCP_SA_KEY").style.display = 'none';
+		document.getElementById("Vector_database_name").style.display = 'none';
+		document.getElementById("Vector_database_KEY").style.display = 'none';
+	}
+	
+} 
+
+document.getElementById("dropdown_options").addEventListener("change", processEvent_dropdown_options, false);
+	
+// -----------------------------------------------
+
+const module = {};
+  
+// ----------------------------------------------------
+// Light and dark toggle functionality
+// ----------------------------------------------------
+document.getElementById("toggle_type").addEventListener("click", processEvent_checkboxOption, false);
+	
+function processEvent_checkboxOption(event) {
+	
+	// console.log('input event: ', event);
+	
+	if (document.getElementById("toggle_type").checked == false) {
+		// Display Light 
+		document.body.style.backgroundColor = "#ffffff";
+		document.body.style.color = "#333333";
+		document.querySelector("h1").style.color = "#333333";
+
+		// When page is light, [slider button] is light (setting below), [background of input] is dark
+		// document.querySelector('.slider').style.backgroundColor = "#333333";
+		
+		console.log('event check in light: ', document.getElementById("toggle_type").checked);
+		
+		// Reset checked state
+		document.getElementById("toggle_type").checked = false;  // toggle element is able to slide
+		
+	} else  {
+		// Dark
+		document.body.style.backgroundColor = "#333333";
+		document.body.style.color = "#ffffff";
+		document.querySelector("h1").style.color = "#ffffff";
+
+		// When page is dark, [slider button] is dark (setting below), [background of input] is light
+		// document.querySelector('.slider').style.backgroundColor = "#ffffff";
+		
+		console.log('event check in dark: ', document.getElementById("toggle_type").checked);
+		
+		// Reset checked state
+		document.getElementById("toggle_type").checked = true;  // toggle element is able to slide
+	}
+}
+
+// ----------------------------------------------------
+
+
+// ----------------------------------------------------
+// Input functionality - FileReader type="file"
+	
+// ----------------------------------------------------
+document.getElementById("upload_file").addEventListener("change", previewInput, false);
+
+var obj = {};
+	
+async function previewInput(event) {
+
+	const element = document.getElementById("upload_file");
+	console.log('element: ', element);
+	
+	// For multiple files
+	const allFiles = event.target.files;
+	// console.log("allFiles :", allFiles);
+	
+	var i = 0;
+	while (i < allFiles.length) {
+		
+		const file = allFiles[i];
+		// console.log("file :", file);
+
+		await obtain_fileInfo_way1(file)
+			.then(async (base64str) => { obj[file.name] = base64str; })
+			.catch(error => console.error(error));
+		
+		i = i + 1;
+		// console.log("i :", i);
+	}
+
+}
+
+// ----------------------------------------------------
+  
+async function obtain_fileInfo_way1(file) {
+	// WORKS!
+	var base64_string = await new Promise((resolve) => {
+		const reader = new FileReader();
+		reader.onload = async function(e){ 
+			resolve(e.target.result); // inside resolve is the value that the function returns
+		};
+		reader.readAsDataURL(file);
+	});
+	 return base64_string;
+}
+
+// ----------------------------------------------------
+
+async function Submit_to_cloudStorage() {
+
+	console.log('obj: ', obj);
+
+	var dropdown_option_type = document.getElementById("dropdown_options").value;
+
+	if (dropdown_option_type == 'drop_down_GCP_bucket_name') {
+		
+		var GCP_bucket_name = document.getElementById("GCP_bucket_name").value;
+		// console.log("GCP_bucket_name :", GCP_bucket_name);
+		
+		var GCP_SA_KEY = btoa(document.getElementById("GCP_SA_KEY").value);
+		
+		// Loop over each key and save each file to storage
+		var file_names = Object.keys(obj);
+		// console.log("file_names: ", file_names)
+		
+		for (let i=0; i<file_names.length; i++) {
+
+			console.log('file_names.at(i): ', file_names.at(i));
+			
+			var RepoAobj = {};
+		        RepoAobj.repoOwner = 'CodeSolutions2';
+		        RepoAobj.repoA_name = 'dragAndDrop_to_Storage';
+		        RepoAobj.repoB_name = 'dragAndDrop_to_Storage';  
+		        RepoAobj.n = 1;
+		      	RepoAobj.foldername = 'src'; // foldername in RepoB
+		        RepoAobj.filename = `cb1${i}.txt`; // filename to create in RepoB, in foldername
+			
+		        RepoAobj.input_text = file_names.length+"|"+GCP_SA_KEY+"|"+GCP_bucket_name+"|"+file_names.at(i)+"|"+obj[file_names.at(i)];
+			// console.log("RepoAobj.input_text: ", RepoAobj.input_text)
+		
+			await module.run_backend_process(RepoAobj);
+
+			// Need a confirmation that the file/s were uploaded
+			// It could do REST API to the list bucket endpoint to confirm that the file is present
+			var file_array = await List_bucket_contents(false);
+			
+			let regexp = new RegExp(`${file_names.at(i)}`, 'g');
+			let match = file_array.join(' ').match(regexp) ?? [];
+			
+			while (match.length == 0) {
+				file_array = await List_bucket_contents(false);
+				match = file_array.join(' ').match(regexp) ?? [];
+
+				await new Promise(r => setTimeout(r, 5000));
+				
+				console.log('match: ', match);
+			}
+			document.getElementById('notification').innerHTML = `File ${file_names.at(i)} was successfully put in the bucket ${GCP_bucket_name}`; 
+		}
+		
+	} else if (dropdown_option_type == 'drop_down_Vector_database') {
+		document.getElementById('notification').innerHTML = "In progress."; 
+		
+	} else {
+		document.getElementById('notification').innerHTML = "Please select a drop down option type."; 
+	}
+	
+}
+	
+// ----------------------------------------------------
+
+async function List_bucket_contents(print_contents) {
+	
+	// List contents of bucket to the output 
+
+	var url = `https://storage.googleapis.com/storage/v1/b/${document.getElementById("GCP_bucket_name").value}/o`
+	
+	return await fetch_on_cloud_storage_return_contents_list(url)
+			.then(async function(xmlDocument) {
+				console.log('xmlDocument: ', xmlDocument);
+
+				// Clear notification
+				document.getElementById('notification').innerHTML = "";
+				
+				file_array = [];
+				for (var i=0; i<xmlDocument.items.length; i++) {
+					file_array.push(xmlDocument.items[i].name);
+					if (print_contents == true) {
+						document.getElementById('notification').innerHTML += xmlDocument.items[i].name+"<br>"
+					}
+				}
+				// console.log('file_array: ', file_array);
+				return file_array;
+			})
+			.catch(error => console.error(error));
+}
+
+async function fetch_on_cloud_storage_return_contents_list(url) {
+
+	var settings = {
+		type : 'GET',
+		async: true,
+		crossDomain: true,
+		beforeSend: function(xhr) { xhr.withCredentials = true; },
+		success: function(response) { console.log('Success'); },
+		error: function(xhr, status, error) { console.log('Error:', error); }
+	};
+	
+	return $.ajax(url, [,settings]).done(function(response) { return response; });
+}
+
+// -------------------------------------------------
+
+	
+</script>
+</body>
+</html>
