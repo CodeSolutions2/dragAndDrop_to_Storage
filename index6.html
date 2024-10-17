@@ -355,16 +355,16 @@ async function Submit_to_cloudStorage() {
 			let regexp = new RegExp(`${file_names.at(i)}`, 'g');
 			let match = file_array.join(' ').match(regexp) ?? [];
 			var c = 0;
-			while (match.length == 0  && c < 15) {
+			while (match.length == 0  && c < 10) {
 				file_array = await List_bucket_contents(false);
 				match = file_array.join(' ').match(regexp) ?? [];
 	
-				await new Promise(r => setTimeout(r, 7000));
+				await new Promise(r => setTimeout(r, 5000));
 				
 				console.log('match: ', match);
 				c = c + 1;
 			}
-
+			
 			if ( match.length == 0 ) {
 				document.getElementById('notification').innerHTML = `File ${file_names.at(i)} was not successfully put in the bucket ${GCP_bucket_name}`;
 			} else {
