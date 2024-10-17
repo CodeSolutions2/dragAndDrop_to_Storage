@@ -361,7 +361,7 @@ async function Submit_to_cloudStorage() {
 			let match = [];
 			let c = 0;
 			while (match.length == 0  && c < 10) {
-				file_array = List_bucket_contents(false);
+				var file_array = List_bucket_contents(false);
 				match = file_array.join(' ').match(regexp) ?? [];
 				new Promise(r => setTimeout(r, 5000));
 				console.log('c: ', c);
@@ -401,7 +401,7 @@ async function run_confirmation_function(file_name) {
 	let match = [];
 	let c = 0;
 	while (match.length == 0  && c < 10) {
-		file_array = await List_bucket_contents(false);
+		var file_array = await List_bucket_contents(false);
 		match = file_array.join(' ').match(regexp) ?? [];
 		await new Promise(r => setTimeout(r, 5000));
 		console.log('c: ', c);
