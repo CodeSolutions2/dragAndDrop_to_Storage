@@ -10,7 +10,7 @@
 <h1>Drag and Drop data to a bucket</h1>
 <ol type="A">
 	<li>Select the Storage Method and input authentication. No authentication credentials are stored.</li>
-	<li>Drag and drop files into the dropArea to Submit it to the Storage Method. Refresh the page to re-drag and drop.</li>
+	<li>Drag and drop files into the dropArea to Submit it to the Storage Method.</li>
 	<li>Submit files to the Storage Method.</li>
 	<li>List files from the Storage Method.</li>
 </ol>
@@ -169,8 +169,8 @@ async function processEvent_dropdown_options(event) {
 	} else if (document.getElementById("dropdown_options").selectedIndex == 2) {
 		document.getElementById("GCP_bucket_name").style.display = 'none';
 		document.getElementById("GCP_SA_KEY").style.display = 'none';
-		document.getElementById("Vector_database_name").style.display = 'block';
-		document.getElementById("Vector_database_KEY").style.display = 'block';
+		document.getElementById("Vector_database_name").style.display = 'none'; // block
+		document.getElementById("Vector_database_KEY").style.display = 'none'; 	// block
 		
 	} else {
 		document.getElementById("GCP_bucket_name").style.display = 'none';
@@ -362,7 +362,7 @@ async function Submit_to_cloudStorage() {
 		// --------------------------
 		
 	} else if (dropdown_option_type == 'drop_down_Vector_database') {
-		document.getElementById('notification').innerHTML = "In progress."; 
+		document.getElementById('notification').innerHTML = "In progress to be developed. Please use GCP Storage option."; 
 		
 	} else {
 		document.getElementById('notification').innerHTML = "Please select a drop down option type."; 
@@ -404,29 +404,36 @@ async function confirmation_notification(match, file_name) {
 function List_bucket_contents(print_contents) {
 	
 	// List contents of bucket to the output 
-
-	var url = `https://storage.googleapis.com/storage/v1/b/${document.getElementById("GCP_bucket_name").value}/o`
+	if (document.getElementById("dropdown_options").value == 'drop_down_GCP_bucket_name') {
+		var url = `https://storage.googleapis.com/storage/v1/b/${document.getElementById("GCP_bucket_name").value}/o`
+		
+		return fetch_on_cloud_storage_return_contents_list(url)
+				.then(async function(xmlDocument) {
+					// console.log('xmlDocument: ', xmlDocument);
 	
-	return fetch_on_cloud_storage_return_contents_list(url)
-			.then(async function(xmlDocument) {
-				// console.log('xmlDocument: ', xmlDocument);
-
-				if (print_contents == true) {
-					// Clear notification
-					document.getElementById('notification').innerHTML = "";
-				}
-				
-				file_array = [];
-				for (var i=0; i<xmlDocument.items.length; i++) {
-					file_array.push(xmlDocument.items[i].name);
 					if (print_contents == true) {
-						document.getElementById('notification').innerHTML += xmlDocument.items[i].name+"<br>";
+						// Clear notification
+						document.getElementById('notification').innerHTML = "";
 					}
-				}
-				// console.log('file_array: ', file_array);
-				return file_array;
-			})
-			.catch(error => console.error(error));
+					
+					file_array = [];
+					for (var i=0; i<xmlDocument.items.length; i++) {
+						file_array.push(xmlDocument.items[i].name);
+						if (print_contents == true) {
+							document.getElementById('notification').innerHTML += xmlDocument.items[i].name+"<br>";
+						}
+					}
+					// console.log('file_array: ', file_array);
+					return file_array;
+				})
+				.catch(error => console.error(error));
+		
+	} else if (document.getElementById("dropdown_options").value == 'drop_down_Vector_database') {
+		document.getElementById('notification').innerHTML = "In progress to be developed. Please use GCP Storage option."; 
+		
+	} else {
+		document.getElementById('notification').innerHTML = "Please select a drop down option type."; 
+	}
 }
 
 // -------------------------------------------------
