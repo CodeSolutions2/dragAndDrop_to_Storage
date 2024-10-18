@@ -10,7 +10,7 @@
 <h1>Drag and Drop data to a bucket</h1>
 <ol type="A">
 	<li>Select the Storage Method and input authentication. No authentication credentials are stored.</li>
-	<li>Drag and drop files into the dropArea to Submit it to the Storage Method.</li>
+	<li>Drag and drop files into the dropArea to Submit it to the Storage Method. Refresh the page to re-drag and drop.</li>
 	<li>Submit files to the Storage Method.</li>
 	<li>List files from the Storage Method.</li>
 </ol>
@@ -230,9 +230,11 @@ function processEvent_checkboxOption(event) {
 
 document.getElementById("upload_file").addEventListener("change", previewInput, false);
 
+var obj = {};
+
 async function previewInput(event) {
 
-	var obj = {};
+	obj = {};
 	
 	const element = document.getElementById("upload_file");
 	// console.log('element: ', element);
