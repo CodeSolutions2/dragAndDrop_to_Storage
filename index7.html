@@ -281,14 +281,12 @@ async function obtain_fileInfo_way1(file) {
 
 async function Submit_to_cloudStorage() {
 
-	// console.log('obj: ', obj);
-
-	var dropdown_option_type = document.getElementById("dropdown_options").value;
-
+	console.log('Object.keys(obj).length: ', Object.keys(obj).length);
+	
 	// Clear notification
 	document.getElementById('notification').innerHTML = "";
 
-	if (dropdown_option_type == 'drop_down_GCP_bucket_name') {
+	if (document.getElementById("dropdown_options").value == 'drop_down_GCP_bucket_name' && Object.keys(obj).length > 0) {
 		
 		var GCP_bucket_name = document.getElementById("GCP_bucket_name").value;
 		// console.log("GCP_bucket_name :", GCP_bucket_name);
@@ -361,11 +359,11 @@ async function Submit_to_cloudStorage() {
 		
 		// --------------------------
 		
-	} else if (dropdown_option_type == 'drop_down_Vector_database') {
+	} else if (document.getElementById("dropdown_options").value == 'drop_down_Vector_database' && Object.keys(obj).length > 0) {
 		document.getElementById('notification').innerHTML = "In progress to be developed. Please use GCP Storage option."; 
 		
 	} else {
-		document.getElementById('notification').innerHTML = "Please select a drop down option type."; 
+		document.getElementById('notification').innerHTML = "Please select a drop down option type and/or insert files."; 
 	}
 	
 }
