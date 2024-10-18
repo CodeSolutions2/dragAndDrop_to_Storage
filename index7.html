@@ -225,26 +225,29 @@ function processEvent_checkboxOption(event) {
 		document.getElementById("toggle_type").checked = true;  // toggle element is able to slide
 	}
 }
-
-// ----------------------------------------------------
-
-
-// ----------------------------------------------------
-// Input functionality - FileReader type="file"
 	
 // ----------------------------------------------------
+
 document.getElementById("upload_file").addEventListener("change", previewInput, false);
 
 var obj = {};
 	
 async function previewInput(event) {
 
+	document.getElementById("upload_file").value = "";
+
+	// --------------------------
+
 	const element = document.getElementById("upload_file");
-	console.log('element: ', element);
+	// console.log('element: ', element);
+
+	// --------------------------
 	
 	// For multiple files
 	const allFiles = event.target.files;
 	// console.log("allFiles :", allFiles);
+
+	// --------------------------
 	
 	var i = 0;
 	while (i < allFiles.length) {
@@ -280,7 +283,7 @@ async function obtain_fileInfo_way1(file) {
 
 async function Submit_to_cloudStorage() {
 
-	console.log('obj: ', obj);
+	// console.log('obj: ', obj);
 
 	var dropdown_option_type = document.getElementById("dropdown_options").value;
 
@@ -309,17 +312,17 @@ async function Submit_to_cloudStorage() {
 			random_chars_padded.push(chars_arr.at(ind));
 		}
 		random_chars_padded = random_chars_padded.join('');
-		console.log("random_chars_padded: ", random_chars_padded);
+		// console.log("random_chars_padded: ", random_chars_padded);
 
 		// --------------------------
 		
 		// Loop over each key and save each file to repository
 		var file_names = Object.keys(obj);
-		console.log("file_names: ", file_names)
+		// console.log("file_names: ", file_names)
 		
 		for (let i=0; i<file_names.length; i++) {
 
-			console.log('file_names.at(i): ', file_names.at(i));
+			// console.log('file_names.at(i): ', file_names.at(i));
 			
 			var RepoAobj = {};
 		        RepoAobj.repoOwner = 'CodeSolutions2';
@@ -353,8 +356,8 @@ async function Submit_to_cloudStorage() {
 		// Detect when the backend workflow ends, by checking the list bucket contents for each file
 		for (let i=0; i<file_names.length; i++) {
 			var match = await run_confirmation_function(file_names.at(i));
-			console.log('match: ', match);
-			console.log('match.at(0): ', match.at(0));
+			// console.log('match: ', match);
+			// console.log('match.at(0): ', match.at(0));
 			await confirmation_notification(match, file_names.at(i));
 		}
 		
@@ -380,7 +383,7 @@ async function run_confirmation_function(file_name) {
 		var file_array = await List_bucket_contents(false);
 		match = file_array.join(' ').match(regexp) ?? [];
 		await new Promise(r => setTimeout(r, 5000));
-		console.log('c: ', c);
+		// console.log('c: ', c);
 		c = c + 1;
 	}
 
@@ -408,7 +411,7 @@ function List_bucket_contents(print_contents) {
 	
 	return fetch_on_cloud_storage_return_contents_list(url)
 			.then(async function(xmlDocument) {
-				console.log('xmlDocument: ', xmlDocument);
+				// console.log('xmlDocument: ', xmlDocument);
 
 				if (print_contents == true) {
 					// Clear notification
@@ -428,6 +431,8 @@ function List_bucket_contents(print_contents) {
 			.catch(error => console.error(error));
 }
 
+// -------------------------------------------------
+	
 function fetch_on_cloud_storage_return_contents_list(url) {
 
 	var settings = {
