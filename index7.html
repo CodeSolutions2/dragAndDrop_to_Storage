@@ -328,7 +328,6 @@ async function Submit_to_cloudStorage() {
 		        RepoAobj.n = 1;
 		      	RepoAobj.foldername = 'src1'; // foldername in RepoB
 		        RepoAobj.filename = `cb${i}.txt`; // filename to create in RepoB, in foldername
-			
 		        RepoAobj.input_text = file_names.length+"|"+GCP_SA_KEY+"|"+GCP_bucket_name+"|"+file_names.at(i)+"|"+obj[file_names.at(i)]+"|"+random_chars_padded;
 			// console.log("RepoAobj.input_text: ", RepoAobj.input_text)
 
@@ -411,8 +410,10 @@ function List_bucket_contents(print_contents) {
 			.then(async function(xmlDocument) {
 				console.log('xmlDocument: ', xmlDocument);
 
-				// Clear notification
-				document.getElementById('notification').innerHTML = "";
+				if (print_contents == true) {
+					// Clear notification
+					document.getElementById('notification').innerHTML = "";
+				}
 				
 				file_array = [];
 				for (var i=0; i<xmlDocument.items.length; i++) {
