@@ -358,26 +358,29 @@ async function Submit_to_cloudStorage() {
 		
 		// Detect when the backend workflow ends, by checking the list bucket contents for each file
 		const radioOption0 = document.getElementById("radioOption0").checked;
-const radioOption1 = document.getElementById("radioOption1").checked;
+		console.log("radioOption0: ", radioOption0);
 		
-    if (radioOption0 == true && radioOption1 == false) {
-      // Access control lists (ACLs) bucket
-      document.getElementById('notification').innerHTML = "The files are uploaded and privately viewable. Please make each of the files publicly readable, if you would like them publicly viewable in the browser."; 
-    }
-
-		if (radioOption0 == false && radioOption1 == true) {
-      // Uniform bucket level access bucket
-      for (let i=0; i<file_names.length; i++) {
-  			var match = await run_confirmation_function(file_names.at(i));
-  			// console.log('match: ', match);
-  			// console.log('match.at(0): ', match.at(0));
-  			await confirmation_notification(match, file_names.at(i));
-  		}
+		const radioOption1 = document.getElementById("radioOption1").checked;
+		console.log("radioOption1: ", radioOption1);
+		
+		if (radioOption0 == true && radioOption1 == false) {
+			// Access control lists (ACLs) bucket
+			document.getElementById('notification').innerHTML = "The files are uploaded and privately viewable. Please make each of the files publicly readable, if you would like them publicly viewable in the browser."; 
 		}
 
-    if (radioOption0 == false && radioOption1 == false) {
-      document.getElementById('notification').innerHTML = "Please select a drop down option type and/or insert files."; 
-    }
+		if (radioOption0 == false && radioOption1 == true) {
+			// Uniform bucket level access bucket
+			for (let i=0; i<file_names.length; i++) {
+				var match = await run_confirmation_function(file_names.at(i));
+				// console.log('match: ', match);
+				// console.log('match.at(0): ', match.at(0));
+				await confirmation_notification(match, file_names.at(i));
+			}
+		}
+
+		if (radioOption0 == false && radioOption1 == false) {
+			document.getElementById('notification').innerHTML = "Please select a drop down option type and/or insert files."; 
+		}
         
 		// --------------------------
 		
