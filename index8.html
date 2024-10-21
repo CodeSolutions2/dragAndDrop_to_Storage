@@ -357,6 +357,9 @@ async function Submit_to_cloudStorage() {
 		// --------------------------
 		
 		// Detect when the backend workflow ends, by checking the list bucket contents for each file
+		const radioOption0 = document.getElementById("radioOption0").checked;
+const radioOption1 = document.getElementById("radioOption1").checked;
+		
     if (radioOption0 == true && radioOption1 == false) {
       // Access control lists (ACLs) bucket
       document.getElementById('notification').innerHTML = "The files are uploaded and privately viewable. Please make each of the files publicly readable, if you would like them publicly viewable in the browser."; 
