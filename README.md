@@ -9,7 +9,7 @@ The purpose of this workflow/module will be to insert it into other webapps, suc
 
 
 
-[Latest working version] https://codesolutions2.github.io/dragAndDrop_to_Storage/index7.html
+[Latest working version] https://codesolutions2.github.io/dragAndDrop_to_Storage/index8.html
 
 
 ## In progress
