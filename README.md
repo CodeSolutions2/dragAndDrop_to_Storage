@@ -1,5 +1,7 @@
 # dragAndDrop_to_Storage
 
+![example branch parameter.](https://github.com/RepoOwnerName/dragAndDrop_to_Storage/actions/workflows/main1.yaml/badge.svg?branch=main)
+
 A lightweight webapp workflow to easily send data to a several desired Storage locations:
 
 1. Google Cloud Platform Storage (WORKS!)
