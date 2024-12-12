@@ -20,9 +20,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Wait for all the files to be saved to the repository
-        run: |
-        
       - name: Checkout
         uses: actions/checkout@v4
 
