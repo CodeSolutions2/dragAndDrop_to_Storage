@@ -520,28 +520,17 @@ function List_bucket_contents(print_contents) {
 				.catch(error => console.error(error));
 		
 	} else if (document.getElementById("dropdown_options").value == 'drop_down_AWS_bucket_name') {
-		var url = `https://${document.getElementById("AWS_bucket_name").value}.s3.amazonaws.com/index.html`  // Endpoint URL
+
+		// Endpoint URL
+		// var url = `https://${document.getElementById("AWS_bucket_name").value}.s3.amazonaws.com/index.html`
 		// OR
-		// var url = `https://s3.amazonaws.com/${document.getElementById("AWS_bucket_name").value}`  // URL path
+
+		// URL path
+		var url = `https://s3.amazonaws.com/${document.getElementById("AWS_bucket_name").value}`
 		
 		return fetch_on_cloud_storage_return_contents_list(url)
-				.then(async function(xmlDocument) {
-					// console.log('xmlDocument: ', xmlDocument);
-	
-					if (print_contents == true) {
-						// Clear notification
-						document.getElementById('notification').innerHTML = "";
-					}
-					
-					file_array = [];
-					for (var i=0; i<xmlDocument.items.length; i++) {
-						file_array.push(xmlDocument.items[i].name);
-						if (print_contents == true) {
-							document.getElementById('notification').innerHTML += xmlDocument.items[i].name+"<br>";
-						}
-					}
-					// console.log('file_array: ', file_array);
-					return file_array;
+				.then(async function(response) {
+					console.log('response: ', response);
 				})
 				.catch(error => console.error(error));
 		
