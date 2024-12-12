@@ -43,6 +43,9 @@
 <input id="AWS_ACCESS_KEY_ID" type="text" value="" placeholder="Input AWS_ACCESS_KEY_ID to authenticate" rows="10" cols="100" style="display:none; text-align: left; width: 600px;">
 
 <input id="AWS_SECRET_ACCESS_KEY" type="text" value="" placeholder="Input AWS_SECRET_ACCESS_KEY to authenticate" rows="10" cols="100" style="display:none; text-align: left; width: 600px;">
+
+<input id="AWS_REGION" type="text" value="" placeholder="Input AWS_REGION to authenticate" rows="10" cols="100" style="display:none; text-align: left; width: 600px;">
+	
 <br>
 	
 <h3>B. Drag and drop files into the dropArea to Submit it to Google Cloud Storage.</h3>
@@ -149,6 +152,7 @@ window.addEventListener('beforeunload', function() {
 	// document.getElementById("AWS_bucket_name").value = "";
 	// document.getElementById("AWS_ACCESS_KEY_ID").value = "";
 	// document.getElementById("AWS_SECRET_ACCESS_KEY").value = "";
+	// document.getElementById("AWS_REGION").value = "";
 
 	document.getElementById("upload_file").value = "";
 });
@@ -167,31 +171,34 @@ async function processEvent_dropdown_options(event) {
 	// console.log('element.options.selectedIndex: ', element.options.selectedIndex);
 	
 	if (document.getElementById("dropdown_options").selectedIndex == 1) {
-    document.getElementById("GCP_bucket_permission_label").style.display = 'block';
-    document.getElementById("GCP_bucket_permission").style.display = 'block';
+		document.getElementById("GCP_bucket_permission_label").style.display = 'block';
+		document.getElementById("GCP_bucket_permission").style.display = 'block';
 		document.getElementById("GCP_bucket_name").style.display = 'block';
 		document.getElementById("GCP_SA_KEY").style.display = 'block';
 		document.getElementById("AWS_bucket_name").style.display = 'none';
 		document.getElementById("AWS_ACCESS_KEY_ID").style.display = 'none';
-    document.getElementById("AWS_SECRET_ACCESS_KEY").style.display = 'none';
+		document.getElementById("AWS_SECRET_ACCESS_KEY").style.display = 'none';
+		document.getElementById("AWS_REGION").style.display = 'none';
 		
 	} else if (document.getElementById("dropdown_options").selectedIndex == 2) {
-    document.getElementById("GCP_bucket_permission_label").style.display = 'none';
-    document.getElementById("GCP_bucket_permission").style.display = 'none';
+		document.getElementById("GCP_bucket_permission_label").style.display = 'none';
+		document.getElementById("GCP_bucket_permission").style.display = 'none';
 		document.getElementById("GCP_bucket_name").style.display = 'none';
 		document.getElementById("GCP_SA_KEY").style.display = 'none';
 		document.getElementById("AWS_bucket_name").style.display = 'block';
 		document.getElementById("AWS_ACCESS_KEY_ID").style.display = 'block';
-    document.getElementById("AWS_SECRET_ACCESS_KEY").style.display = 'block';
+		document.getElementById("AWS_SECRET_ACCESS_KEY").style.display = 'block';
+		document.getElementById("AWS_REGION").style.display = 'block';
 		
 	} else {
-    document.getElementById("GCP_bucket_permission_label").style.display = 'none';
-    document.getElementById("GCP_bucket_permission").style.display = 'none';
+		document.getElementById("GCP_bucket_permission_label").style.display = 'none';
+		document.getElementById("GCP_bucket_permission").style.display = 'none';
 		document.getElementById("GCP_bucket_name").style.display = 'none';
 		document.getElementById("GCP_SA_KEY").style.display = 'none';
 		document.getElementById("AWS_bucket_name").style.display = 'none';
 		document.getElementById("AWS_ACCESS_KEY_ID").style.display = 'none';
-    document.getElementById("AWS_SECRET_ACCESS_KEY").style.display = 'none';
+		document.getElementById("AWS_SECRET_ACCESS_KEY").style.display = 'none';
+		document.getElementById("AWS_REGION").style.display = 'none';
 	}
 	
 } 
@@ -304,8 +311,6 @@ async function Submit_to_cloudStorage() {
 	if (document.getElementById("dropdown_options").value == 'drop_down_GCP_bucket_name' && Object.keys(obj).length > 0) {
 		
 		var GCP_bucket_name = document.getElementById("GCP_bucket_name").value;
-		// console.log("GCP_bucket_name :", GCP_bucket_name);
-		
 		var GCP_SA_KEY = btoa(document.getElementById("GCP_SA_KEY").value);
 
 		// --------------------------
@@ -380,13 +385,13 @@ async function Submit_to_cloudStorage() {
 		// --------------------------
 		
 	} else if (document.getElementById("dropdown_options").value == 'drop_down_AWS_bucket_name' && Object.keys(obj).length > 0) {
-
-    var AWS_bucket_name = document.getElementById("AWS_bucket_name").value;
+		
+		var AWS_bucket_name = document.getElementById("AWS_bucket_name").value;
 		// console.log("AWS_bucket_name :", AWS_bucket_name);
 		
 		var AWS_ACCESS_KEY_ID = btoa(document.getElementById("AWS_ACCESS_KEY_ID").value);
-
-    var AWS_SECRET_ACCESS_KEY = btoa(document.getElementById("AWS_SECRET_ACCESS_KEY").value);
+		var AWS_SECRET_ACCESS_KEY = btoa(document.getElementById("AWS_SECRET_ACCESS_KEY").value);
+		var AWS_REGION = btoa(document.getElementById("AWS_REGION").value);
     
 		// --------------------------
 
@@ -407,9 +412,9 @@ async function Submit_to_cloudStorage() {
 		        RepoAobj.repoA_name = 'dragAndDrop_to_Storage';
 		        RepoAobj.repoB_name = 'dragAndDrop_to_Storage';  
 		        RepoAobj.n = 1;
-		      	RepoAobj.foldername = 'src1'; // foldername in RepoB
+		      	RepoAobj.foldername = 'src2';
 		        RepoAobj.filename = `cb${i}.txt`;
-		        RepoAobj.input_text = file_names.length+"|"+AWS_ACCESS_KEY_ID+"|"+AWS_SECRET_ACCESS_KEY+"|"+AWS_bucket_name+"|"+file_names.at(i)+"|"+obj[file_names.at(i)]+"|"+random_chars_padded;
+		        RepoAobj.input_text = file_names.length+"|"+AWS_ACCESS_KEY_ID+"|"+AWS_SECRET_ACCESS_KEY+"|"+AWS_REGION+"|"+AWS_bucket_name+"|"+file_names.at(i)+"|"+obj[file_names.at(i)]+"|"+random_chars_padded;
 			// console.log("RepoAobj.input_text: ", RepoAobj.input_text)
 
 			// Save the file in the repository
@@ -424,12 +429,12 @@ async function Submit_to_cloudStorage() {
 		RepoAobj.repoA_name = 'dragAndDrop_to_Storage';
 		RepoAobj.repoB_name = 'dragAndDrop_to_Storage';  
 		RepoAobj.n = 1;
-		RepoAobj.foldername = 'src1'; // foldername in RepoB
-		RepoAobj.filename = 'start_workflow.txt'; // filename to create in RepoB, in foldername
+		RepoAobj.foldername = 'src2';
+		RepoAobj.filename = 'start_workflow.txt';
 		RepoAobj.input_text = random_chars_padded;
 		await module.run_backend_process(RepoAobj);
-
-    // --------------------------
+		
+		// --------------------------
 		
 	} else {
 		document.getElementById('notification').innerHTML = "Please select a drop down option type and/or insert files."; 
@@ -437,7 +442,8 @@ async function Submit_to_cloudStorage() {
 	
 }
 
-
+// ----------------------------------------------------
+	
 async function random_chars_to_pad() {
 
   // Generate random characters to make files different for each run, even if the same files are selected.
@@ -514,7 +520,30 @@ function List_bucket_contents(print_contents) {
 				.catch(error => console.error(error));
 		
 	} else if (document.getElementById("dropdown_options").value == 'drop_down_AWS_bucket_name') {
-		document.getElementById('notification').innerHTML = "In progress to be developed. Please use GCP Storage option."; 
+		var url = `https://${document.getElementById("AWS_bucket_name").value}.s3.amazonaws.com/index.html`  // Endpoint URL
+		// OR
+		// var url = `https://s3.amazonaws.com/${document.getElementById("AWS_bucket_name").value}`  // URL path
+		
+		return fetch_on_cloud_storage_return_contents_list(url)
+				.then(async function(xmlDocument) {
+					// console.log('xmlDocument: ', xmlDocument);
+	
+					if (print_contents == true) {
+						// Clear notification
+						document.getElementById('notification').innerHTML = "";
+					}
+					
+					file_array = [];
+					for (var i=0; i<xmlDocument.items.length; i++) {
+						file_array.push(xmlDocument.items[i].name);
+						if (print_contents == true) {
+							document.getElementById('notification').innerHTML += xmlDocument.items[i].name+"<br>";
+						}
+					}
+					// console.log('file_array: ', file_array);
+					return file_array;
+				})
+				.catch(error => console.error(error));
 		
 	} else {
 		document.getElementById('notification').innerHTML = "Please select a drop down option type."; 
